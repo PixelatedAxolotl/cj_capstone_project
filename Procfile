@@ -1,0 +1,1 @@
+web: gunicorn cj_dashboard.wsgi --log-file -
