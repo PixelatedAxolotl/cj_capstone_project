@@ -1,1 +1,1 @@
-web: gunicorn cj_dashboard.wsgi --log-file -
+web: gunicorn cj_dashboard.wsgi --bind 0.0.0.0:$PORT --log-file -
