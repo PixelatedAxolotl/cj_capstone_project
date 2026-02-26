@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.RoleBasedAccessMiddleware',  # custom middleware to handle role-based access control and unauthorized access redirects
 ]
 
 ROOT_URLCONF = 'cj_dashboard.urls'
@@ -85,6 +86,10 @@ AUTH_USER_MODEL = 'accounts.User'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
+
+
+# Failure redirects
+#CSRF_FAILURE_VIEW = 'core.views.custom_403'
 
 
 # Database

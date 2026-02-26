@@ -6,4 +6,7 @@ urlpatterns = [
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('unauthorized/', views.unauthorized, name='unauthorized'),
 ]
+
+handler403 = 'core.views.unauthorized'

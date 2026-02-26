@@ -6,7 +6,7 @@
 <body>
     <h1>Welcome, {{ request.user.username }}</h1>
     <p>Select a dataset to get started.</p>
-    <form method="post">
+    <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>

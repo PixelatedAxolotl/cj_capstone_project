@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
-class Group(models.Model):
+class User_Group(models.Model):
     GROUP_TYPE_CHOICES = [
         ('region', 'Region'),
         ('demographic', 'Demographic Group'),
@@ -21,7 +21,7 @@ class School(models.Model):
     name = models.CharField(max_length=255, unique=True)
     date_added = models.DateField(auto_now_add=True)
     notes = models.TextField(blank=True)
-    groups = models.ManyToManyField(Group, blank=True, related_name='schools')
+    groups = models.ManyToManyField(User_Group, blank=True, related_name='schools')
 
     def __str__(self):
         return self.name
