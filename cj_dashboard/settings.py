@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'core',
 ]
 
 MIDDLEWARE = [
@@ -79,6 +80,11 @@ WSGI_APPLICATION = 'cj_dashboard.wsgi.application'
 
 # User model
 AUTH_USER_MODEL = 'accounts.User'
+
+# login redirect
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'login'
 
 
 # Database
