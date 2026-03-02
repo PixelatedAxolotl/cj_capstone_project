@@ -1,0 +1,107 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<h1>Upload Dataset</h1>
+
+{% if messages %}
+    {% for message in messages %}
+        <p class="errornote">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+{% if not preview %}
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-row">
+        <label for="dataset_file">Select Dataset File (.xlsx)</label>
+        <input type="file" name="dataset_file" id="dataset_file" accept=".xlsx" required>
+    </div>
+    <div id="submit-row" style="display: none;">
+        <input type="submit" value="Upload and Preview">
+    </div>
+</form>
+
+<script>
+    document.getElementById('dataset_file').addEventListener('change', function() {
+        document.getElementById('submit-row').style.display = this.files[0] ? 'block' : 'none';
+    });
+</script>
+
+{% else %}
+<div class="results">
+    <h2>Preview: {{ file_name }}</h2>
+    <p><strong>Rows detected:</strong> {{ row_count }}</p>
+    <p><strong>Columns detected:</strong> {{ headers|length }}</p>
+
+    {% if validation.rejected %}
+        <p class="errornote">
+            This file is missing {{ validation.missing_count }} columns 
+            ({{ validation.missing_percent|floatformat:1 }}% of the expected columns). 
+            This exceeds the 25% threshold and cannot be imported.
+        </p>
+    {% elif validation.missing %}
+        <p class="help">
+            Warning: {{ validation.missing_count }} expected column(s) were not found in this file:
+        </p>
+        <ul>
+            {% for col in validation.missing %}
+                <li>{{ col }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p style="color: green;">All {{ validation.expected_count }} expected columns found.</p>
+    {% endif %}
+
+    {% if validation.unexpected %}
+        <p class="help">The following unexpected columns were found and will be ignored:</p>
+        <ul>
+            {% for col in validation.unexpected %}
+                <li>{{ col }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+
+    
+    <!-- PREVIEW TABLE -->
+     <!-- TO DO: add lazy loading so whole table doesn't have to be loaded unless user scrolls for it' -->
+    {% if not validation.rejected %}
+        <p class="help">Showing first 50 rows of {{ row_count }} total rows.</p>
+        <div style="overflow: auto; max-height: 400px; margin: 20px 0; border: 1px solid #ccc;">
+            <table style="border-collapse: collapse; white-space: nowrap;">
+                <thead>
+                    <tr style="position: sticky; top: 0; z-index: 2;">
+                        <th style="border: 1px solid #ccc; padding: 6px 10px; text-align: left; position: sticky; left: 0; z-index: 3;">Row</th>
+                        {% for header in headers %}
+                        <th style="border: 1px solid #ccc; padding: 6px 10px; text-align: left;">{{ header }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data_rows %}
+                    <tr>
+                        <td style="border: 1px solid #ccc; padding: 6px 10px; position: sticky; left: 0; background: #265790; z-index: 1; font-weight: bold;">{{ forloop.counter }}</td>
+                        {% for cell in row %}
+                        <td style="border: 1px solid #ccc; padding: 6px 10px;">{{ cell|default:'' }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    {% if not validation.rejected %}
+    <div class="submit-row">
+        <input type="submit" value="Confirm Import" disabled>
+        <p class="help">Import functionality coming soon :)</p>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'upload_dataset' %}">Upload a different file</a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+

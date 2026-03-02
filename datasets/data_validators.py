@@ -1,0 +1,78 @@
+EXPECTED_COLUMNS = [
+    'StartDate', 'EndDate', 'Status', 'Progress', 'Duration__in_seconds_',
+    'Finished', 'RecordedDate', 'ResponseId', 'DistributionChannel',
+    'UserLanguage', 'Q1', 'Q2', 'Q3_1', 'Q3_2', 'Q3_3', 'Q3_4', 'Q3_5',
+    'Q3_6', 'Q3_7', 'Q3_8', 'Q3_9', 'Q3_10', 'Q3_11', 'Q3_12', 'Q3_13',
+    'Q3_14', 'Q3_15', 'Q3_16', 'Q3_16_TEXT', 'Q4_1', 'Q4_2', 'Q4_3',
+    'Q4_4', 'Q4_5', 'Q4_6', 'Q4_7', 'Q4_8', 'Q4_9', 'Q4_10', 'Q4_11',
+    'Q4_12', 'Q4_13', 'Q4_14', 'Q4_15', 'Q4_16', 'Q4_16_TEXT', 'Q5',
+    'Q6_1', 'Q6_2', 'Q6_3', 'Q6_4', 'Q6_5', 'Q6_6', 'Q6_7', 'Q6_8',
+    'Q7_1', 'Q7_2', 'Q7_3', 'Q7_4', 'Q7_5', 'Q7_6', 'Q7_7', 'Q7_8',
+    'Q7A_1', 'Q7A_2', 'Q7A_3', 'Q7A_7', 'Q7A_8', 'Q7A_4', 'Q7A_5',
+    'Q7A_6', 'Q7A_6_TEXT', 'Q8_1', 'Q8_2', 'Q8_3', 'Q8_4', 'Q8_5',
+    'Q8_6', 'Q8_7', 'Q8_8', 'Q8_9', 'Q8_10', 'Q8_11', 'Q8_12', 'Q8_13',
+    'Q8_14', 'Q8_15', 'Q8_16', 'Q8_17', 'Q8_18', 'Q8_19', 'Q9_1', 'Q9_2',
+    'Q9_3', 'Q9_4', 'Q9_5', 'Q9_6', 'Q9_7', 'Q9_8', 'Q9_7_TEXT', 'Q10',
+    'Q10_7_TEXT', 'Q11', 'Q11_7_TEXT', 'Q12_1', 'Q12_2', 'Q12_3', 'Q12_4',
+    'Q12_5', 'Q12_6', 'Q12_7', 'Q13_1', 'Q13_2', 'Q13_3', 'Q13_4',
+    'Q13_5', 'Q13_6', 'Q13_7', 'Q14', 'Q15', 'Q16_1', 'Q16_2', 'Q16_3',
+    'Q16_4', 'Q16_5', 'Q16_5_TEXT', 'Q18', 'Q20A', 'Q20B', 'Q20C', 'Q20D',
+    'Q22', 'Q23', 'Q24A_1', 'Q24A_2', 'Q24A_3', 'Q24A_4', 'Q24A_5',
+    'Q24A_6', 'Q24A_7', 'Q24A_8', 'Q24A_9', 'Q24A_10', 'Q24A_11',
+    'Q24A_12', 'Q24A_13', 'Q24A_14', 'Q24A_15', 'Q24A_16', 'Q24A_17',
+    'Q24A_18', 'Q25', 'Q25A', 'Q25B', 'Q25C', 'Q25D', 'Q25E', 'Q25F',
+    'Q25G', 'Q25H', 'Q25I', 'Q25J', 'Q25K', 'Q25L', 'Q25M', 'Q25N',
+    'Q25O', 'Q25P', 'Q25Q', 'Q25R_1', 'Q25R_2', 'Q25R_3', 'Q25R_4',
+    'Q25R_5', 'Q25R_6', 'Q25R_7', 'Q25R_8', 'Q25R_9', 'Q25R_10',
+    'Q25R_11', 'Q25R_12', 'Q25R_13', 'Q25R_14', 'Q25R_15', 'Q25R_16',
+    'Q25R_17', 'Q25R_18', 'Q26_0_GROUP_1', 'Q26_0_GROUP_2', 'Q26_0_GROUP_3',
+    'Q26_0_GROUP_4', 'Q26_0_GROUP_5', 'Q26_0_GROUP_18', 'Q26_0_GROUP_6',
+    'Q26_0_GROUP_7', 'Q26_0_GROUP_8', 'Q26_0_GROUP_9', 'Q26_0_GROUP_10',
+    'Q26_0_GROUP_11', 'Q26_0_GROUP_12', 'Q26_0_GROUP_13', 'Q26_0_GROUP_14',
+    'Q26_0_GROUP_15', 'Q26_0_GROUP_17', 'Q26_0_GROUP_16', 'Q26_1_GROUP_1',
+    'Q26_1_GROUP_2', 'Q26_1_GROUP_3', 'Q26_1_GROUP_4', 'Q26_1_GROUP_5',
+    'Q26_1_GROUP_18', 'Q26_1_GROUP_6', 'Q26_1_GROUP_7', 'Q26_1_GROUP_8',
+    'Q26_1_GROUP_9', 'Q26_1_GROUP_10', 'Q26_1_GROUP_11', 'Q26_1_GROUP_12',
+    'Q26_1_GROUP_13', 'Q26_1_GROUP_14', 'Q26_1_GROUP_15', 'Q26_1_GROUP_17',
+    'Q26_1_GROUP_16', 'Q26_0_1_RANK', 'Q26_0_2_RANK', 'Q26_0_3_RANK',
+    'Q26_0_4_RANK', 'Q26_0_5_RANK', 'Q26_0_18_RANK', 'Q26_0_6_RANK',
+    'Q26_0_7_RANK', 'Q26_0_8_RANK', 'Q26_0_9_RANK', 'Q26_0_10_RANK',
+    'Q26_0_11_RANK', 'Q26_0_12_RANK', 'Q26_0_13_RANK', 'Q26_0_14_RANK',
+    'Q26_0_15_RANK', 'Q26_0_17_RANK', 'Q26_0_16_RANK', 'Q26_1_1_RANK',
+    'Q26_1_2_RANK', 'Q26_1_3_RANK', 'Q26_1_4_RANK', 'Q26_1_5_RANK',
+    'Q26_1_18_RANK', 'Q26_1_6_RANK', 'Q26_1_7_RANK', 'Q26_1_8_RANK',
+    'Q26_1_9_RANK', 'Q26_1_10_RANK', 'Q26_1_11_RANK', 'Q26_1_12_RANK',
+    'Q26_1_13_RANK', 'Q26_1_14_RANK', 'Q26_1_15_RANK', 'Q26_1_17_RANK',
+    'Q26_1_16_RANK', 'Q26A_1', 'Q26A_2', 'Q26A_3', 'Q26A_4', 'Q26A_5',
+    'Q26A_6', 'Q26A_7', 'Q26A_8', 'Q26A_9', 'Q26A_10', 'Q26A_11',
+    'Q26A_12', 'Q26A_13', 'Q26A_14', 'Q26A_15', 'Q26A_16', 'Q26A_17',
+    'Q26A_18', 'SC0', 'SC1', 'SC2', 'SC3', 'SC4', 'SC5', 'SC6', 'SC7',
+    'SC8', 'SC9', 'SC10', 'SC11', 'SC12', 'SC13', 'SC14', 'SC15', 'SC16',
+    'SC17', 'Career_1_Score', 'Career_2_Score', 'Career_3_Score',
+    'Career_4_Score', 'Career_5_Score', 'Career_6_Score', 'Career_7_Score',
+    'Career_8_Score', 'Career_9_Score', 'Career_10_Score', 'Career_11_Score',
+    'Career_12_Score', 'Career_13_Score', 'Career_14_Score',
+    'Career_15_Score', 'Career_16_Score', 'Career_17_Score',
+    'Career_18_Score', 'AwarenessScore', 'ExplorationScore', 'CareerPrepScore',
+    'Q5R', 'Year', 'Semester', 'Q6R', 'Q7R', 'Q6R_Q7R', 'Aptitude_1',
+    'Aptitude_2', 'Aptitude_3', 'Aptitude_4', 'Aptitude_5', 'Aptitude_6',
+    'Aptitude_7', 'Aptitude_8', 'Aptitude_9', 'SC22', 'SC23', 'SC24',
+    'SC25', 'StartMonth',
+]
+
+# check for missing cols or unexpected cols in input and set rejection flag if too many are missing (25% or more)
+def validate_columns(file_columns):
+    expected_set = set(EXPECTED_COLUMNS)
+    file_set = set(file_columns)
+
+    missing = expected_set - file_set
+    unexpected = file_set - expected_set
+    missing_percent = (len(missing) / len(EXPECTED_COLUMNS)) * 100
+
+    return {
+        'missing': sorted(missing),
+        'unexpected': sorted(unexpected),
+        'missing_count': len(missing),
+        'missing_percent': missing_percent,
+        'rejected': missing_percent > 25,
+    }
