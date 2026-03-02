@@ -15,9 +15,21 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
+from django.contrib.auth import views as auth_views
+from core import views as core_views
+from datasets import views as dataset_views
+
+# Customize admin header bar
+admin.site.site_header = "Career Jam Admin Dashboard"
+admin.site.index_title = "Manage Users, Groups, and Datasets"
 
 urlpatterns = [
+    path('admin/upload-dataset/', dataset_views.upload_dataset, name='upload_dataset'),
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),
+    path('login/', core_views.CustomLoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('dashboard/', core_views.dashboard, name='dashboard'),
+    path('unauthorized/', core_views.unauthorized, name='unauthorized'),
+    path('school-groups/<int:school_id>/', core_views.school_groups, name='school_groups'),
 ]
