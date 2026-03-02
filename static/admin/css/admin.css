@@ -1,0 +1,37 @@
+/* Apply to all main content */
+#content-main, a {
+    font-size: 15px;
+}
+
+/* Remove uppercase from section headers */
+.module caption a.section {
+    text-transform: none;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Remove uppercase from help text in captions */
+.module caption .help {
+    text-transform: none;
+    font-weight: normal;
+    font-size: 15px;
+    margin: 4px 0 0 0;
+    display: block;
+}
+
+/* Standardize module width */
+#content-main .module {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
+}
+
+/* Standardize table width within modules */
+#content-main .module table {
+    width: 100%;
+}
+
+/* Align Add New links to the same starting position */
+#content-main .module table th[scope="row"] {
+    width: 300px;
+}
