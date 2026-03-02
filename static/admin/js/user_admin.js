@@ -1,4 +1,4 @@
-// Only to be run on the user admin page to control visibility of create/edit fields + display related groups for school admins
+// Only to be run on the user admin page to control visibility of create/edit fields
 document.addEventListener('DOMContentLoaded', function() {
     const roleField = document.getElementById('id_role');
     const schoolField = document.getElementById('id_school');
@@ -21,12 +21,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     toggleSchoolField();
-    fetchSchoolGroups(schoolField.value);
-
     roleField.addEventListener('change', toggleSchoolField);
-    schoolField.addEventListener('change', function() {
-        fetchSchoolGroups(this.value);
-    });
-
 }); //end of DOMContentLoaded
-
