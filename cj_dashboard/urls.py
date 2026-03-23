@@ -26,10 +26,18 @@ admin.site.index_title = "Manage Users, Groups, and Datasets"
 
 urlpatterns = [
     path('admin/upload-dataset/', dataset_views.upload_dataset, name='upload_dataset'),
+    path('admin/confirm-import/', dataset_views.confirm_import, name='confirm_import'),
+    path('manage/datasets/<int:dataset_id>/', dataset_views.dataset_detail, name='dataset_detail'),
+    
+    path('admin/', core_views.admin_index, name='admin_index'),
     path('admin/', admin.site.urls),
+    
     path('login/', core_views.CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    
     path('dashboard/', core_views.dashboard, name='dashboard'),
+    
     path('unauthorized/', core_views.unauthorized, name='unauthorized'),
+    
     path('school-groups/<int:school_id>/', core_views.school_groups, name='school_groups'),
 ]

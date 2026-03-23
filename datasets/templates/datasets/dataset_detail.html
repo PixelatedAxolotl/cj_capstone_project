@@ -1,0 +1,65 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/admin.css' %}">
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+    <div class="breadcrumbs" style="margin-bottom: 20px;">
+        <a href="{% url 'admin:index' %}">Home</a>
+        &rsaquo; <a href="{% url 'admin:datasets_dataset_changelist' %}">Datasets</a>
+        &rsaquo; {{ dataset.name }}
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" style="margin-bottom: 30px;">
+        {% csrf_token %}
+        <div class="form-row">
+            <label for="name">Dataset Name:</label>
+            <input type="text" id="name" name="name" value="{{ dataset.name }}" style="width: 400px;">
+        </div>
+        <div class="form-row" style="margin-top: 10px;">
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="3" style="width: 400px;">{{ dataset.description }}</textarea>
+        </div>
+        <div style="margin-top: 10px;">
+            <input type="submit" value="Save" class="button default">
+        </div>
+    </form>
+
+    <p><strong>{{ row_count }}</strong> rows</p>
+
+    <div style="overflow: auto; max-height: 400px; margin: 20px 0; border: 1px solid #ccc;">
+        <table style="border-collapse: collapse; white-space: nowrap;">
+            <thead>
+                <tr style="position: sticky; top: 0; z-index: 2;">
+                    <th style="border: 1px solid #ccc; padding: 6px 10px; text-align: left; position: sticky; left: 0; z-index: 3;">Row</th>
+                    {% for header in headers %}
+                    <th style="border: 1px solid #ccc; padding: 6px 10px; text-align: left;">{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data_rows %}
+                <tr>
+                    <td style="border: 1px solid #ccc; padding: 6px 10px; position: sticky; left: 0; background: #265790; z-index: 1; font-weight: bold;">{{ forloop.counter }}</td>
+                    {% for cell in row %}
+                    <td style="border: 1px solid #ccc; padding: 6px 10px;">{{ cell }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock %}

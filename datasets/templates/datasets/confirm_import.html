@@ -1,0 +1,28 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+<div id="content-main">
+    <h1>Confirm Dataset Import</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <p>You are about to import <strong>{{ file_name }}</strong>. Please give this dataset a name before confirming.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-row">
+            <label for="dataset_name">Dataset Name:</label>
+            <input type="text" id="dataset_name" name="dataset_name" value="{{ dataset_name }}" style="width: 400px;">
+        </div>
+        <div style="margin-top: 20px;">
+            <input type="submit" value="Confirm Import" class="button default">
+            <a href="{% url 'upload_dataset' %}" style="margin-left: 10px;">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

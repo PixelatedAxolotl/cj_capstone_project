@@ -92,10 +92,9 @@
     {% endif %}
 
     {% if not validation.rejected %}
-    <div class="submit-row">
-        <input type="submit" value="Confirm Import" disabled>
-        <p class="help">Import functionality coming soon :)</p>
-    </div>
+        <div class="submit-row">
+            <a href="{% url 'confirm_import' %}" class="button default">Confirm Import</a>
+        </div>
     {% endif %}
 
     <a href="{% url 'upload_dataset' %}">Upload a different file</a>
