@@ -22,6 +22,7 @@ class School(models.Model):
     date_added = models.DateField(auto_now_add=True)
     notes = models.TextField(blank=True)
     groups = models.ManyToManyField(User_Group, blank=True, related_name='schools')
+    survey_index = models.IntegerField(null=True, blank=True, unique=True)
 
     def __str__(self):
         return self.name
