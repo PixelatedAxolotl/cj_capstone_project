@@ -1,37 +1,113 @@
 /* Apply to all main content */
-#content-main, a {
-    font-size: 15px;
+:root {
+    --primary-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    --default-font-size: 16px;
 }
 
-/* Remove uppercase from section headers */
-.module caption a.section {
-    text-transform: none;
-    font-weight: bold;
+body, th, td, p, li {
+    font-family: var(--primary-font) !important;
+    font-size: var(--default-font-size) !important;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 16px;
+    justify-content: center;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+/* But make it tabs tho */
+.tab-nav {
+    display: inline-block;
+    width: 100%;
+}
+
+.tab-button {
+    padding: 8px 16px;
+    cursor: pointer;
+    background: #417690;
     font-size: 16px;
 }
 
-/* Remove uppercase from help text in captions */
-.module caption .help {
+#action-btn {
+    float: right;
+    width:200px;
+}
+
+.tab-button.active {
+    background: #417690;
+    border-bottom: 1px solid #fff;
+    margin-bottom: -1px;
+    z-index: 1;
+    font-weight: bold;
+}
+
+.tab-content {
+    display: none;
+    border: 1px solid #ccc;
+    overflow-x: auto;
+}
+
+.tab-content.active {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 16px;
+}
+
+.tab-table caption, p.help {
+    text-align: left;
+    font-size: var(--default-font-size);
+    padding: 4px 16px;
+    background: #417690;
     text-transform: none;
     font-weight: normal;
-    font-size: 15px;
-    margin: 4px 0 0 0;
-    display: block;
+    margin: 0;
 }
 
-/* Standardize module width */
-#content-main .module {
-    width: 100%;
-    max-width: 600px;
-    margin-bottom: 20px;
+.tab-table th {
+    background: #417690;
 }
 
-/* Standardize table width within modules */
-#content-main .module table {
-    width: 100%;
+.tab-table td, .tab-table th {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    border-left: 1px solid #244150;
+    white-space: nowrap;
+
 }
 
-/* Align Add New links to the same starting position */
-#content-main .module table th[scope="row"] {
-    width: 300px;
+.tab-table tr:focus, .tab-table tr:hover {
+    background: #417690;
+    outline: 2px solid #244150;
+    cursor: pointer;
+}
+
+/* style action column differently - relies on action col always being rightmost col*/
+.tab-table th:last-child, .tab-table td:last-child {
+    background: #244150;
+    width: 20px;
+   
+}
+
+/* style action buttons */
+.tab-table td:last-child {
+    text-align: center;
+    padding: 0px;
+    gap: 4px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
 }

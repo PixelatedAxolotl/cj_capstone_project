@@ -10,52 +10,203 @@
 
 <div id="content-main">
 
-    <div class="app-accounts module">
-        <table>
-            <caption>
-                <a href="#" class="section">Manage Users</a>
-                <p class="help">Create and manage user accounts and their access to datasets.</p>
-            </caption>
-            <tr class="model-user">
-                <th scope="row"><a href="{% url 'admin:accounts_user_changelist' %}">View Users</a></th>
-                <td><a href="{% url 'admin:accounts_user_add' %}" class="addlink">Add New</a></td>
-            </tr>
-        </table>
-    </div>
+    <h1>Welcome, {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}!{% else %}{{ user.username }}!{% endif %}</h1>
+    <p>As a <b><em>Career Jam Admin</em></b> you have the ability to:</p>
+    <ul>
+        <li><b>Manage Users:</b> Create and manage user accounts and their access to different datasets.</li>
+        <li><b>Manage Schools &amp; Groups:</b> Manage schools and the groups they belong to such as regions and demographic categories.</li>
+        <li><b>Manage Datasets:</b> Upload and manage student response datasets. <em>(Note: Files must be Excel Spreadsheets (.xlsx))</em></li>
+    </ul>
 
-    <div class="app-accounts module">
-        <table>
-            <caption>
-                <a href="#" class="section">Manage Schools &amp; Groups</a>
-                <p class="help">Manage schools and the groups they belong to such as regions and demographic categories.
-                </p>
-            </caption>
-            <tr class="model-school">
-                <th scope="row"><a href="{% url 'admin:accounts_school_changelist' %}">View Schools</a></th>
-                <td><a href="{% url 'admin:accounts_school_add' %}" class="addlink">Add New</a></td>
-            </tr>
-            <tr class="model-user_group">
-                <th scope="row"><a href="{% url 'admin:accounts_user_group_changelist' %}">View Groups</a></th>
-                <td><a href="{% url 'admin:accounts_user_group_add' %}" class="addlink">Add New</a></td>
-            </tr>
-        </table>
-    </div>
+    <nav class="tab-nav">
+        <button class="tab-button active" onclick="switchTab('users', this)">Users</button>
+        <button class="tab-button" onclick="switchTab('schools', this)">Schools</button>
+        <button class="tab-button" onclick="switchTab('groups', this)">Groups</button>
+        <button class="tab-button" onclick="switchTab('datasets', this)">Datasets</button>
+        <button class="tab-button action-btn" id="action-btn" onclick="window.location='{% url 'admin:accounts_user_add' %}'">Create New User</button>
+    </nav>
 
-    <div class="app-datasets module">
-        <table>
-            <caption>
-                <a href="#" class="section">Manage Datasets</a>
-                <p class="help">Upload and manage student response datasets.</p>
-                <p class="help"><b><em>Note: Files must be Excel Spreadsheets (.xlsx)</em></b> </p>
-            </caption>
-            <tr class="model-dataset">
-                <th scope="row"><a href="{% url 'admin:datasets_dataset_changelist' %}">View Datasets</a></th>
-                <td><a href="{% url 'upload_dataset' %}" class="addlink">Add New</a></td>
+    <table id="tab-users" class="tab-table tab-content active">
+        <caption>
+            <p class="help">Create and manage user accounts and their access to datasets.</p>
+        </caption>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Active</th>
+                <th>Action</th>
             </tr>
-        </table>
-                
-    </div>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr aria-label="{{user.username}}" onclick="window.location='{% url 'admin:accounts_user_change' user.pk %}'" tabindex="0">
+                <td>{{ user.username }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.get_role_display }}</td>
+                <td>{{ user.is_active|yesno:"Yes,No" }}</td>
+                <td>
+                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_user_change' user.pk %}'">
+                        <img src="/static/admin/images/editIcon.svg" alt="Edit">
+                    </button>
+                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_user_delete' user.pk %}'">
+                        <img src="/static/admin/images/deleteIcon.svg" alt="Delete">
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7">No users found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-</div>
+    <table id="tab-schools" class="tab-table tab-content">
+        <caption>
+            <p class="help">Manage the schools associated with users</p>
+        </caption>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date Added</th>
+                <th>Groups</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for school in schools %}
+            <tr onclick="window.location='{% url 'admin:accounts_school_change' school.pk %}'">
+                <td>{{ school.name }}</td>
+                <td>{{ school.date_added }}</td>
+                <td>
+                    <!-- link each group to its change form -->
+                    {% for group in school.groups.all %}
+                        <a href="{% url 'admin:accounts_user_group_change' group.pk %}">{{ group.name }}</a>
+                        {% if not forloop.last %}, {% endif %}
+                    {% endfor %}                   
+               </td>
+                <td>
+                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_school_change' school.pk %}'">
+                        <img src="/static/admin/images/editIcon.svg" alt="Edit">
+                    </button>
+                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_school_delete' school.pk %}'">
+                        <img src="/static/admin/images/deleteIcon.svg" alt="Delete">
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No schools found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table id="tab-groups" class="tab-table tab-content">
+        <caption>
+            <p class="help">Manage the different groups that schcools can belong to. Examples of groups include regions (e.g. "Northeast") and demographic categories (e.g. "High Free/Reduced Lunch").</p>
+        </caption>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Date Added</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for group in user_groups %}
+            <tr onclick="window.location='{% url 'admin:accounts_user_group_change' group.pk %}'">
+                <td>{{ group.name }}</td>
+                <td>{{ group.get_group_type_display }}</td>
+                <td>{{ group.date_added }}</td>
+                <td>
+                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_user_group_change' group.pk %}'">
+                        <img src="/static/admin/images/editIcon.svg" alt="Edit">
+                    </button>
+                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_user_group_delete' group.pk %}'">
+                        <img src="/static/admin/images/deleteIcon.svg" alt="Delete">    
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">No groups found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <table id="tab-datasets" class="tab-table tab-content">
+        <caption>
+            <p class="help">Upload and manage student response datasets.</p>
+            <p class="help"><b><em>Note: Files must be Excel Spreadsheets (.xlsx)</em></b> </p>
+        </caption>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Date Added</th>
+                <th>Rows</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dataset in datasets %}
+            <tr onclick="window.location='{% url 'admin:datasets_dataset_change' dataset.pk %}'">
+                <td>{{ dataset.name }}</td>
+                <td>{{ dataset.description }}</td>
+                <td>{{ dataset.date_added }}</td>
+                <td>{{ dataset.row_count }}</td>
+                <td>
+                    <button class="action-btn" onclick="window.location='{% url 'admin:datasets_dataset_change' dataset.pk %}'">
+                        <img src="/static/admin/images/editIcon.svg" alt="Edit">
+                    </button>
+                    <button class="action-btn" onclick="window.location='{% url 'admin:datasets_dataset_delete' dataset.pk %}'">
+                        <img src="/static/admin/images/deleteIcon.svg" alt="Delete">
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No datasets found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        const tabActions = {
+        users: { label: 'Create New User', url: '{% url "admin:accounts_user_add" %}' },
+        schools: { label: 'Create New School', url: '{% url "admin:accounts_school_add" %}' },
+        groups: { label: 'Create New Group', url: '{% url "admin:accounts_user_group_add" %}' },
+        datasets: { label: 'Upload New Dataset', url: '{% url "upload_dataset" %}' },
+        };
+
+        function switchTab(tabName, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            btn.classList.add('active');
+
+            // update "Add New" button text and link based on active tab
+            const actionBtn = document.getElementById('action-btn');
+                console.log('Switching to tab:', tabName);
+                console.log(actionBtn);
+            actionBtn.innerHTML = tabActions[tabName].label;
+            actionBtn.onclick = function() {
+                window.location = tabActions[tabName].url;
+            }
+        }
+    </script>
+
+</div>  <!-- end content-main -->
+
+
+
+
+
+
+
+
 
 {% endblock %}
