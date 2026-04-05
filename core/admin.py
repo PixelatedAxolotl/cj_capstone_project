@@ -49,12 +49,12 @@ class CustomUserAdmin(UserAdmin):
         form = super().get_form(request, obj, **kwargs)
         if 'username' in form.base_fields:
             form.base_fields['username'].help_text = 'Username should be unique and related to the institution the user is affiliated with (e.g. alb_high_admin1 for a school admin at Albany High School)'
-        
+
         # if 'password' in form.base_fields:
         #     form.base_fields['password'].widget = CustomReadOnlyPasswordHashWidget()
 
         return form
-    
+
 # class SchoolAdmin(admin.ModelAdmin):
 
 
@@ -68,21 +68,45 @@ class DatasetAdmin(admin.ModelAdmin):
     def change_view(self, request, object_id, form_url='', extra_context=None):
         return redirect('dataset_detail', dataset_id=object_id)
 
-    def delete(self, request, obj):
-        with transaction.atomic():
-            RespondentAnswer.objects.filter(response__dataset_id=obj.pk)._raw_delete(using='default')
-            Response.objects.filter(dataset_id=obj.pk)._raw_delete(using='default')
-            obj.delete()
+
+    def get_deleted_objects(self, objs, request):
+        """
+        Override to avoid the ORM Collector traversing all related objects
+        for the confirmation page, which times out on large datasets.
+        """
+        dataset_ids = [obj.pk for obj in objs]
+
+        # Check permissions for each model being deleted
+        perms_needed = set()
+        if not request.user.has_perm('datasets.delete_response'):
+            perms_needed.add('Response')
+        if not request.user.has_perm('datasets.delete_respondentanswer'):
+            perms_needed.add('RespondentAnswer')
+
+        # get counts to display to the user for delete confirmation
+        summary = []
+        for obj in objs:
+            response_count = Response.objects.filter(dataset=obj).count()
+            summary.append({'name': obj.name, 'response_count': response_count})
+
+        return summary, {}, perms_needed, []
+
 
     # handles bulk-delete of datasets from the admin list view (checkbox + dropdown action)
-    # overrides default to speed up deletion by deleting dependent records (respondentAnswer has response FK and response has dataset FK)
-    #     This order means Django collector has nothing to load into memory and won't make deletions slow af 
+    # overrides default delete behavior to avoid the ORM collector - subquery to reduce db hits and keep evaluation on db side instead of Python side
     def delete_queryset(self, request, queryset):
+        """ Override default function to efficiently delete all Responses and RespondentAnswers related
+            to the Datasets in the selected querysets without loading them into memory first."""
         with transaction.atomic():
             dataset_ids = list(queryset.values_list('pk', flat=True))
-            RespondentAnswer.objects.filter(response__dataset_id__in=dataset_ids)._raw_delete(using='default')
+
+            # response_qs is not evaluated — it becomes a subquery in the DELETE
+            response_qs = Response.objects.filter(dataset_id__in=dataset_ids)
+
+            # Single SQL each: DELETE ... WHERE response_id IN (SELECT id FROM response WHERE dataset_id IN (...))
+            RespondentAnswer.objects.filter(response__in=response_qs)._raw_delete(using='default')
             Response.objects.filter(dataset_id__in=dataset_ids)._raw_delete(using='default')
-            queryset.delete()
+            queryset._raw_delete(using='default')
 
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(School)
