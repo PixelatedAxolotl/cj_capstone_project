@@ -7,10 +7,10 @@ class Dataset(models.Model):
     description = models.TextField(blank=True)
     date_added = models.DateField(auto_now_add=True)
     row_count = models.IntegerField(default=0)
-    
+
     def __str__(self):
         return self.name
-    
+
 # model for survey questions
 class Question(models.Model):
     QUESTION_TYPE_CHOICES = [
@@ -27,8 +27,8 @@ class Question(models.Model):
 
     def __str__(self):
         return self.label
-    
-    
+
+
 # model for survey question options
 class Option(models.Model):
     numeric_value = models.FloatField(null=True, blank=True)
@@ -44,7 +44,7 @@ class Option(models.Model):
 
 
 # maps dataset column headers to questions and options in the db
-# option is nullable for single choice questions since numeric value decides how it maps to the options 
+# option is nullable for single choice questions since numeric value decides how it maps to the options
 class QuestionColumn(models.Model):
     column_header = models.CharField(max_length=100, unique=True)
     question = models.ForeignKey(
@@ -63,7 +63,7 @@ class QuestionColumn(models.Model):
 
     def __str__(self):
         return self.column_header
-    
+
 
 
 # model for survey responses - each response = 1 row in the dataset
@@ -148,14 +148,15 @@ class Response(models.Model):
     # Overall scores
     awareness_score = models.FloatField(null=True, blank=True)
     exploration_score = models.FloatField(null=True, blank=True)
-    career_prep_score = models.FloatField(null=True, blank=True)
-    career_awareness = models.FloatField(null=True, blank=True)
-    career_exploration = models.FloatField(null=True, blank=True)
+
+    particip_career_prep_awareness   = models.CharField(max_length=3, null=True, blank=True)
+    particip_career_prep_exploration = models.CharField(max_length=3, null=True, blank=True)
+    particip_career_prep_either      = models.CharField(max_length=3, null=True, blank=True)
 
 
     def __str__(self):
         return self.response_id
-    
+
 
 
 class RespondentAnswer(models.Model):
