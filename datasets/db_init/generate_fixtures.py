@@ -18,8 +18,12 @@ import sys
 import os
 
 # Add Django project root to path so we can import from the project
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, PROJECT_ROOT)
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cj_dashboard.settings')
+
+
 
 import django
 django.setup()
@@ -40,8 +44,8 @@ SINGLE_CHOICE_OPTIONS = {
 
 # what grade
     'Q2': {
-        1: '7th grade', 2: '8th grade', 3: '9th grade', 
-        4: 'N/A',   
+        1: '7th grade', 2: '8th grade', 3: '9th grade',
+        4: 'N/A',
         5: '10th grade', 6: '11th grade', 7: '12th grade',
     },
 
@@ -52,28 +56,28 @@ SINGLE_CHOICE_OPTIONS = {
 
     # most time talking about future plans
     'Q10': {
-        1: 'Your parent(s) or guardian(s)', 2: 'Other adult family member(s)', 3: 'A schoool guidance counselor', 
-        4: 'A teachor or coach', 5: 'Your friends', 6: 'Your brother(s) or sister(s)', 
+        1: 'Your parent(s) or guardian(s)', 2: 'Other adult family member(s)', 3: 'A schoool guidance counselor',
+        4: 'A teachor or coach', 5: 'Your friends', 6: 'Your brother(s) or sister(s)',
         7: 'Someone else (specify)', 8: 'No one',
     },
 
     # "Of those, who would you say you have spent the most time talking about your future plans?"
     # SAME AS Q10 options
     'Q11': {
-        1: 'Your parent(s) or guardian(s)', 2: 'Other adult family member(s)', 3: 'A schoool guidance counselor', 
-        4: 'A teachor or coach', 5: 'Your friends', 6: 'Your brother(s) or sister(s)', 
+        1: 'Your parent(s) or guardian(s)', 2: 'Other adult family member(s)', 3: 'A schoool guidance counselor',
+        4: 'A teachor or coach', 5: 'Your friends', 6: 'Your brother(s) or sister(s)',
         7: 'Someone else (specify)', 8: 'No one',
     },
 
     # "...Living in the area or moving away after highschool?"
     'Q14': {
-        1: 'Living in the area', 2: 'Moving away', 3: 'Not sure yet', 
+        1: 'Living in the area', 2: 'Moving away', 3: 'Not sure yet',
         4: 'Moving away for school, then returning',
     },
 
     # imagine life between ages 22 and 26, what amount of money do you see yourself earning per year?
     'Q15': {
-        1: 'Less than $30,000/year', 2: '$30,000-$50,000/year', 3: '$50,000-$70,000/year', 
+        1: 'Less than $30,000/year', 2: '$30,000-$50,000/year', 3: '$50,000-$70,000/year',
         4: 'Over $70,000/year',
     },
 
@@ -89,19 +93,19 @@ SINGLE_CHOICE_OPTIONS = {
 
     # What type of learner are you?
     'Q23': {
-        1: '''I learn best by seeing pictures or images, including graphs and charts. 
+        1: '''I learn best by seeing pictures or images, including graphs and charts.
         I like to seewhat I am learning. I understand and remember things best when I have seen them.''',
-       
-        2: '''I learn best by hearing and listening. 
-        I understand and remember things best when I have heard them. 
-        I have an easier time understanding spoken instructions than written ones. 
+
+        2: '''I learn best by hearing and listening.
+        I understand and remember things best when I have heard them.
+        I have an easier time understanding spoken instructions than written ones.
         I often read out loud because I have to hear it or speak it in order to know it.''',
-        
-        3: '''I learn best by reading and writing. I take notes and re-read them later. 
+
+        3: '''I learn best by reading and writing. I take notes and re-read them later.
         I have an easier time understanding written instructions than spoken ones.''',
-        
-        4: '''I learn best by doing. 
-        I understand and remember things best when I am active and participate "hands-on". 
+
+        4: '''I learn best by doing.
+        I understand and remember things best when I am active and participate "hands-on".
         I prefer to touch, move, build, or draw what I learn, and sometimes have difficulty sitting still.''',
     },
 }
