@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% load i18n static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/global.css' %}">
+{% endblock %}
+
+{% block nav-breadcrumbs %}
+<div class="navbar">
+    <a href="{% url 'dashboard' %}">Dashboard</a>
+    <a href="{% url 'crosstab_tables' %}">Crosstabs</a>
+    {% if request.user.is_staff %}
+        <div>
+            <a href="{% url 'admin_index' %}">Admin Pages Home</a>
+        </div>
+    {% endif %}
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+</div>
+{% endblock %}
