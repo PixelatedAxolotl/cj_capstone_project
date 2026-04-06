@@ -1,0 +1,206 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+<h2>Crosstab Tool</h2>
+
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 16px;">
+
+    <div>
+        <label for="group-filter">Group</label><br>
+        <select id="group-filter">
+            <option value="all">All Groups</option>
+            {% for g in groups %}
+                <option value="group_{{ g.school__groups__id }}">
+                    {{ g.school__groups__name }}
+                </option>
+            {% endfor %}
+            <option value="school_{{ request.user.school.id }}">My School</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="year-filter">Year</label><br>
+        <select id="year-filter">
+            <option value="all">All Years</option>
+            {% for y in years %}
+                <option value="{{ y }}">{{ y }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label for="x-variable">X Variable (columns)</label><br>
+        <select id="x-variable">
+            {% for q in questions %}
+                <option value="{{ q.question_id }}">{{ q.column_header }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label for="mode">Display</label><br>
+        <select id="mode">
+            <option value="counts">Count</option>
+            <option value="percentages">Percentage</option>
+        </select>
+    </div>
+
+</div>
+
+<!-- TODO: add opt for user to select percentage type (row, col, total) -->
+<!-- Y Variables -->
+<div style="margin-bottom: 8px;">
+    <label>Y Variables (rows)</label>
+    <div id="y-container" style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;"></div>
+    <button onclick="addY()" style="margin-top: 8px;">+ Add Variable</button>
+</div>
+
+<button onclick="runCrosstab()" style="margin: 12px 0; font-weight: bold;">Run Crosstab</button>
+
+<hr>
+
+<!-- Combined table (all Y variables in one scrolling table) -->
+<div style="overflow-x: auto; width: 100%; margin-bottom: 24px;">
+    <div id="combined-table"></div>
+</div>
+
+<!-- Individual charts / tables broken out per Y variable -->
+ <!-- TODO: only show individual when multiple Y variables are selected? -->
+<h2>Individual Crosstabs</h2>
+<p>Here you can find each crosstab displayed separately in its own table.</p>
+<div id="individual-charts"></div>
+
+<script src="https://cdn.plot.ly/plotly-3.5.0.min.js" charset="utf-8"></script>
+<script>
+
+// ---------------------------------------------------------------------------
+// Y variable management
+// ---------------------------------------------------------------------------
+
+function addY() {
+    const container = document.getElementById("y-container");
+
+    const wrapper = document.createElement("div");
+    wrapper.style.display = "flex";
+    wrapper.style.gap = "8px";
+    wrapper.style.alignItems = "center";
+
+    const select = document.createElement("select");
+    select.classList.add("y-variable");
+    select.innerHTML = `
+        <option value="" selected disabled>Select a variable…</option>
+        {% for q in questions %}
+            <option value="{{ q.question_id }}">{{ q.column_header }}</option>
+        {% endfor %}
+    `;
+    select.addEventListener("change", updateSelectables);
+
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "✕";
+    removeBtn.onclick = () => { wrapper.remove(); updateSelectables(); };
+
+    wrapper.appendChild(select);
+    wrapper.appendChild(removeBtn);
+    container.appendChild(wrapper);
+
+    updateSelectables();
+}
+
+// Start with one Y selector by default
+addY();
+
+// ---------------------------------------------------------------------------
+// Prevent selecting the same question for both X and Y, or two Ys
+// ---------------------------------------------------------------------------
+
+function updateSelectables() {
+    const xSelect  = document.getElementById("x-variable");
+    const ySelects = Array.from(document.getElementsByClassName("y-variable"));
+    const xValue   = xSelect.value;
+    const yValues  = new Set(ySelects.map(s => s.value).filter(v => v !== ""));
+    const usedInY  = new Set(yValues);
+
+    // X dropdown: hide anything already chosen as a Y
+    Array.from(xSelect.options).forEach(opt => {
+        opt.hidden   = usedInY.has(opt.value) && opt.value !== xValue;
+        opt.disabled = opt.hidden;
+    });
+
+    // Each Y dropdown: hide X value; disable values chosen by other Ys
+    ySelects.forEach(sel => {
+        const selfValue = sel.value;
+        Array.from(sel.options).forEach(opt => {
+            if (opt.value === "") return;
+            const usedElsewhere = (opt.value === xValue) ||
+                                  (usedInY.has(opt.value) && opt.value !== selfValue);
+            opt.hidden   = usedElsewhere;
+            opt.disabled = usedElsewhere;
+        });
+    });
+}
+
+document.getElementById("x-variable").addEventListener("change", updateSelectables);
+document.getElementById("mode").addEventListener("change", runCrosstab);
+document.getElementById("group-filter").addEventListener("change", runCrosstab);
+document.getElementById("year-filter").addEventListener("change", runCrosstab);
+
+// ---------------------------------------------------------------------------
+// Fetch and render
+// ---------------------------------------------------------------------------
+
+async function runCrosstab() {
+    const x     = document.getElementById("x-variable").value;
+    const mode  = document.getElementById("mode").value;
+    const group = document.getElementById("group-filter").value;
+    const year  = document.getElementById("year-filter").value;
+
+    const yValues = Array.from(document.getElementsByClassName("y-variable"))
+        .map(el => el.value)
+        .filter(v => v !== "");
+
+    if (!x || yValues.length === 0) return;
+
+    // Build query string — GET keeps the URL shareable and browser history intact.
+    // Security is enforced server-side (@login_required + school-scoped queryset).
+    const params = new URLSearchParams({ x, mode, group, year });
+    yValues.forEach(v => params.append("y", v));
+
+    const response = await fetch(`/crosstab/data/?${params}`);
+    if (!response.ok) {
+        console.error("Crosstab fetch failed", response.status);
+        return;
+    }
+
+    const data = await response.json();
+
+    // Combined horizontally-scrolling table
+    Plotly.react("combined-table", data.combined.data, data.combined.layout, { responsive: false });
+
+    // Individual charts (one bar + one table per Y variable)
+    const container = document.getElementById("individual-charts");
+    container.innerHTML = "";
+
+    data.individual.forEach((item, i) => {
+        const section = document.createElement("div");
+        section.style.marginBottom = "40px";
+
+        const barId   = `bar-${i}`;
+        const tableId = `table-${i}`;
+
+        section.innerHTML = `
+            <div id="${barId}" style="margin-bottom: 16px;"></div>
+            <div style="overflow-x: auto;">
+                <div id="${tableId}"></div>
+            </div>
+        `;
+        container.appendChild(section);
+
+        // Plotly.newPlot(barId,   item.bar.data,   item.bar.layout,   { responsive: true });
+        Plotly.newPlot(tableId, item.table.data, item.table.layout, { responsive: false });
+    });
+}
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,164 @@
+<!-- dashboard.html -->
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+<!-- TODO: make filter options sticky? -->
+<h2>Dashboard</h2>
+
+<div id="dashboard-message" style="display:none;"></div>
+<label for="group-filter">Group:</label>
+<select id="group-filter">
+    <!-- list available groups and schools based on user permissions -->
+    <option value="all">All</option>
+    {% if not is_global %}
+        <option value="my">My School Only</option>
+    {% endif %}
+    {% for g in groups %}
+        <option value="group_{{ g.school__groups__id }}">
+            {{ g.school__groups__name }}
+        </option>
+    {% endfor %}
+    {% if is_global %}
+        {% for s in schools %}
+            <option value="school_{{ s.school__id }}">
+                {{ s.school__name }}
+            </option>
+        {% endfor %}
+    {% endif %}
+</select>
+
+<label for="year-filter">Year:</label>
+<select id="year-filter">
+    <option value="all">All</option>
+    {% for year in years %}
+        <option value="{{ year }}">{{ year }}</option>
+    {% endfor %}
+</select>
+
+<div>
+    <label for="mode">Display</label><br>
+    <select id="mode">
+        <option value="counts">Count</option>
+        <option value="percentages">Percentage</option>
+    </select>
+</div>
+
+<div id="plans-chart"></div>
+
+<div style="display: flex; gap: 32px; align-items: flex-start;">
+    <div id="participation-chart" style="flex: 1;"></div>
+    <div id="participation-summary" style="flex: 1; padding-top: 40px;"></div>
+</div>
+
+<div id="top-selections"></div>
+
+<script src="https://cdn.plot.ly/plotly-3.5.0.min.js" charset="utf-8"></script>
+
+
+
+<script>
+async function loadDashboard() {
+    const group = document.getElementById("group-filter").value;
+    const year = document.getElementById("year-filter").value;
+    const mode = document.getElementById("mode").value;
+    const url = `/summary_dashboard/data/?group=${group}&year=${year}&mode=${mode}`;
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const messageEl = document.getElementById("dashboard-message");
+    const chartEl = document.getElementById("plans-chart");
+
+    if (data.empty) {
+        messageEl.textContent = data.message;
+        messageEl.style.display = "block";
+        chartEl.style.display = "none";
+        return;
+    }
+
+    messageEl.style.display = "none";
+    chartEl.style.display = "block";
+
+    Plotly.newPlot(
+        "plans-chart",
+        data.plans_vs_grade.data,
+        data.plans_vs_grade.layout,
+        { responsive: true }
+    );
+
+Plotly.newPlot(
+    'participation-chart',
+    data.participation.figure.data,
+    data.participation.figure.layout,
+    { responsive: true }
+);
+
+    // Breakdown list
+    const p = data.participation;
+    const val = (item) => mode === 'counts' ? item.count : `${item.pct}%`;
+    document.getElementById('participation-summary').innerHTML = `
+        <strong>${p.total_pct}% of students participated in career preparation activities</strong>
+
+        <p><strong>Career Awareness Activities</strong></p>
+        <ul>
+            ${p.breakdown.awareness.map(a => `<li>${a.label}: ${val(a)}</li>`).join('')}        </ul>
+
+        <p><strong>Career Exploration Activities</strong></p>
+        <ul>
+            ${p.breakdown.exploration.map(a => `<li>${a.label}: ${val(a)}</li>`).join('')}
+            </ul>
+            `;
+
+    renderTopSelections(data.top_interests, data.top_skills, data.top_traits, mode);
+}
+
+
+function renderTopSelections(interests, skills, traits, mode) {
+    const val = (item) => mode === 'counts' ? item.count : `${item.pct}%`;
+
+    const render = (items, imageDir) =>
+        items.map(item => `
+            <div style="text-align: center; flex: 1;">
+                <img src="/static/admin/images/${imageDir}/${item.slug}.png"
+                     alt="${item.label}" style="height: 60px; margin-bottom: 8px;"><br>
+                <span>${item.label}</span><br>
+                <strong>${val(item)}</strong>
+            </div>
+        `).join('');
+
+    document.getElementById('top-selections').innerHTML = `
+        <div style="display: flex; gap: 32px; margin-top: 32px;">
+            <div style="flex: 1; padding: 24px; border-radius: 8px;">
+                <h2>Top Interests</h2>
+                <div style="display: flex; gap: 16px; margin-top: 16px;">
+                    ${render(interests, 'interests')}
+                </div>
+            </div>
+            <div style="flex: 1; padding: 24px; border-radius: 8px;">
+                <h2>Top Skills</h2>
+                <div style="display: flex; gap: 16px; margin-top: 16px;">
+                    ${render(skills, 'skills')}
+                </div>
+            </div>
+            <div style="flex: 1; padding: 24px; border-radius: 8px;">
+                <h2>Top Traits</h2>
+                <div style="display: flex; gap: 16px; margin-top: 16px;">
+                    ${render(traits, 'traits')}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+
+
+
+
+document.getElementById("group-filter").addEventListener("change", loadDashboard);
+document.getElementById("year-filter").addEventListener("change", loadDashboard);
+document.getElementById("mode").addEventListener("change", loadDashboard);
+
+
+loadDashboard();
+</script>
+{% endblock %}

@@ -1,23 +1,26 @@
-from wsgiref import headers
-
 import openpyxl
-from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .data_validators import validate_columns
-from .constants import METADATA_FIELD_MAP, CALCULATED_FIELD_MAP, SKIP_COLS, EXPECTED_COLUMNS, SURVEY_COLUMNS
-
 from django.db import transaction
-from .models import Dataset, Response, RespondentAnswer, QuestionColumn, Option
-from accounts.models import School
 import base64
 import io
 from datetime import datetime, timezone
-
 from collections import defaultdict
 
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.http import JsonResponse
 
-# Create your views here.
+
+from .data_validators import validate_columns
+from .constants import Q7_PARTICIPATION_COLS, SURVEY_COLUMNS, Q6_PARTICIPATION_COLS
+from .models import Dataset, Response, RespondentAnswer, QuestionColumn, Option
+from accounts.models import School
+from .data_access_control import get_dashboard_queryset, get_response_queryset, can_view_raw, get_aggregate_scopes
+from .crosstab_builder import build_crosstab
+from .visualizations import build_crosstab_table, build_combined_crosstab_table, build_grouped_bar, build_participation_chart, build_top_selections
+
+
 
 @staff_member_required  # only allow admin users access
 def upload_dataset(request):
@@ -62,7 +65,7 @@ def upload_dataset(request):
 
 
 
-# TODO: 
+# TODO:
 #   disable object printing in delete view
 #   make deleted datasets recoverable?
 @staff_member_required
@@ -81,7 +84,7 @@ def confirm_import(request):
 
         try:
             with transaction.atomic():  # ensure all-or-nothing import — no partial data is ever committed
-                
+
                 # Create the Dataset record first so responses can reference it
                 dataset = Dataset.objects.create(
                     name=dataset_name,
@@ -139,6 +142,9 @@ def confirm_import(request):
                 imported_count = 0
                 skipped_duplicates = []
 
+                # TODO: Problem once stored datasets get larger
+                existing_response_ids = Response.objects.values_list('response_id', flat=True)
+
                 for raw_row in data_rows:
                     # Map each header to its cell value for this row
                     row_data = {headers[i]: raw_row[i] for i in range(len(headers)) if i < len(raw_row)}
@@ -149,7 +155,8 @@ def confirm_import(request):
                         continue
 
                     # Skip duplicate responses and warn user — ResponseId is unique per survey submission
-                    if Response.objects.filter(response_id=str(response_id)).exists():
+                    if str(response_id) in existing_response_ids:
+                        print(f"Skipping duplicate ResponseId {response_id} in row with data {row_data}")  # log duplicate for debugging
                         skipped_duplicates.append(str(response_id))
                         continue
 
@@ -173,7 +180,11 @@ def confirm_import(request):
                             # Resolve school FK from Q1 numeric value via survey_index
                             if raw_value is not None:
                                 try:
-                                    response_kwargs[column_config['model_field']] = schools_by_index.get(parse_value(raw_value, column_config.get('cast', 'int')))
+                                    school_model_field = schools_by_index.get(parse_value(raw_value, column_config.get('cast', 'int')))
+                                    if school_model_field is not None:
+                                        response_kwargs[column_config['model_field']] = school_model_field
+                                    else:
+                                        print(f"Warning: No school found with survey_index {raw_value} for row with ResponseId {response_id}")
                                 except (ValueError, TypeError):
                                     pass
 
@@ -212,6 +223,19 @@ def confirm_import(request):
                                             'question_column': question_column,
                                             'option': option,
                                         })
+
+
+                    # Derive participation fields from raw row data - see constants.py for constant list definitions
+                    # if respondent answered yes to any of the participation questions in Q6, mark participated_awareness as yes, otherwise no
+                    # if respondent answered yes to any of the participation questions in Q7, mark participated_exploration as yes, otherwise no
+                    # if respondent answered yes to any of the participation questions in either Q6 or Q7, mark participated_either as yes, otherwise no
+                    participated_q6 = any(row_data.get(col) in (1, '1', 1.0) for col in Q6_PARTICIPATION_COLS)
+                    participated_q7 = any(row_data.get(col) in (1, '1', 1.0) for col in Q7_PARTICIPATION_COLS)
+
+                    response_kwargs['particip_career_prep_awareness']   = 'Yes' if participated_q6 else 'No'
+                    response_kwargs['particip_career_prep_exploration'] = 'Yes' if participated_q7 else 'No'
+                    response_kwargs['particip_career_prep_either']      = 'Yes' if (participated_q6 or participated_q7) else 'No'
+
 
                     # Create Response first since RespondentAnswer records reference it
                     response = Response.objects.create(**response_kwargs)
@@ -260,7 +284,7 @@ def confirm_import(request):
 
 @staff_member_required
 def dataset_detail(request, dataset_id):
-    
+
     dataset = Dataset.objects.get(pk=dataset_id)
 
     # Handle dataset name/description edits
@@ -277,7 +301,7 @@ def dataset_detail(request, dataset_id):
     # select_related prevents additional queries when accessing related fields.
     answers = (
         RespondentAnswer.objects
-        .filter(response__dataset=dataset)
+        .filter(response__in=get_response_queryset(request.user), response__dataset=dataset)
         .select_related('response', 'question_column', 'question_column__question', 'option')
     )
 
@@ -286,7 +310,7 @@ def dataset_detail(request, dataset_id):
     # or 1 for binary questions (which only create a record when selected).
     response_answers = defaultdict(dict)
     for respondent_answer in answers:
-        
+
         column_header = respondent_answer.question_column.column_header
 
         if respondent_answer.text_value is not None:
@@ -300,7 +324,17 @@ def dataset_detail(request, dataset_id):
 
     # Fetch Response records to get metadata, calculated score, and school fields
     # select_related used to avoid additional queries when accessing related school field
-    responses = list(Response.objects.filter(dataset=dataset).select_related('school'))
+    if not can_view_raw(request.user):
+        messages.error(request, 'You do not have permission to view raw response data.')
+        return redirect('dashboard')
+
+    responses = list(
+        get_response_queryset(request.user)
+        .filter(dataset=dataset)
+        .select_related('school')
+    )
+
+
     for response in responses:
         response_id = response.id
 
@@ -315,7 +349,7 @@ def dataset_detail(request, dataset_id):
 
     # Build header list from SURVEY_COLUMNS, excluding discarded columns.
     # Column order is determined by the order of entries in SURVEY_COLUMNS.
-    headers = [column_header for column_header, column_config in SURVEY_COLUMNS.items() 
+    headers = [column_header for column_header, column_config in SURVEY_COLUMNS.items()
                if column_config['field_type'] != 'discard']
 
     # Build rows in column order for display in template.
@@ -334,3 +368,199 @@ def dataset_detail(request, dataset_id):
     }
     return render(request, 'datasets/dataset_detail.html', context)
 
+
+
+# Renders the HTML shell
+@login_required
+def dashboard_view(request):
+    """
+        Render the summary dashboard view.
+        The frontend makes separate AJAX calls to fetch data for each chart/table.
+        args:
+        returns:
+            response with rendered html template for dashboard view
+            additional context variables:
+                groups: list of groups the user has access to (based on what exists in their allowed datasets) for filtering (id and name)
+                years: list of years present in the allowed datasets for filtering
+                schools: (admin users ONLY) list of schools the user has access to for filtering (id and name)
+                is_global: boolean indicating whether user has global admin access (used to determine whether to show school filter)
+
+    """
+    user = request.user
+    qs   = get_dashboard_queryset(user).distinct()
+
+    groups = (
+        qs.values('school__groups__id', 'school__groups__name')
+        .exclude(school__groups__isnull=True)
+        .distinct()
+    )
+    years = [d.year for d in qs.dates('start_date', 'year')]
+
+    # Users with 'all' scope are internal admins — show list of schools instead of "My School"
+    is_global = 'all' in get_aggregate_scopes(user)
+    schools = (
+        qs.values('school__id', 'school__name')
+        .exclude(school__isnull=True)
+        .distinct()
+        .order_by('school__name')
+    ) if is_global else []
+
+    return render(request, 'datasets/summary_dashboard.html', {
+        'groups':    groups,
+        'years':     sorted(years, reverse=True),
+        'schools':   schools,
+        'is_global': is_global,
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required
+def crosstab_tables_view(request):
+    user = request.user
+    qs = get_dashboard_queryset(user).distinct()
+    groups = (
+        qs.values("school__groups__id", "school__groups__name")
+        .exclude(school__groups__isnull=True)
+        .distinct()
+    )
+    years = [d.year for d in qs.dates("start_date", "year")]
+    questions = (
+        QuestionColumn.objects
+        .filter(question__question_type__in=['single_choice', 'scale', 'binary', 'rank'])
+        .select_related('question')
+        .order_by('column_header')
+    )
+
+    return render(request, "datasets/crosstabs.html", {
+        "groups": groups,
+        "years": sorted(years, reverse=True),
+        "questions": questions,
+        "view_mode": "tables",
+    })
+
+
+
+
+@login_required
+def dashboard_data(request):
+    qs = get_dashboard_queryset(request.user).distinct()
+
+    mode = request.GET.get('mode', 'percentages')
+    group = request.GET.get('group', 'all')
+    year  = request.GET.get('year', 'all')
+
+    if group != 'all':
+        if group == 'my':
+            qs = qs.filter(school=request.user.school)
+        elif group.startswith('group_'):
+            qs = qs.filter(school__groups__id=group.split('_')[1]).distinct()
+        elif group.startswith('school_'):
+            qs = qs.filter(school__id=group.split('_')[1])
+
+    if year != 'all':
+        qs = qs.filter(start_date__year=year)
+
+    if not qs.exists():
+        return JsonResponse({'empty': True, 'message': 'No student responses found.'})
+
+    grade_q = QuestionColumn.objects.get(column_header='Q5')
+    plan_q  = QuestionColumn.objects.get(column_header='Q14')
+
+    # build data for future plans broken down by letter grade chart
+    plans_results = build_crosstab(
+        x_question_id=grade_q.question_id,
+        base_queryset=qs,
+        y_question_ids=[plan_q.question_id],
+        pct_type='row',
+    )
+
+    # build data for career prep participation broken down by letter grade chart
+    participation = build_participation_chart(qs, grade_q, mode)
+
+
+    # build data for top interests and skills
+    top_interests = build_top_selections(qs, col_prefix='Q3_', exclude_cols={'Q3_16', 'Q3_16_TEXT'})
+    top_skills    = build_top_selections(qs, col_prefix='Q25R_')
+    top_traits    = build_top_selections(qs, col_prefix='Q26A_')
+
+
+    # return view and all data needed to build charts + summaries in the view
+
+
+    if not plans_results or not participation:
+        return JsonResponse({'empty': True, 'message': 'No data found for these questions.'})
+
+    return JsonResponse({
+        'empty':           False,
+        'plans_vs_grade':  build_grouped_bar(plans_results[0], mode).to_dict(),
+        'participation':   participation,
+        'top_interests':   top_interests,
+        'top_skills':      top_skills,
+        'top_traits':      top_traits,
+    })
+
+
+@login_required
+def crosstab_data(request):
+    x_id  = request.GET.get('x')
+    y_ids = request.GET.getlist('y')
+    mode  = request.GET.get('mode', 'counts')
+    group = request.GET.get('group', 'all')
+    year  = request.GET.get('year', 'all')
+
+    if not x_id or not y_ids:
+        return JsonResponse({'error': 'x and at least one y are required'}, status=400)
+
+    try:
+        x_id  = int(x_id)
+        y_ids = [int(i) for i in y_ids]
+    except ValueError:
+        return JsonResponse({'error': 'x and y must be integers'}, status=400)
+
+    if mode not in ('counts', 'percentages'):
+        return JsonResponse({'error': 'mode must be counts or percentages'}, status=400)
+
+    qs = get_dashboard_queryset(request.user).distinct()
+
+    if group != 'all':
+        if group == 'my':
+            qs = qs.filter(school=request.user.school)
+        elif group.startswith('group_'):
+            qs = qs.filter(school__groups__id=group.split('_')[1]).distinct()
+
+    if year != 'all':
+        qs = qs.filter(start_date__year=year)
+
+    if not qs.exists():
+        return JsonResponse({'empty': True, 'message': 'No student responses found.'})
+
+    results = build_crosstab(x_question_id=x_id,
+                             y_question_ids=y_ids,
+                             base_queryset=qs,
+                             pct_type='column')
+
+    if not results:
+        return JsonResponse({'empty': True, 'message': 'No data found for the selected questions.'})
+
+    return JsonResponse({
+        'empty':    False,
+        'combined': build_combined_crosstab_table(results, mode).to_dict(),
+        'individual': [
+            {
+                'table': build_crosstab_table(result, mode).to_dict(),
+                'bar':   build_grouped_bar(result, mode).to_dict(),
+            }
+            for result in results
+        ],
+    })

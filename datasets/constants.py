@@ -1,3 +1,21 @@
+# Used accross app for user access control based on user role and affiliation
+ROLE_ACCESS_POLICY = {
+    'internal': {
+        'raw_scope': 'all',
+        'aggregate_scopes': ['all'],
+    },
+    'school_admin': {
+        'raw_scope': 'own',
+        'aggregate_scopes': ['own', 'group'],
+    },
+    'sponsor': {
+        'raw_scope': 'none',
+        'aggregate_scopes': ['group'],
+    },
+}
+
+
+
 # Unified survey column configuration.
 # Single source of truth for all column metadata used by the import pipeline,
 # dataset detail view, validator, and fixture generation script.
@@ -1384,7 +1402,7 @@ SURVEY_COLUMNS = {
         'model_field': 'Aptitude_9',
     },
 
-    
+
     # ── Calculated ───────────────────────────────────────────────────────────
     'SC0': {
         'field_type': 'calculated',
@@ -1554,17 +1572,17 @@ SURVEY_COLUMNS = {
         'field_type': 'calculated',
         'model_field': 'exploration_score',
     },
-    'CareerPrepScore': {
+    'Q6R_Q7R': {
         'field_type': 'calculated',
-        'model_field': 'career_prep_score',
+        'model_field': 'particip_career_prep_either',
     },
-    'Career_Awareness': {
+    'Q6R': {
         'field_type': 'calculated',
-        'model_field': 'career_awareness',
+        'model_field': 'particip_career_prep_awareness',
     },
-    'Career_Exploration': {
+    'Q7R': {
         'field_type': 'calculated',
-        'model_field': 'career_exploration',
+        'model_field': 'particip_career_prep_exploration',
     },
 }
 
@@ -1589,3 +1607,14 @@ CALCULATED_FIELD_MAP = {
     for col, cfg in SURVEY_COLUMNS.items()
     if cfg['field_type'] == 'calculated'
 }
+
+
+# Columns that indicate career awareness participation (Q6_8 is "None of the above" — excluded)
+Q6_PARTICIPATION_COLS = ['Q6_1', 'Q6_2', 'Q6_3', 'Q6_4', 'Q6_5', 'Q6_6', 'Q6_7']
+
+# Columns that indicate career exploration participation (Q7_8 is "None of the above" — excluded)
+# All Q7A columns are valid participation indicators (no "None of the above" in Q7A)
+Q7_PARTICIPATION_COLS = [
+    'Q7_1', 'Q7_2', 'Q7_3', 'Q7_4', 'Q7_5', 'Q7_6', 'Q7_7',
+    'Q7A_1', 'Q7A_2', 'Q7A_3', 'Q7A_4', 'Q7A_5', 'Q7A_6', 'Q7A_7', 'Q7A_8',
+]
