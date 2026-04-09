@@ -1,75 +1,92 @@
+<!-- TODO: make dropdown filters go out - don't cover other menu opts -->
+ <!-- TODO: switch display and x var option order -->
+  <!-- TODO: fix fucked up crosstab row header - runs different if reloaded??? -SCROLL BROKE IT -->
 {% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/crosstabs.css' %}">
+{% endblock %}
 
 {% block content %}
 
 <h2>Crosstab Tool</h2>
 
-<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 16px;">
+<div id="crosstab-layout">
 
-    <div>
-        <label for="group-filter">Group</label><br>
-        <select id="group-filter">
-            <option value="all">All Groups</option>
-            {% for g in groups %}
-                <option value="group_{{ g.school__groups__id }}">
-                    {{ g.school__groups__name }}
-                </option>
-            {% endfor %}
-            <option value="school_{{ request.user.school.id }}">My School</option>
-        </select>
-    </div>
+    <!-- Left filter sidebar -->
+    <aside id="filter-sidebar">
 
-    <div>
-        <label for="year-filter">Year</label><br>
-        <select id="year-filter">
-            <option value="all">All Years</option>
-            {% for y in years %}
-                <option value="{{ y }}">{{ y }}</option>
-            {% endfor %}
-        </select>
-    </div>
+        <div>
+            <label for="group-filter">Group</label>
+            <select id="group-filter">
+                <option value="all">All Groups</option>
+                {% for g in groups %}
+                    <option value="group_{{ g.school__groups__id }}">
+                        {{ g.school__groups__name }}
+                    </option>
+                {% endfor %}
+                <option value="school_{{ request.user.school.id }}">My School</option>
+            </select>
+        </div>
 
-    <div>
-        <label for="x-variable">X Variable (columns)</label><br>
-        <select id="x-variable">
-            {% for q in questions %}
-                <option value="{{ q.question_id }}">{{ q.column_header }}</option>
-            {% endfor %}
-        </select>
-    </div>
+        <div>
+            <label for="year-filter">Year</label>
+            <select id="year-filter">
+                <option value="all">All Years</option>
+                {% for y in years %}
+                    <option value="{{ y }}">{{ y }}</option>
+                {% endfor %}
+            </select>
+        </div>
 
-    <div>
-        <label for="mode">Display</label><br>
-        <select id="mode">
-            <option value="counts">Count</option>
-            <option value="percentages">Percentage</option>
-        </select>
+        <div>
+            <label for="x-variable">X Variable (columns)</label>
+            <select id="x-variable">
+                {% for q in questions %}
+                    <option value="{{ q.id }}">{{ q.crosstab_label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="mode">Display</label>
+            <select id="mode">
+                <option value="counts">Count</option>
+                <option value="percentages">Percentage</option>
+            </select>
+        </div>
+
+        <!-- TODO: add opt for user to select percentage type (row, col, total) -->
+        <!-- Y Variables -->
+        <div>
+            <label>Y Variables (rows)</label>
+            <div id="y-container" style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;"></div>
+            <button onclick="addY()" id="add-y-btn" style="margin-top: 8px;">+ Add Variable</button>
+        </div>
+
+        <button onclick="runCrosstab()" id="run-crosstab-btn">Run Crosstab</button>
+
+    </aside>
+
+    <!-- Main content area -->
+    <div id="crosstab-content">
+
+        <hr>
+
+        <!-- Combined table (all Y variables in one scrolling table) -->
+        <div style="overflow-x: auto; width: 100%; margin-bottom: 24px;">
+            <div id="combined-table"></div>
+        </div>
+
+        <!-- Individual charts / tables broken out per Y variable -->
+        <!-- TODO: only show individual when multiple Y variables are selected? -->
+        <div id="individual-charts"></div>
+
     </div>
 
 </div>
-
-<!-- TODO: add opt for user to select percentage type (row, col, total) -->
-<!-- Y Variables -->
-<div style="margin-bottom: 8px;">
-    <label>Y Variables (rows)</label>
-    <div id="y-container" style="display: flex; flex-direction: column; gap: 6px; margin-top: 6px;"></div>
-    <button onclick="addY()" style="margin-top: 8px;">+ Add Variable</button>
-</div>
-
-<button onclick="runCrosstab()" style="margin: 12px 0; font-weight: bold;">Run Crosstab</button>
-
-<hr>
-
-<!-- Combined table (all Y variables in one scrolling table) -->
-<div style="overflow-x: auto; width: 100%; margin-bottom: 24px;">
-    <div id="combined-table"></div>
-</div>
-
-<!-- Individual charts / tables broken out per Y variable -->
- <!-- TODO: only show individual when multiple Y variables are selected? -->
-<h2>Individual Crosstabs</h2>
-<p>Here you can find each crosstab displayed separately in its own table.</p>
-<div id="individual-charts"></div>
 
 <script src="https://cdn.plot.ly/plotly-3.5.0.min.js" charset="utf-8"></script>
 <script>
@@ -91,13 +108,14 @@ function addY() {
     select.innerHTML = `
         <option value="" selected disabled>Select a variable…</option>
         {% for q in questions %}
-            <option value="{{ q.question_id }}">{{ q.column_header }}</option>
+            <option value="{{ q.id }}">{{ q.crosstab_label }}</option>
         {% endfor %}
     `;
     select.addEventListener("change", updateSelectables);
 
     const removeBtn = document.createElement("button");
     removeBtn.textContent = "✕";
+    removeBtn.className = "remove-y-btn";
     removeBtn.onclick = () => { wrapper.remove(); updateSelectables(); };
 
     wrapper.appendChild(select);
@@ -148,7 +166,7 @@ document.getElementById("year-filter").addEventListener("change", runCrosstab);
 // ---------------------------------------------------------------------------
 // Fetch and render
 // ---------------------------------------------------------------------------
-
+// TODO: add message when no Y variable selcted for crosstab
 async function runCrosstab() {
     const x     = document.getElementById("x-variable").value;
     const mode  = document.getElementById("mode").value;
@@ -179,7 +197,9 @@ async function runCrosstab() {
 
     // Individual charts (one bar + one table per Y variable)
     const container = document.getElementById("individual-charts");
-    container.innerHTML = "";
+    container.innerHTML = `
+            <h2>Individual Crosstabs</h2>
+        <p>Here you can find each crosstab displayed separately in its own table.</p>`;
 
     data.individual.forEach((item, i) => {
         const section = document.createElement("div");

@@ -414,17 +414,6 @@ def dashboard_view(request):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 @login_required
 def crosstab_tables_view(request):
     user = request.user
@@ -436,10 +425,9 @@ def crosstab_tables_view(request):
     )
     years = [d.year for d in qs.dates("start_date", "year")]
     questions = (
-        QuestionColumn.objects
-        .filter(question__question_type__in=['single_choice', 'scale', 'binary', 'rank'])
-        .select_related('question')
-        .order_by('column_header')
+        Question.objects
+        .filter(can_crosstab=True)
+        .order_by('crosstab_label')
     )
 
     return render(request, "datasets/crosstabs.html", {
@@ -448,9 +436,6 @@ def crosstab_tables_view(request):
         "questions": questions,
         "view_mode": "tables",
     })
-
-
-
 
 @login_required
 def dashboard_data(request):
@@ -503,7 +488,7 @@ def dashboard_data(request):
 
     return JsonResponse({
         'empty':           False,
-        'plans_vs_grade':  build_grouped_bar(plans_results[0], mode).to_dict(),
+        'plans_vs_grade':  build_grouped_bar(plans_results[0], mode, legend_title="Post High School Plans", x_axis_title="Average Letter Grade").to_dict(),
         'participation':   participation,
         'top_interests':   top_interests,
         'top_skills':      top_skills,

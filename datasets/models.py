@@ -23,6 +23,8 @@ class Question(models.Model):
 
     label = models.TextField(blank=True)
     question_type = models.CharField(max_length=20, choices=QUESTION_TYPE_CHOICES)
+    can_crosstab = models.BooleanField(default=False)
+    crosstab_label = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):

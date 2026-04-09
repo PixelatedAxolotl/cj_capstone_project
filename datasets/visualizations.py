@@ -83,36 +83,51 @@ def build_combined_crosstab_table(results, mode='counts'):
     ]
     global_max = max(all_vals) if all_vals else 1
 
-    # One column per (y_question, y_option) pair
-    col_headers = ['']  # top-left cell blank - otherwise headers will not line up
-    col_data    = []
-    col_colors  = []
+    # One row per (y_question, y_option) pair; one column per x_option
+    # Section header rows are inserted before each y question group.
+    SECTION_COLOR = "#3684d3"
+
+    row_labels      = []
+    label_colors    = []
+    col_data_by_x   = [[] for _ in x_options]
+    col_colors_by_x = [[] for _ in x_options]
 
     for result in results:
         data = result[data_key]
-        for yopt in result['y_options']:
-            col_headers.append(f"{result['y_label']} — {yopt}")
-            col_data.append([f"{data[yopt][xopt]}{suffix}" for xopt in x_options])
-            col_colors.append([
-                f"rgba(38, 87, 144, {data[yopt][xopt] / global_max * 0.55})" if global_max else 'white'
-                for xopt in x_options
-            ])
 
-    n_data_cols = len(col_headers) - 1
+        # Section header row — spans full width visually via background color
+        row_labels.append(result['y_label'])
+        label_colors.append(SECTION_COLOR)
+        for i in range(len(x_options)):
+            col_data_by_x[i].append('')
+            col_colors_by_x[i].append(SECTION_COLOR)
+
+        # Data rows for this y question
+        for yopt in result['y_options']:
+            row_labels.append(f"  {yopt}")
+            label_colors.append('white')
+            for i, xopt in enumerate(x_options):
+                val = data[yopt][xopt]
+                col_data_by_x[i].append(f"{val}{suffix}")
+                col_colors_by_x[i].append(
+                    f"rgba(38, 87, 144, {val / global_max * 0.55})" if global_max else 'white'
+                )
 
     fig = go.Figure(data=[go.Table(
-        columnwidth=[200] + [140] * n_data_cols,
-        header=dict(values=col_headers, fill_color='#e8edf2', align='left'),
+        columnwidth=[220] + [140] * len(x_options),
+        header=dict(values=[''] + x_options, fill_color='#e8edf2', align='left',
+                    line_color='#e8edf2'),
         cells=dict(
-            values=[x_options] + col_data,
-            fill_color=[['white'] * len(x_options)] + col_colors,
+            values=[row_labels] + col_data_by_x,
+            fill_color=[label_colors] + col_colors_by_x,
             align='left',
+            line_color=[label_colors] + col_colors_by_x,
         ),
     )])
 
     fig.update_layout(
         title=dict(text=f"Crosstab: {results[0]['x_label']}", font=dict(size=13)),
-        width=200 + 140 * n_data_cols,
+        width=220 + 140 * len(x_options),
         autosize=False,
         margin=dict(l=10, r=10, t=40, b=10),
     )
@@ -120,7 +135,7 @@ def build_combined_crosstab_table(results, mode='counts'):
     return fig
 
 
-def build_grouped_bar(result, mode):
+def build_grouped_bar(result, mode, legend_title=None, x_axis_title=None, y_axis_title=None):
     """
     Single Y question as a grouped bar chart.
     X axis = X question options. One bar group per Y question option.
@@ -132,20 +147,33 @@ def build_grouped_bar(result, mode):
     """
     data      = result[mode] if mode in result else result['counts']
     x_options = result['x_options']
+    total     = result.get('total') or 1
+
+    # helper to add total count or percentage to each legend label
+    def legend_label(yopt):
+        row_count = sum(result['counts'][yopt].values())
+        if mode == 'percentages':
+            pct = round(row_count / total * 100, 1)
+            return f"{yopt}: {pct}%"
+        return f"{yopt}: {row_count}"
 
     fig = go.Figure([
-        go.Bar(name=yopt, x=x_options, y=[data[yopt][xopt] for xopt in x_options])
+        go.Bar(name=legend_label(yopt), x=x_options, y=[data[yopt][xopt] for xopt in x_options])
         for yopt in result['y_options']
     ])
 
     fig.update_layout(
         barmode='group',
-        title=dict(text=f"{result['y_label']} × {result['x_label']}", font=dict(size=13)),
-        xaxis_title=result['x_label'],
+        title=dict(text=f"{result['y_label']}", font=dict(size=13)),
+        xaxis_title=x_axis_title or result['x_label'],
         yaxis_title='Percentage of Students' if mode == 'percentages' else 'Number of Students',
         xaxis=dict(type='category'),
         template='plotly_white',
-        legend_title=result['y_label'],
+        legend_title=legend_title or result['y_label'],
+        legend=dict(
+            font=dict(size=14),
+            itemsizing='constant',
+        ),
         **(dict(yaxis=dict(ticksuffix='%')) if mode == 'percentages' else {}),
     )
 

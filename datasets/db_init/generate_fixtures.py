@@ -56,17 +56,17 @@ SINGLE_CHOICE_OPTIONS = {
 
     # most time talking about future plans
     'Q10': {
-        1: 'Your parent(s) or guardian(s)', 2: 'Other adult family member(s)', 3: 'A schoool guidance counselor',
-        4: 'A teachor or coach', 5: 'Your friends', 6: 'Your brother(s) or sister(s)',
-        7: 'Someone else (specify)', 8: 'No one',
+        1: 'Parent(s) or guardian(s)', 2: 'Other adult family member(s)', 3: 'School guidance counselor',
+        4: 'Teacher or coach', 5: 'Friends', 6: 'Sibling(s)',
+        7: 'Someone else', 8: 'No one',
     },
 
     # "Of those, who would you say you have spent the most time talking about your future plans?"
     # SAME AS Q10 options
     'Q11': {
-        1: 'Your parent(s) or guardian(s)', 2: 'Other adult family member(s)', 3: 'A schoool guidance counselor',
-        4: 'A teachor or coach', 5: 'Your friends', 6: 'Your brother(s) or sister(s)',
-        7: 'Someone else (specify)', 8: 'No one',
+        1: 'Parent(s) or guardian(s)', 2: 'Other adult family member(s)', 3: 'School guidance counselor',
+        4: 'Teacher or coach', 5: 'Friends', 6: 'Sibling(s)',
+        7: 'Someone else', 8: 'No one',
     },
 
     # "...Living in the area or moving away after highschool?"
@@ -93,20 +93,13 @@ SINGLE_CHOICE_OPTIONS = {
 
     # What type of learner are you?
     'Q23': {
-        1: '''I learn best by seeing pictures or images, including graphs and charts.
-        I like to seewhat I am learning. I understand and remember things best when I have seen them.''',
+        1: '''Visual: learns best by seeing and looking at information.''',
 
-        2: '''I learn best by hearing and listening.
-        I understand and remember things best when I have heard them.
-        I have an easier time understanding spoken instructions than written ones.
-        I often read out loud because I have to hear it or speak it in order to know it.''',
+        2: '''Auditory: learns best by listening and hearing information.''',
 
-        3: '''I learn best by reading and writing. I take notes and re-read them later.
-        I have an easier time understanding written instructions than spoken ones.''',
+        3: '''Reading/writing: learns best by reading and writing information''',
 
-        4: '''I learn best by doing.
-        I understand and remember things best when I am active and participate "hands-on".
-        I prefer to touch, move, build, or draw what I learn, and sometimes have difficulty sitting still.''',
+        4: '''Kinaesthetic: learns best by doing and experiencing things.''',
     },
 }
 
@@ -323,9 +316,17 @@ def read_mapping_file():
         )
     wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
     ws = wb.active
-    rows = {row[0]: row for row in ws.iter_rows(min_row=2, values_only=True) if row[0]}
+    rows = {row[0]: row for row in ws.iter_rows(min_row=2, values_only=True) if row[0] and len(row) >= 1}
     wb.close()
     return rows
+
+
+def get_crosstab_label(rows, key):
+    """Return the Crosstab Label (column D) for a given key, or '' if blank/missing."""
+    row = rows.get(key)
+    if row and len(row) >= 4 and row[3]:
+        return str(row[3]).strip()
+    return ''
 
 
 def parse_display_text(value_string):
@@ -379,7 +380,7 @@ def generate():
         option_pk += 1
         return pk
 
-    def create_question(label, question_type):
+    def create_question(label, question_type, crosstab_label=''):
         nonlocal question_pk
         pk = question_pk
         questions.append({
@@ -389,6 +390,8 @@ def generate():
                 'label': label,
                 'question_type': question_type,
                 'is_active': True,
+                'can_crosstab': bool(crosstab_label),
+                'crosstab_label': crosstab_label,
             },
         })
         question_pk += 1
@@ -419,9 +422,17 @@ def generate():
     for num_val, display in sorted(APTITUDE_OPTIONS.items()):
         get_or_create_option(display, category='frequency', numeric_value=float(num_val))
 
+    # Group key rows added to the spreadsheet for crosstab config — not real columns, exclude from warnings
+    GROUP_KEYS = (
+        set(BINARY_GROUPS.keys()) | set(RANK_GROUPS.keys())
+    )
+
     # ── Binary groups ───────────────────────────────────────────────────────────
     for group_key, (question_label, col_headers) in BINARY_GROUPS.items():
-        q_pk = create_question(question_label, 'binary')
+        row = rows.get(group_key)
+        label = (row[1] if row and row[1] else None) or question_label
+        q_pk = create_question(label, 'binary',
+                               crosstab_label=get_crosstab_label(rows, group_key))
 
         for col in col_headers:
             row = rows.get(col)
@@ -429,7 +440,8 @@ def generate():
                 warnings.append(f'Column {col} not found in mapping file')
                 continue
 
-            display_text = parse_display_text(row[2])
+            # Prefer column B (edited label - shortened for front end readability); fall back to parsing column C
+            display_text = (row[1] if row[1] else None) or parse_display_text(row[2])
             if not display_text:
                 warnings.append(f'Could not parse display text for {col} — using column header as fallback')
                 display_text = col
@@ -439,7 +451,10 @@ def generate():
 
     # ── Rank groups ─────────────────────────────────────────────────────────────
     for group_key, (question_label, col_headers) in RANK_GROUPS.items():
-        q_pk = create_question(question_label, 'rank')
+        row = rows.get(group_key)
+        label = (row[1] if row and row[1] else None) or question_label
+        q_pk = create_question(label, 'rank',
+                               crosstab_label=get_crosstab_label(rows, group_key))
         for col in col_headers:
             create_mapping(col, q_pk, None, option_category='rank')  # rank position stored as text_value at import
 
@@ -447,21 +462,24 @@ def generate():
     for col in sorted(SCALE_COLS):
         row = rows.get(col)
         label = row[1] if row else ''
-        q_pk = create_question(label or '', 'scale')
+        q_pk = create_question(label or '', 'scale',
+                               crosstab_label=get_crosstab_label(rows, col))
         create_mapping(col, q_pk, None, option_category='skill_level')  # cell value determines option at import
 
     # ── Aptitude questions ──────────────────────────────────────────────────────
     for col in sorted(APTITUDE_COLS):
         row = rows.get(col)
         label = row[1] if row else ''
-        q_pk = create_question(label or '', 'single_choice')
+        q_pk = create_question(label or '', 'single_choice',
+                               crosstab_label=get_crosstab_label(rows, col))
         create_mapping(col, q_pk, None, option_category='frequency')  # cell value determines option at import
 
     # ── Single choice questions ─────────────────────────────────────────────────
     for col in sorted(SINGLE_CHOICE_COLS):
         row = rows.get(col)
         label = row[1] if row else ''
-        q_pk = create_question(label or '', 'single_choice')
+        q_pk = create_question(label or '', 'single_choice',
+                               crosstab_label=get_crosstab_label(rows, col))
         option_set = SINGLE_CHOICE_OPTIONS.get(col, {})
         if not option_set:
             warnings.append(
@@ -477,13 +495,14 @@ def generate():
     for col in sorted(FREE_TEXT_COLS):
         row = rows.get(col)
         label = row[1] if row else ''
-        q_pk = create_question(label or '', 'free_text')
+        q_pk = create_question(label or '', 'free_text',
+                               crosstab_label=get_crosstab_label(rows, col))
         create_mapping(col, q_pk, None)
 
     # ── Check for unaccounted columns ───────────────────────────────────────────
     unaccounted = [
         col for col in rows
-        if col not in SKIP_COLS and col not in mapped_cols
+        if col not in SKIP_COLS and col not in mapped_cols and col not in GROUP_KEYS
     ]
     if unaccounted:
         warnings.append(
