@@ -46,9 +46,13 @@ def build_crosstab_table(result, mode='counts'):
         ),
     )])
 
+    row_px = 30  # approximate px per table row (header + each data row)
+    height = row_px * (1 + len(y_options)) + 60  # rows + top margin (40) + bottom padding (20)
+
     fig.update_layout(
         title=dict(text=f"{result['y_label']} × {result['x_label']}", font=dict(size=13)),
         width=220 + 140 * len(x_options),
+        height=height,
         autosize=False,
         margin=dict(l=10, r=10, t=40, b=10),
     )
@@ -71,12 +75,20 @@ def build_combined_crosstab_table(results, mode='counts'):
     if not results:
         return go.Figure()
 
-    x_options  = results[0]['x_options']
-    suffix     = '%' if mode == 'percentages' else ''
-    data_key   = mode if mode in results[0] else 'counts'
+    suffix   = '%' if mode == 'percentages' else ''
+    data_key = mode if mode in results[0] else 'counts'
+
+    # Union of x_options across all results
+    seen_x = set()
+    x_options = []
+    for r in results:
+        for xopt in r['x_options']:
+            if xopt not in seen_x:
+                x_options.append(xopt)
+                seen_x.add(xopt)
 
     all_vals = [
-        r[data_key][yopt][xopt]
+        r[data_key][yopt].get(xopt, 0)
         for r in results
         for yopt in r['y_options']
         for xopt in x_options
@@ -85,7 +97,8 @@ def build_combined_crosstab_table(results, mode='counts'):
 
     # One row per (y_question, y_option) pair; one column per x_option
     # Section header rows are inserted before each y question group.
-    SECTION_COLOR = "#3684d3"
+    SECTION_COLOR = "#539de6"
+    BORDER_COLOR  = "#dde3ea"  # consistent neutral border for all cells
 
     row_labels      = []
     label_colors    = []
@@ -107,7 +120,7 @@ def build_combined_crosstab_table(results, mode='counts'):
             row_labels.append(f"  {yopt}")
             label_colors.append('white')
             for i, xopt in enumerate(x_options):
-                val = data[yopt][xopt]
+                val = data[yopt].get(xopt, 0)
                 col_data_by_x[i].append(f"{val}{suffix}")
                 col_colors_by_x[i].append(
                     f"rgba(38, 87, 144, {val / global_max * 0.55})" if global_max else 'white'
@@ -116,12 +129,12 @@ def build_combined_crosstab_table(results, mode='counts'):
     fig = go.Figure(data=[go.Table(
         columnwidth=[220] + [140] * len(x_options),
         header=dict(values=[''] + x_options, fill_color='#e8edf2', align='left',
-                    line_color='#e8edf2'),
+                    line_color=BORDER_COLOR),
         cells=dict(
             values=[row_labels] + col_data_by_x,
             fill_color=[label_colors] + col_colors_by_x,
             align='left',
-            line_color=[label_colors] + col_colors_by_x,
+            line_color=BORDER_COLOR,
         ),
     )])
 
@@ -217,7 +230,7 @@ def build_participation_chart(qs, grade_q, mode):
         if ans.option:
             response_grades[ans.response_id] = {
                 'grade':         ans.option.display_text,
-                'participated':  ans.response.particip_career_prep_either == 'Yes',
+                'participated':  ans.response.particip_career_prep_either
             }
 
     # Count per grade

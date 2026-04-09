@@ -1,6 +1,5 @@
 <!-- TODO: make dropdown filters go out - don't cover other menu opts -->
- <!-- TODO: switch display and x var option order -->
-  <!-- TODO: fix fucked up crosstab row header - runs different if reloaded??? -SCROLL BROKE IT -->
+<!-- TODO: combined crosstab header display with scroll fixed? -->
 {% extends "admin/base_site.html" %}
 {% load static %}
 
@@ -17,6 +16,13 @@
 
     <!-- Left filter sidebar -->
     <aside id="filter-sidebar">
+        <div>
+            <label for="mode">Display</label>
+            <select id="mode">
+                <option value="counts">Count</option>
+                <option value="percentages">Percentage</option>
+            </select>
+        </div>
 
         <div>
             <label for="group-filter">Group</label>
@@ -47,14 +53,6 @@
                 {% for q in questions %}
                     <option value="{{ q.id }}">{{ q.crosstab_label }}</option>
                 {% endfor %}
-            </select>
-        </div>
-
-        <div>
-            <label for="mode">Display</label>
-            <select id="mode">
-                <option value="counts">Count</option>
-                <option value="percentages">Percentage</option>
             </select>
         </div>
 
@@ -192,8 +190,25 @@ async function runCrosstab() {
 
     const data = await response.json();
 
-    // Combined horizontally-scrolling table
-    Plotly.react("combined-table", data.combined.data, data.combined.layout, { responsive: false });
+    // Combined table — fit figure width to container; fall back to scroll if too many columns
+    const combined = data.combined;
+    const trace    = combined.data[0];
+    const numDataCols   = trace.columnwidth.length - 1;  // exclude first (label) column - should be blank above Y row labels
+    const firstColWidth = trace.columnwidth[0] || 220;
+    const minDataCol    = 90;
+    const availWidth    = (document.getElementById('crosstab-content').offsetWidth || 900) - 20;
+
+    // handle width and scroll here - otherwise plotly formatting messes with header position
+    const fittedDataWidth = Math.floor((availWidth - firstColWidth) / numDataCols);
+    if (fittedDataWidth >= minDataCol) {
+        // All columns fit — stretch to fill available space
+        trace.columnwidth = [firstColWidth, ...Array(numDataCols).fill(fittedDataWidth)];
+        combined.layout.width = availWidth;
+    } else {
+        // Too many columns to fit without compressing — keep defaults and scroll
+        combined.layout.width = firstColWidth + 140 * numDataCols;
+    }
+    Plotly.react("combined-table", combined.data, combined.layout, { responsive: false });
 
     // Individual charts (one bar + one table per Y variable)
     const container = document.getElementById("individual-charts");

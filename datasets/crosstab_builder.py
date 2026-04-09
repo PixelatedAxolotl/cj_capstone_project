@@ -125,7 +125,7 @@ def build_crosstab(
     # 4. Build one result dict per Y axis (real + derived)
     # ------------------------------------------------------------------
     x_cols           = cols_by_question.get(x_question_id, [])
-    x_question_label = x_cols[0].question.label if x_cols else ''
+    x_question_label = (x_cols[0].question.crosstab_label or x_cols[0].question.label) if x_cols else ''
 
     all_y_ids = y_question_ids + list(derived_field_map.keys())
     results   = []
@@ -140,7 +140,7 @@ def build_crosstab(
             y_cols = cols_by_question.get(y_qid)
             if not y_cols:
                 continue
-            y_label = y_cols[0].question.label
+            y_label = y_cols[0].question.crosstab_label or y_cols[0].question.label
 
         pair_counts = defaultdict(lambda: defaultdict(int))
         x_seen = {}  # label -> numeric_value for ordering
