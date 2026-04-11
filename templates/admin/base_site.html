@@ -4,20 +4,86 @@
 {% block extrahead %}
 {{ block.super }}
 <link rel="stylesheet" type="text/css" href="{% static 'admin/css/global.css' %}">
+
+<!-- set dark/light mode theme based on theme saved to session storage -->
+<!-- defined here so it will run before page renders -->
+<script>
+(function () {
+    var root = document.documentElement;
+    function applyTheme(theme) {
+        root.setAttribute('data-theme', theme);
+    }
+    var saved = localStorage.getItem('cj-theme');
+    if (!saved) {
+        saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        localStorage.setItem('cj-theme', saved);
+    }
+    applyTheme(saved);
+
+    // Sync theme when another window (e.g. parent or popup) changes it
+    window.addEventListener('storage', function (e) {
+        if (e.key === 'cj-theme' && e.newValue) applyTheme(e.newValue);
+    });
+})();
+</script>
 {% endblock %}
+
+{% block header %}{% endblock %}
 
 {% block nav-breadcrumbs %}
 <div class="navbar">
     <a href="{% url 'dashboard' %}">Dashboard</a>
     <a href="{% url 'crosstab_tables' %}">Crosstabs</a>
+
     {% if request.user.is_staff %}
-        <div>
-            <a href="{% url 'admin_index' %}">Admin Pages Home</a>
-        </div>
+        <a href="{% url 'admin_index' %}">Admin Pages Home</a>
     {% endif %}
+
+    <!-- show docutils documentation -->
+    {% url 'django-admindocs-docroot' as docsroot %}
+    {% if docsroot %}
+        <a href="{{ docsroot }}">Documentation</a>
+    {% endif %}
+
+    {% if user.has_usable_password %}
+        <a href="{% url 'admin:password_change' %}">Change Password</a>
+    {% endif %}
+
     <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
         <button type="submit">Logout</button>
     </form>
+    <button id="theme-toggle" type="button" aria-label="Toggle dark/light mode">
+        <img id="theme-toggle-icon" src="" alt="Toggle theme" class="btn-icon">
+    </button>
 </div>
+
+<script>
+(function () {
+    var btn  = document.getElementById('theme-toggle');
+    var icon = document.getElementById('theme-toggle-icon');
+    var root = document.documentElement;
+    var ICONS = {
+        dark:  '{% static "admin/images/ui/darkmode.svg" %}',
+        light: '{% static "admin/images/ui/lightmode.svg" %}',
+    };
+
+    function updateIcon(theme) {
+        // Show the icon for the *next* theme (what clicking will switch to)
+        var next = theme === 'dark' ? 'light' : 'dark';
+        icon.src = ICONS[next];
+        icon.alt = next === 'dark' ? 'Switch to dark mode' : 'Switch to light mode';
+    }
+
+    updateIcon(root.getAttribute('data-theme'));
+
+    btn.addEventListener('click', function () {
+        var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('cj-theme', next);
+        root.setAttribute('data-theme', next);
+        updateIcon(next);
+        if (typeof relayoutAllPlots === 'function') relayoutAllPlots();
+    });
+})();
+</script>
 {% endblock %}

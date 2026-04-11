@@ -1,3 +1,196 @@
+/* ===========================================================
+    Global styles applied to all pages
+
+    COLOR SCHEME — light/dark mode via Django's data-theme toggle
+    and system prefers-color-scheme fallback.
+
+    !important used to override default Django styles when needed
+   ============================================================
+*/
+
+/* --- Django admin variable overrides --- */
+/* map Django's built-in CSS variables to custom color scheme.
+   overriding them here reskins all change forms, buttons, and headers at once. */
+:root {
+    --primary:                 var(--accent-blue);
+    --secondary:               var(--accent-navy);
+    --body-bg:                 var(--bg-page);
+    --accent:                  var(--accent-orange);
+    --primary-fg:              #fff;
+    --header-bg:               var(--accent-navy);
+    --header-link-color:       #fff;
+    --button-bg:               var(--accent-blue);
+    --button-hover-bg:         #1a6aad;
+    --default-button-bg:       var(--accent-navy);
+    --default-button-hover-bg: var(--accent-blue);
+    --object-tools-bg:         var(--accent-blue);
+    --object-tools-hover-bg:   #1a6aad;
+
+    /* keep delete/close buttons recognisable */
+    --delete-button-bg:        #ba2121;
+    --delete-button-hover-bg:  #a41515;
+    --close-button-bg:         #747474;
+    --close-button-hover-bg:   #333;
+
+
+    --primary-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    --default-font-size: 16px;
+    font-size: var(--default-font-size);
+    /* use for both light and dark moode when background will be dark regardless */
+    --text-dark-bg: #e8ecf0
+}
+
+:root,
+[data-theme="light"] {
+    --bg-page:        #f4f6f9;
+    --body-bg:        var(--bg-page);
+    --darkened-bg:    var(--bg-page);
+    --border-color:   var(--accent-navy);
+    --hairline-color: var(--accent-navy);
+    --text-primary:   #1a2332;
+    --text-secondary: #4a5568;
+
+    --accent-navy:    #133973;
+    --accent-blue:    #2B7EC2;
+    --accent-orange:  #f07128;
+
+    /* plotly chart colors */
+    --plotly-bg:          #f4f6f9;
+    --plotly-grid:        #e0e8f0;
+    --plotly-bar-1:       #8B2635;
+    --plotly-bar-2:       #f07128;
+    --plotly-bar-3:       #4a9a6b;
+    --plotly-bar-4:       #133973;
+
+    /* plotly table colors */
+    --plotly-table-header:  #31f76c;
+    --plotly-table-section: #539de6;
+    --plotly-table-border:  #d41e9e;
+    --plotly-table-heatmap: var(--accent-blue);  /* rgb(38, 87, 144) — base hue for cell intensity shading */
+}
+
+/* --- Dark mode — Django toggle --- */
+html[data-theme="dark"] {
+    --bg-page:        #061223;
+    --body-bg:        var(--bg-page);
+    --darkened-bg:    var(--bg-page);
+    --border-color:   var(--accent-navy);
+    --hairline-color: var(--accent-navy);
+    --text-primary:   #e8ecf0;
+    --text-secondary: #a8b8cc;
+
+    --accent-navy:    #133973;
+    --accent-blue:    #2B7EC2;
+    --accent-orange:  #f07128;
+
+    /* plotly chart colors */
+    --plotly-bg:          #061223;
+    --plotly-grid:        #2a3d55;
+    --plotly-bar-1:       #8B2635;
+    --plotly-bar-2:       #f5924a;
+    --plotly-bar-3:       #5ab87d;
+    --plotly-bar-4:       #3a6bbf;
+
+    /* plotly table colors */
+    --plotly-table-header:  #1a2d42;
+    --plotly-table-section: #2B7EC2;
+    --plotly-table-border:  #2a3d55;
+    --plotly-table-heatmap: var(--accent-navy);
+}
+
+/* --- Dark mode — system preference fallback (when no data-theme is set) --- */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg-page:        #061223;
+        --text-primary:   #e8ecf0;
+        --text-secondary: #a8b8cc;
+
+        --accent-navy:    #133973;
+        --accent-blue:    #2B7EC2;
+        --accent-orange:  #f07128;
+
+        /* plotly chart colors */
+        --plotly-bg:          #061223;
+        --plotly-grid:        #2a3d55;
+        --plotly-bar-1:       #8B2635;
+        --plotly-bar-2:       #f5924a;
+        --plotly-bar-3:       #5ab87d;
+        --plotly-bar-4:       #3a6bbf;
+
+        /* plotly table colors */
+        --plotly-table-header:  #1a2d42;
+        --plotly-table-section: #2B7EC2;
+        --plotly-table-border:  #2a3d55;
+        --plotly-table-heatmap: #3a6bbf;
+    }
+}
+
+
+
+/* --- Base element styles --- */
+body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+}
+
+html, table, th, tr, td {
+    font-family: var(--primary-font) !important;
+    font-size: var(--default-font-size) !important;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 16px;
+    justify-content: center;
+}
+
+h2 {
+    font-size: var(--default-font-size) !important;
+    font-weight: bold !important;
+}
+
+li {
+    margin-bottom: 8px;
+}
+
+select, input:not([type="submit"]) {
+    width: fit-content !important;
+    flex-grow: 0.2 !important;
+}
+
+form {
+    width: fit-content;
+}
+
+form .submit-row {
+    border: none;
+}
+
+form div.help {
+    white-space: normal;
+    word-wrap: break-word;
+    /* unset width and set margin for word wrapping to work correctly */
+    width: unset !important;
+    margin: 10px 0px !important;
+}
+
+/* stop Django from overpadding right side of labels */
+label {
+    width: unset !important;
+    min-width: fit-content !important;
+}
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+    display: block;
+    filter: invert(1);
+}
+
+
+
+/* ============================================================ */
+
 .navbar {
     background-color: #2c3e50;
     padding: 10px 20px;
