@@ -5,7 +5,6 @@ import io
 from datetime import datetime, timezone
 from collections import defaultdict
 
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -14,15 +13,15 @@ from django.http import JsonResponse
 
 from .data_validators import validate_columns
 from .constants import Q7_PARTICIPATION_COLS, SURVEY_COLUMNS, Q6_PARTICIPATION_COLS
-from .models import Dataset, Response, RespondentAnswer, QuestionColumn, Option
+from .models import Dataset, Question, Response, RespondentAnswer, QuestionColumn, Option
 from accounts.models import School
 from .data_access_control import get_dashboard_queryset, get_response_queryset, can_view_raw, get_aggregate_scopes
 from .crosstab_builder import build_crosstab
-from .visualizations import build_crosstab_table, build_combined_crosstab_table, build_grouped_bar, build_participation_chart, build_top_selections
+from .visualizations import build_crosstab_table, build_combined_crosstab_table, build_grouped_bar, build_participation_chart, build_top_selections, build_aptitude_summary, build_career_cluster_top3, build_post_hs_conversations
+from core.decorators import role_required
 
-
-
-@staff_member_required  # only allow admin users access
+# TODO: stop dataset upload and check with user if too many duplicate response IDs are found
+@role_required('internal')  # only allow admin users access
 def upload_dataset(request):
     print("You are in upload_dataset!")
     context = {}
@@ -66,9 +65,9 @@ def upload_dataset(request):
 
 
 # TODO:
-#   disable object printing in delete view
+#   speed better but add fun little loading animation?
 #   make deleted datasets recoverable?
-@staff_member_required
+@role_required('internal')
 def confirm_import(request):
 
     # Retrieve file data stored in session during upload_dataset step
@@ -134,6 +133,8 @@ def confirm_import(request):
                             return datetime.strptime(raw, "%m/%d/%Y %H:%M:%S").replace(tzinfo=timezone.utc).isoformat()
                         elif cast == 'int':
                             return int(float(raw))
+                        elif cast == 'float':
+                            return float(raw)
                         elif cast == 'str':
                             return str(raw)
                     except (ValueError, TypeError):
@@ -142,8 +143,11 @@ def confirm_import(request):
                 imported_count = 0
                 skipped_duplicates = []
 
-                # TODO: Problem once stored datasets get larger
-                existing_response_ids = Response.objects.values_list('response_id', flat=True)
+                # Use set for faster lookups; grows during the loop to catch within-file duplicates too
+                existing_response_ids = set(Response.objects.values_list('response_id', flat=True))
+
+                responses_to_create = []
+                all_answer_kwargs = []
 
                 for raw_row in data_rows:
                     # Map each header to its cell value for this row
@@ -155,17 +159,19 @@ def confirm_import(request):
                         continue
 
                     # Skip duplicate responses and warn user — ResponseId is unique per survey submission
-                    if str(response_id) in existing_response_ids:
+                    response_id_str = str(response_id)
+                    if response_id_str in existing_response_ids:
                         print(f"Skipping duplicate ResponseId {response_id} in row with data {row_data}")  # log duplicate for debugging
-                        skipped_duplicates.append(str(response_id))
+                        skipped_duplicates.append(response_id_str)
                         continue
+                    existing_response_ids.add(response_id_str)  # prevent within-file duplicates too
 
                     # Build kwargs for Response and RespondentAnswer creation - use SURVEY_COLUMNS to determine field mapping and handling logic for each column
                     response_kwargs = {'dataset': dataset}
                     answer_kwargs_list = []
 
                     for column_header, column_config in SURVEY_COLUMNS.items():
-                        if column_header not in header_index:
+                        if column_config.get('skip') or column_header not in header_index:
                             continue
 
                         raw_value = row_data.get(column_header)
@@ -232,18 +238,26 @@ def confirm_import(request):
                     participated_q6 = any(row_data.get(col) in (1, '1', 1.0) for col in Q6_PARTICIPATION_COLS)
                     participated_q7 = any(row_data.get(col) in (1, '1', 1.0) for col in Q7_PARTICIPATION_COLS)
 
-                    response_kwargs['particip_career_prep_awareness']   = 'Yes' if participated_q6 else 'No'
-                    response_kwargs['particip_career_prep_exploration'] = 'Yes' if participated_q7 else 'No'
-                    response_kwargs['particip_career_prep_either']      = 'Yes' if (participated_q6 or participated_q7) else 'No'
+                    response_kwargs['particip_career_prep_awareness']   = True if participated_q6 else False
+                    response_kwargs['particip_career_prep_exploration'] = True if participated_q7 else False
+                    response_kwargs['particip_career_prep_either']      = True if (participated_q6 or participated_q7) else False
 
 
-                    # Create Response first since RespondentAnswer records reference it
-                    response = Response.objects.create(**response_kwargs)
-                    RespondentAnswer.objects.bulk_create([
-                        RespondentAnswer(response=response, **answer_kwargs)
-                        for answer_kwargs in answer_kwargs_list
-                    ])
-                    imported_count += 1 #track num rows sucessfully imported
+                    responses_to_create.append(Response(**response_kwargs))
+                    all_answer_kwargs.append(answer_kwargs_list)
+
+                # Bulk insert all responses in a single query - Django sets PKs on returned objects
+                created_responses = Response.objects.bulk_create(responses_to_create)
+
+                # Build and bulk insert all answers in a single query
+                answer_objects = []
+                for response, answer_kwargs_list in zip(created_responses, all_answer_kwargs):
+                    for kwargs in answer_kwargs_list:
+                        answer_objects.append(RespondentAnswer(response=response, **kwargs))
+                if answer_objects:
+                    RespondentAnswer.objects.bulk_create(answer_objects)
+
+                imported_count = len(created_responses)
 
                 # Update dataset row count now that all rows have been processed
                 dataset.row_count = imported_count
@@ -282,7 +296,7 @@ def confirm_import(request):
 
 
 
-@staff_member_required
+@role_required('internal')
 def dataset_detail(request, dataset_id):
 
     dataset = Dataset.objects.get(pk=dataset_id)
@@ -341,7 +355,7 @@ def dataset_detail(request, dataset_id):
         for column_header, column_config in SURVEY_COLUMNS.items():
             field_type = column_config['field_type']
 
-            if field_type in ('metadata', 'calculated'):
+            if field_type in ('metadata', 'calculated') and 'skip' not in column_config:
                 response_answers[response_id][column_header] = getattr(response, column_config['model_field'], '')
 
             elif field_type == 'school':

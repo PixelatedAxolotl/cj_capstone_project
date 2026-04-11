@@ -126,22 +126,22 @@ SURVEY_COLUMNS = {
     'Q20A': {
         'field_type': 'discard',
         'model_field': 'Q20A',
-        'skip': True,
+        'skip': True,   # removed from survey within first year - should not be used
     },
     'Q20B': {
         'field_type': 'discard',
         'model_field': 'Q20B',
-        'skip': True,
+        'skip': True,  # removed from survey within first year - should not be used
     },
     'Q20C': {
         'field_type': 'discard',
         'model_field': 'Q20C',
-        'skip': True,
+        'skip': True,   # removed from survey within first year - should not be used
     },
     'Q20D': {
         'field_type': 'discard',
         'model_field': 'Q20D',
-        'skip': True,
+        'skip': True,   # removed from survey within first year - should not be used
     },
 
     # ── Answer ───────────────────────────────────────────────────────────────
@@ -1564,11 +1564,11 @@ SURVEY_COLUMNS = {
         'field_type': 'calculated',
         'model_field': 'career_score_transportation',
     },
-    'AwarenessScore': {
+    'Career_Awareness': {
         'field_type': 'calculated',
         'model_field': 'awareness_score',
     },
-    'ExplorationScore': {
+    'Career_Exploration': {
         'field_type': 'calculated',
         'model_field': 'exploration_score',
     },
@@ -1583,6 +1583,18 @@ SURVEY_COLUMNS = {
     'Q7R': {
         'field_type': 'calculated',
         'model_field': 'particip_career_prep_exploration',
+    },
+    'AwarenessScore': {
+        'field_type': 'calculated',
+        'skip': True,  # duplicate of Career_Awareness
+    },
+    'ExplorationScore': {
+        'field_type': 'calculated',
+        'skip': True,  # duplicate of Career_Exploration
+    },
+    'CareerPrepScore': {
+        'field_type': 'calculated',
+        'model_field': 'career_prep_score',
     },
 }
 
@@ -1605,7 +1617,7 @@ METADATA_FIELD_MAP = {
 CALCULATED_FIELD_MAP = {
     cfg['model_field']: col
     for col, cfg in SURVEY_COLUMNS.items()
-    if cfg['field_type'] == 'calculated'
+    if cfg['field_type'] == 'calculated' and not cfg.get('skip')
 }
 
 

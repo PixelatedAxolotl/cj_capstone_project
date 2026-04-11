@@ -6,13 +6,32 @@ from django.contrib.auth.admin import UserAdmin
 from accounts.models import User, School, User_Group
 
 #dataset imports
-from datasets.models import Dataset, Response, RespondentAnswer
+from datasets.models import Dataset, Question, Response, RespondentAnswer
 from django.shortcuts import redirect
 from django.db import transaction
 
-# Register your models here.
+# TODO: add ability for regular users to reset their own passwords
 # Unregister the default Group model so it is hidden from the admin interface
 admin.site.unregister(AuthGroup)
+admin.site.enable_nav_sidebar = False
+
+
+class InternalRolePermissionMixin:
+    """Grant full admin permissions to internal role users and superusers, deny everyone else."""
+    def _is_internal(self, request):
+        return request.user.is_superuser or getattr(request.user, 'role', '').lower() == 'internal'
+
+    def has_view_permission(self, request, obj=None):
+        return self._is_internal(request)
+
+    def has_change_permission(self, request, obj=None):
+        return self._is_internal(request)
+
+    def has_add_permission(self, request):
+        return self._is_internal(request)
+
+    def has_delete_permission(self, request, obj=None):
+        return self._is_internal(request)
 
 
 # subclass ReadOnlyPasswordHashWidget to customize the password field display in the admin interface
@@ -23,7 +42,7 @@ class CustomReadOnlyPasswordHashWidget(ReadOnlyPasswordHashWidget):
         return context
 
 
-class CustomUserAdmin(UserAdmin):
+class CustomUserAdmin(InternalRolePermissionMixin, UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name', 'email')}),
@@ -74,11 +93,8 @@ class CustomUserAdmin(UserAdmin):
 
         return form
 
-# class SchoolAdmin(admin.ModelAdmin):
 
-
-
-class DatasetAdmin(admin.ModelAdmin):
+class DatasetAdmin(InternalRolePermissionMixin, admin.ModelAdmin):
     # Redirect any attempt to access the default add form and instead load custom upload dataset view
     def add_view(self, request, form_url='', extra_context=None):
         return redirect('upload_dataset')
@@ -95,12 +111,7 @@ class DatasetAdmin(admin.ModelAdmin):
         """
         dataset_ids = [obj.pk for obj in objs]
 
-        # Check permissions for each model being deleted
         perms_needed = set()
-        if not request.user.has_perm('datasets.delete_response'):
-            perms_needed.add('Response')
-        if not request.user.has_perm('datasets.delete_respondentanswer'):
-            perms_needed.add('RespondentAnswer')
 
         # get counts to display to the user for delete confirmation
         summary = []
@@ -127,7 +138,22 @@ class DatasetAdmin(admin.ModelAdmin):
             Response.objects.filter(dataset_id__in=dataset_ids)._raw_delete(using='default')
             queryset._raw_delete(using='default')
 
+class QuestionAdmin(InternalRolePermissionMixin, admin.ModelAdmin):
+    list_display  = ('label', 'question_type', 'can_crosstab', 'crosstab_label')
+    list_editable = ('can_crosstab', 'crosstab_label')
+    list_filter   = ('question_type', 'can_crosstab')
+    search_fields = ('label', 'crosstab_label')
+
+class SchoolAdmin(InternalRolePermissionMixin, admin.ModelAdmin):
+    pass
+
+class UserGroupAdmin(InternalRolePermissionMixin, admin.ModelAdmin):
+    pass
+
+
+# register models
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(School)
-admin.site.register(User_Group)
+admin.site.register(School, SchoolAdmin)
+admin.site.register(User_Group, UserGroupAdmin)
 admin.site.register(Dataset, DatasetAdmin)
+admin.site.register(Question, QuestionAdmin)

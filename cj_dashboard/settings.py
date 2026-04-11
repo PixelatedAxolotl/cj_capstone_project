@@ -65,7 +65,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'core.middleware.RoleBasedAccessMiddleware',  # custom middleware to handle role-based access control and unauthorized access redirects
 ]
 
 ROOT_URLCONF = 'cj_dashboard.urls'

@@ -28,9 +28,10 @@ class School(models.Model):
         return self.name
 
 # AbstractUser to keep default functions of pass hashing, permissions, and admin interface
+# TODO: add warning message when user selects internal role saying this will give them admin access 
 class User(AbstractUser):
     ROLE_CHOICES = [
-        ('internal', 'Internal'),
+        ('internal', 'Career Jam Admin'),
         ('school_admin', 'School Administrator'),
         ('sponsor', 'Sponsor'),
     ]
@@ -43,6 +44,10 @@ class User(AbstractUser):
         on_delete=models.SET_NULL,
         related_name='administrators'
     )
+
+    def save(self, *args, **kwargs):
+        self.is_staff = (self.role == 'internal')
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.username
