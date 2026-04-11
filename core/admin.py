@@ -19,9 +19,7 @@ admin.site.unregister(AuthGroup)
 class CustomReadOnlyPasswordHashWidget(ReadOnlyPasswordHashWidget):
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context['summary'] = [
-            {'label': 'Some Text Here'}
-        ]
+        context['summary'] = []
         return context
 
 
@@ -43,15 +41,36 @@ class CustomUserAdmin(UserAdmin):
 
     class Media:
         js = ('admin/js/user_admin.js',)
+        css = {
+            'all': ('css/admin/global.css',)
+        }
+
+    # overrides Django default to get rid of view and delete buttons next to School
+    # when school model field embedded in change forms (ex: user change form)
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        formfield = super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == 'school' and formfield and hasattr(formfield.widget, 'can_delete_related'):
+            formfield.widget.can_delete_related = False
+            formfield.widget.can_view_related = False
+        return formfield
+
+    def save_model(self, request, obj, form, change):
+        obj.is_staff = (obj.role == 'internal')
+        super().save_model(request, obj, form, change)
 
     # Override get_form to add help text for username field
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if 'username' in form.base_fields:
-            form.base_fields['username'].help_text = 'Username should be unique and related to the institution the user is affiliated with (e.g. alb_high_admin1 for a school admin at Albany High School)'
+            form.base_fields['username'].help_text = ("Username should be unique and related to the institution the user is affiliated with (e.g. alb_high_admin1 for a school admin at Albany High School)")
 
-        # if 'password' in form.base_fields:
-        #     form.base_fields['password'].widget = CustomReadOnlyPasswordHashWidget()
+        if 'password' in form.base_fields:
+            form.base_fields['password'].help_text = """Passwords are encrypted for security, so there is no way to see the user's password.
+                                                        If a user has lost their password, you can set a new password for them here"""
+
+        if 'is_active' in form.base_fields:
+            form.base_fields['is_active'].help_text = """Uncheck active status to disable user credentials.
+                                                      User will not be able to login or access the dashboard unless you reactive their credentials."""
 
         return form
 

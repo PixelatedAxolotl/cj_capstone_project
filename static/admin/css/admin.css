@@ -1,53 +1,80 @@
-/* Apply to all main content */
-:root {
-    --primary-font: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    --default-font-size: 16px;
-}
 
-body, th, td, p, li {
-    font-family: var(--primary-font) !important;
-    font-size: var(--default-font-size) !important;
-}
 
-h1 {
-    font-size: 24px;
-    margin-bottom: 16px;
-    justify-content: center;
-}
-
-li {
-    margin-bottom: 8px;
-}
-
-/* But make it tabs tho */
+/* Tab navigation */
 .tab-nav {
-    display: inline-block;
+    display: flex;
+    gap: 4px;
     width: 100%;
+    margin-bottom: 0;
+    padding-bottom: 0;
+
+    /* help make tab borders seemless */
+    border-bottom: 2px solid var(--accent-navy);
+    margin-top: -1px;
 }
 
 .tab-button {
-    padding: 8px 16px;
+    padding: 8px 20px;
     cursor: pointer;
-    background: #417690;
-    font-size: 16px;
+    background: none;
+    color: var(--text-secondary);
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: -2px;
+    border-radius: 4px 4px 0 0;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+
+    /* help make tab borders seemless */
+    border: 1px solid var(--accent-navy);
+    border-bottom: none;
 }
 
-#action-btn {
-    float: right;
-    width:200px;
+.tab-button:hover {
+    color: var(--accent-blue);
+    background: rgba(43, 126, 194, 0.08);
 }
 
 .tab-button.active {
-    background: #417690;
-    border-bottom: 1px solid #fff;
-    margin-bottom: -1px;
-    z-index: 1;
-    font-weight: bold;
+    background: var(--accent-blue);
+    font-weight: 700;
+    color: var(--text-dark-bg)
+}
+
+/* Create New button — tab-styled with orange accent */
+#create-new {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto;
+    padding: 8px 20px;
+    background: var(--accent-orange);
+    color: var(--text-dark-bg);
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-bottom:  2px solid var(--accent-navy);
+    margin-bottom: -2px;
+    border-radius: 4px 4px 0 0;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+#create-new:hover {
+    color: var(--accent-orange);
+    border-bottom-color: var(--accent-orange);
+    background: rgba(240, 113, 40, 0.08);
+}
+
+#create-new img {
+    width: 25px;
+    height: 25px;
+    /* filter: invert(52%) sepia(72%) saturate(700%) hue-rotate(349deg) brightness(103%) contrast(95%); */
 }
 
 .tab-content {
     display: none;
-    border: 1px solid #ccc;
+    border: 1px solid var(--plotly-grid);
     overflow-x: auto;
 }
 
@@ -62,35 +89,39 @@ li {
     text-align: left;
     font-size: var(--default-font-size);
     padding: 4px 16px;
-    background: #417690;
     text-transform: none;
     font-weight: normal;
     margin: 0;
 }
 
-.tab-table th {
-    background: #417690;
+.tab-table caption, p.help, .tab-table th {
+    background: var(--accent-blue);
+    color: var(--text-primary);
+}
+
+/* help make tab borders seemless */
+.tab-table caption{
+    border-left: 1px solid var(--accent-navy);
 }
 
 .tab-table td, .tab-table th {
     padding: 8px 12px;
-    border-bottom: 1px solid #eee;
-    border-left: 1px solid #244150;
+    border-bottom: 1px solid var(--plotly-grid);
+    border-left: 1px solid var(--accent-navy);
     white-space: nowrap;
-
 }
 
 .tab-table tr:focus, .tab-table tr:hover {
-    background: #417690;
-    outline: 2px solid #244150;
+    background: var(--accent-blue);
+    color: var(--text-primary);
     cursor: pointer;
 }
 
-/* style action column differently - relies on action col always being rightmost col*/
+/* style action column differently - relies on action col always being rightmost col */
 .tab-table th:last-child, .tab-table td:last-child {
-    background: #244150;
+    /* background: var(--accent-navy);
+    color: white; */
     width: 20px;
-   
 }
 
 /* style action buttons */
@@ -107,7 +138,26 @@ li {
     padding: 4px;
 }
 
+.action-btn img {
+    width: 26px;
+}
+
+#edit-btn img{
+    filter: brightness(0) saturate(100%) invert(42%) sepia(45%) saturate(1550%) hue-rotate(177deg) brightness(87%) contrast(78%);
+}
+
+#delete-btn img {
+    filter: brightness(0) saturate(100%) invert(54%) sepia(68%) saturate(3157%) hue-rotate(348deg) brightness(101%) contrast(88%);
+
+}
+
 .action-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
+}
+
+/* Dark mode — plotly-grid variable already adapts borders; only override hover outline */
+[data-theme="dark"] .tab-table tr:focus,
+[data-theme="dark"] .tab-table tr:hover {
+    outline-color: rgba(255, 255, 255, 0.15);
 }
