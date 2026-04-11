@@ -1,59 +1,79 @@
 <!-- dashboard.html -->
+<!-- TODO: lazy load imgs to speed up inital page load - convert to svgs? -->
 {% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/summary_dashboard.css' %}">
+<script src="https://cdn.plot.ly/plotly-3.5.0.min.js" charset="utf-8"></script>
+<script src="{% static 'admin/js/plotly_config.js' %}"></script>
+
+
+{% endblock %}
 
 {% block content %}
 
-<!-- TODO: make filter options sticky? -->
-<h2>Dashboard</h2>
+<h2>Summary Dashboard</h2>
 
 <div id="dashboard-message" style="display:none;"></div>
-<label for="group-filter">Group:</label>
-<select id="group-filter">
-    <!-- list available groups and schools based on user permissions -->
-    <option value="all">All</option>
-    {% if not is_global %}
-        <option value="my">My School Only</option>
-    {% endif %}
-    {% for g in groups %}
-        <option value="group_{{ g.school__groups__id }}">
-            {{ g.school__groups__name }}
-        </option>
-    {% endfor %}
-    {% if is_global %}
-        {% for s in schools %}
-            <option value="school_{{ s.school__id }}">
-                {{ s.school__name }}
-            </option>
-        {% endfor %}
-    {% endif %}
-</select>
-
-<label for="year-filter">Year:</label>
-<select id="year-filter">
-    <option value="all">All</option>
-    {% for year in years %}
-        <option value="{{ year }}">{{ year }}</option>
-    {% endfor %}
-</select>
-
-<div>
-    <label for="mode">Display</label><br>
-    <select id="mode">
-        <option value="counts">Count</option>
-        <option value="percentages">Percentage</option>
-    </select>
-</div>
+<p>Explore a summary of insights for {% if is_global %}all schools{% else %}{{ request.user.school.name }}{% endif %}.
+   Use the filters below to customize the summary based on specific regional or domographic groups
+   {% if not is_global %}your school is a part of{% endif %}, as well as by time period in which the survey was taken.
+   You can also toggle between viewing data as numbers of students or as percentages.
+</p>
+<aside id="filter-bar">
+    <div>
+        <label for="group-filter">Group:</label>
+        <select id="group-filter">
+            <!-- list available groups and schools based on user permissions -->
+            <option value="all">All</option>
+            {% if not is_global %}
+                <option value="my">My School Only</option>
+            {% endif %}
+            {% for g in groups %}
+                <option value="group_{{ g.school__groups__id }}">
+                    {{ g.school__groups__name }}
+                </option>
+            {% endfor %}
+            {% if is_global %}
+                {% for s in schools %}
+                    <option value="school_{{ s.school__id }}">
+                        {{ s.school__name }}
+                    </option>
+                {% endfor %}
+            {% endif %}
+        </select>
+    </div>
+    <div>
+        <label for="year-filter">Year:</label>
+        <select id="year-filter">
+            <option value="all">All</option>
+            {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
+        <label for="mode">Display:</label>
+        <select id="mode">
+            <option value="counts">Count</option>
+            <option value="percentages">Percentage</option>
+        </select>
+    </div>
+</aside>
 
 <div id="plans-chart"></div>
 
-<div style="display: flex; gap: 32px; align-items: flex-start;">
-    <div id="participation-chart" style="flex: 1;"></div>
-    <div id="participation-summary" style="flex: 1; padding-top: 40px;"></div>
+<div id="participation-section">
+    <div id="participation-chart"></div>
+    <div id="participation-summary"></div>
+    <div id="conversations-section"></div>
 </div>
 
 <div id="top-selections"></div>
 
-<script src="https://cdn.plot.ly/plotly-3.5.0.min.js" charset="utf-8"></script>
+<div id="aptitude-cluster-section"></div>
 
 
 
@@ -79,79 +99,187 @@ async function loadDashboard() {
     messageEl.style.display = "none";
     chartEl.style.display = "block";
 
-    Plotly.newPlot(
+    await Plotly.newPlot(
         "plans-chart",
         data.plans_vs_grade.data,
         data.plans_vs_grade.layout,
-        { responsive: true }
+        plotConfig
     );
+    applyPlotlyTheme("plans-chart");
 
-Plotly.newPlot(
-    'participation-chart',
-    data.participation.figure.data,
-    data.participation.figure.layout,
-    { responsive: true }
-);
+    await Plotly.newPlot(
+        'participation-chart',
+        data.participation.figure.data,
+        data.participation.figure.layout,
+        plotConfig
+    );
+    applyPlotlyTheme('participation-chart');
 
     // Breakdown list
     const p = data.participation;
     const val = (item) => mode === 'counts' ? item.count : `${item.pct}%`;
     document.getElementById('participation-summary').innerHTML = `
-        <strong>${p.total_pct}% of students participated in career preparation activities</strong>
-
-        <p><strong>Career Awareness Activities</strong></p>
-        <ul>
-            ${p.breakdown.awareness.map(a => `<li>${a.label}: ${val(a)}</li>`).join('')}        </ul>
-
-        <p><strong>Career Exploration Activities</strong></p>
-        <ul>
-            ${p.breakdown.exploration.map(a => `<li>${a.label}: ${val(a)}</li>`).join('')}
-            </ul>
-            `;
+        <h3>${p.total_pct}% of students participated in career preparation activities</h3>
+        <div id="participation-breakdown">
+            <div>
+                <h4>Career Awareness Activities</h4>
+                <ul>
+                    ${p.breakdown.awareness.map(a => `<li>${a.label}: ${val(a)}</li>`).join('')}
+                </ul>
+            </div>
+            <div>
+                <h4>Career Exploration Activities</h4>
+                <ul>
+                    ${p.breakdown.exploration.map(a => `<li>${a.label}: ${val(a)}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+    `;
 
     renderTopSelections(data.top_interests, data.top_skills, data.top_traits, mode);
+    renderAptitudeAndClusters(data.aptitude, data.cluster_top3);
+    renderConversations(data.conversations, mode);
 }
 
 
 function renderTopSelections(interests, skills, traits, mode) {
     const val = (item) => mode === 'counts' ? item.count : `${item.pct}%`;
 
-    const render = (items, imageDir) =>
+    const renderPanel = (items, imageDir) =>
         items.map(item => `
-            <div style="text-align: center; flex: 1;">
+            <div class="top-item">
                 <img src="/static/admin/images/${imageDir}/${item.slug}.png"
-                     alt="${item.label}" style="height: 60px; margin-bottom: 8px;"><br>
-                <span>${item.label}</span><br>
-                <strong>${val(item)}</strong>
+                     alt="${item.label}">
+                <span class="top-item-label">${item.label}</span>
+                <strong class="top-item-value">${val(item)}</strong>
             </div>
         `).join('');
 
+    const categories = [
+        { key: 'interests', label: 'Top Interests', items: interests, dir: 'interests' },
+        { key: 'skills',    label: 'Top Skills',    items: skills,    dir: 'skills'    },
+        { key: 'traits',    label: 'Top Traits',    items: traits,    dir: 'traits'    },
+    ];
+
     document.getElementById('top-selections').innerHTML = `
-        <div style="display: flex; gap: 32px; margin-top: 32px;">
-            <div style="flex: 1; padding: 24px; border-radius: 8px;">
-                <h2>Top Interests</h2>
-                <div style="display: flex; gap: 16px; margin-top: 16px;">
-                    ${render(interests, 'interests')}
-                </div>
+        <div id="top-selections-widget">
+            <div id="top-tabs">
+                ${categories.map((c, i) => `
+                    <button class="top-tab${i === 0 ? ' active' : ''}" data-key="${c.key}">
+                        ${c.label}
+                    </button>
+                `).join('')}
             </div>
-            <div style="flex: 1; padding: 24px; border-radius: 8px;">
-                <h2>Top Skills</h2>
-                <div style="display: flex; gap: 16px; margin-top: 16px;">
-                    ${render(skills, 'skills')}
-                </div>
-            </div>
-            <div style="flex: 1; padding: 24px; border-radius: 8px;">
-                <h2>Top Traits</h2>
-                <div style="display: flex; gap: 16px; margin-top: 16px;">
-                    ${render(traits, 'traits')}
-                </div>
+            <div id="top-panels">
+                ${categories.map((c, i) => `
+                    <div class="top-panel${i === 0 ? ' open' : ''}" id="panel-${c.key}">
+                        <h4 class="top-panel-heading">${c.label}</h4>
+                        <div class="top-panel-inner">
+                            ${renderPanel(c.items, c.dir)}
+                        </div>
+                    </div>
+                `).join('')}
             </div>
         </div>
+    `;
+
+    document.querySelectorAll('.top-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const key = tab.dataset.key;
+            document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.top-panel').forEach(p => p.classList.remove('open'));
+            tab.classList.add('active');
+            document.getElementById(`panel-${key}`).classList.add('open');
+        });
+    });
+}
+
+function renderConversations(conv, mode) {
+    const el = document.getElementById('conversations-section');
+    if (!conv) { el.innerHTML = ''; return; }
+
+    const val = (item) => mode === 'counts' ? item.count : `${item.pct}%`;
+
+    const renderTop2 = (items) => items.map(item => `
+        <div class="conv-item">
+            <span class="conv-item-label">${item.label}</span>
+            <strong class="conv-item-value">${val(item)}</strong>
+        </div>
+    `).join('');
+
+    const headline = mode === 'counts'
+        ? `${conv.talked_count} students have spent time talking to someone about their plans after high school`
+        : `${conv.talked_pct}% of students have spent time talking to someone about their plans after high school`;
+
+    el.innerHTML = `
+            <h3 class="conv-headline">${headline}</h3>
+            <div id="conv-breakdown">
+                <div class="conv-group">
+                    <h4>Who they talked to</h4>
+                    ${renderTop2(conv.who_talked_to)}
+                </div>
+                <div class="conv-group">
+                    <h4>Who they talk to the most</h4>
+                    ${renderTop2(conv.most_time)}
+                </div>
+                <div class="conv-group">
+                    <h4>Biggest influence</h4>
+                    ${renderTop2(conv.biggest_influence)}
+                </div>
+            </div>
     `;
 }
 
 
+function renderAptitudeAndClusters(aptitude, clusters) {
+    const aptitudeItems = [
+        { key: 'verbal',    label: 'Verbal' },
+        { key: 'spatial',   label: 'Spatial' },
+        { key: 'cognitive', label: 'Cognitive' },
+        { key: 'numerical', label: 'Numerical' },
+    ];
 
+    const aptitudeHTML = `
+        <div id="aptitude-section">
+            <h3 class="section-heading">Average Aptitude Scores</h3>
+            <div id="aptitude-scores">
+                ${aptitudeItems.map(a => `
+                    <div class="aptitude-item">
+                        <img src="/static/admin/images/aptitudes/${a.key}.png"
+                             alt="${a.label}">
+                        <span class="aptitude-label">${a.label}</span>
+                        <span class="aptitude-score">${aptitude[a.key]} out of 20</span>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    const clustersHTML = `
+        <div id="cluster-top3-section">
+            <h3 class="section-heading">Overall Top Three Career Cluster Matches</h3>
+            <div id="cluster-top3-items">
+                ${clusters.map((c, i) => `
+                    <div class="cluster-item">
+                        <img src="/static/admin/images/career-clusters/${c.slug}.png"
+                             alt="${c.label}">
+                        <div class="cluster-rank">#${i + 1}</div>
+                        <div class="cluster-body">
+                            <span class="cluster-name">${c.label}</span>
+                            ${c.grade_callouts.length ? `
+                                <div class="cluster-callout">
+                                    #1 with ${c.grade_callouts.join(' and ')} students
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+
+    document.getElementById('aptitude-cluster-section').innerHTML = aptitudeHTML + clustersHTML;
+}
 
 
 document.getElementById("group-filter").addEventListener("change", loadDashboard);

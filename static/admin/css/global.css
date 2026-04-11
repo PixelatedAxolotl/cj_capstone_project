@@ -26,6 +26,10 @@
     --object-tools-bg:         var(--accent-blue);
     --object-tools-hover-bg:   #1a6aad;
 
+    --accent-navy:    #133973;
+    --accent-blue:    #2B7EC2;
+    --accent-orange:  #f07128;
+
     /* keep delete/close buttons recognisable */
     --delete-button-bg:        #ba2121;
     --delete-button-hover-bg:  #a41515;
@@ -48,11 +52,9 @@
     --border-color:   var(--accent-navy);
     --hairline-color: var(--accent-navy);
     --text-primary:   #1a2332;
-    --text-secondary: #4a5568;
+    --text-secondary: #e8ecf0;
 
-    --accent-navy:    #133973;
-    --accent-blue:    #2B7EC2;
-    --accent-orange:  #f07128;
+
 
     /* plotly chart colors */
     --plotly-bg:          #f4f6f9;
@@ -79,10 +81,6 @@ html[data-theme="dark"] {
     --text-primary:   #e8ecf0;
     --text-secondary: #a8b8cc;
 
-    --accent-navy:    #133973;
-    --accent-blue:    #2B7EC2;
-    --accent-orange:  #f07128;
-
     /* plotly chart colors */
     --plotly-bg:          #061223;
     --plotly-grid:        #2a3d55;
@@ -104,10 +102,6 @@ html[data-theme="dark"] {
         --bg-page:        #061223;
         --text-primary:   #e8ecf0;
         --text-secondary: #a8b8cc;
-
-        --accent-navy:    #133973;
-        --accent-blue:    #2B7EC2;
-        --accent-orange:  #f07128;
 
         /* plotly chart colors */
         --plotly-bg:          #061223;
@@ -192,17 +186,18 @@ label {
 /* ============================================================ */
 
 .navbar {
-    background-color: #2c3e50;
+    background-color: var(--accent-navy);
     padding: 10px 20px;
     display: flex;
     gap: 20px;
 }
 
+/* important overrides default underline added to links by Django */
 .navbar a, .navbar form button {
     color: white;
-    text-decoration: none;
+    text-decoration: none !important;
     font-weight: bold;
-    font-size: 13px;
+    font-size: var(--default-font-size);
     background: none;
     border: none;
     cursor: pointer;
@@ -210,6 +205,26 @@ label {
 
 .navbar a:hover, .navbar form button:hover {
     text-decoration: underline;
+}
+
+/* theme toggle button */
+#theme-toggle {
+    margin-left: auto;
+    color: white;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+#theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: white;
 }
 
 /* overwrite Djangodefault side nav bar styles */
