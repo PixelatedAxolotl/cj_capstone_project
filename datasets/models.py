@@ -148,12 +148,13 @@ class Response(models.Model):
     career_score_transportation = models.IntegerField(null=True, blank=True)
 
     # Overall scores
-    awareness_score = models.FloatField(null=True, blank=True)
-    exploration_score = models.FloatField(null=True, blank=True)
+    awareness_score = models.FloatField(null=True, blank=True)      # Raw score: 1pt per awareness question marked "yes"
+    exploration_score = models.FloatField(null=True, blank=True)    # Raw score: 1pt per exploration question marked "yes"
+    career_prep_score = models.FloatField(null=True, blank=True)    # Raw score: sum of awareness + exploration scores
 
-    particip_career_prep_awareness   = models.CharField(max_length=3, null=True, blank=True)
-    particip_career_prep_exploration = models.CharField(max_length=3, null=True, blank=True)
-    particip_career_prep_either      = models.CharField(max_length=3, null=True, blank=True)
+    particip_career_prep_awareness   = models.BooleanField(null=True, blank=True)  # whether they participated in any awareness activities
+    particip_career_prep_exploration = models.BooleanField(null=True, blank=True)  # whether they participated in any exploration activities
+    particip_career_prep_either      = models.BooleanField(null=True, blank=True)  # whether they participated in either awareness or exploration activities
 
 
     def __str__(self):

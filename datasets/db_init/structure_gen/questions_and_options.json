@@ -5,7 +5,9 @@
     "fields": {
       "label": "What types of activities do you do in your free time? Please select ALL that apply.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Free Time Activities"
     }
   },
   {
@@ -14,7 +16,9 @@
     "fields": {
       "label": "Of those activities, which two do you enjoy doing the most?",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
@@ -23,7 +27,9 @@
     "fields": {
       "label": "What type of career awareness activities have you done? Please check ALL that apply.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Career Awareness Activities Done"
     }
   },
   {
@@ -32,7 +38,9 @@
     "fields": {
       "label": "What type of career exploration activities have you done? Please check ALL that apply.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Career Exploration Activities Done"
     }
   },
   {
@@ -41,7 +49,9 @@
     "fields": {
       "label": "Where have you participated in career awareness or exploration activities? Please check ALL that apply.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Where Career Activities Occurred"
     }
   },
   {
@@ -50,7 +60,9 @@
     "fields": {
       "label": "What industry or career areas interest you most? Please check ALL that apply.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Career Interest Areas"
     }
   },
   {
@@ -59,7 +71,9 @@
     "fields": {
       "label": "Who have you spent time talking with about your plans for after high school? Please select ALL that apply.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "People Talked With About Plans"
     }
   },
   {
@@ -68,7 +82,9 @@
     "fields": {
       "label": "Imagining your life after graduating high school, which of the following do you want to do? Please select ALL that apply.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Post-Grad Plans (Student)"
     }
   },
   {
@@ -77,7 +93,9 @@
     "fields": {
       "label": "Imagining your life after graduating high school, what does your caregiver want you to do? Please select ALL that apply.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Post-Grad Plans (Caregiver)"
     }
   },
   {
@@ -86,7 +104,9 @@
     "fields": {
       "label": "Imagining your life after graduating high school, which of the following do you plan to do? Please select ALL that apply.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Planned Post-Grad Path"
     }
   },
   {
@@ -95,7 +115,9 @@
     "fields": {
       "label": "Who do you live with? Please check ALL that apply.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Living Situation"
     }
   },
   {
@@ -104,7 +126,9 @@
     "fields": {
       "label": "This next set of questions will ask about your interest in a variety of areas. Please mark whether you LIKE that activity.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
@@ -113,7 +137,9 @@
     "fields": {
       "label": "This next set of questions will ask about your interest in a variety of areas. Please mark whether you DISLIKE that activity.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
@@ -122,7 +148,9 @@
     "fields": {
       "label": "Of those activities you like, please select your top activities. Please select up to THREE activities.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Top Interest Activities"
     }
   },
   {
@@ -131,7 +159,9 @@
     "fields": {
       "label": "Of the skills you are good at, please select up to THREE activities you are the BEST at.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Top Skills"
     }
   },
   {
@@ -140,7 +170,9 @@
     "fields": {
       "label": "Please finish this sentence: \"I am the type of person who is/is a _____.\" Select all that apply. - This IS true about me.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
@@ -149,7 +181,9 @@
     "fields": {
       "label": "Please finish this sentence: \"I am the type of person who is/is a _____.\" Select all that apply. - This is NOT true about me.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
@@ -158,7 +192,9 @@
     "fields": {
       "label": "Of those characteristics that describe you, please select up to THREE that describe you best.",
       "question_type": "binary",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Top Personal Traits"
     }
   },
   {
@@ -167,7 +203,9 @@
     "fields": {
       "label": "Please finish this sentence: \"I am the type of person who is/is a _____.\" - Selection order - This IS true about me.",
       "question_type": "rank",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
@@ -176,7 +214,9 @@
     "fields": {
       "label": "Please finish this sentence: \"I am the type of person who is/is a _____.\" - Selection order - This is NOT true about me.",
       "question_type": "rank",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
@@ -185,7 +225,9 @@
     "fields": {
       "label": "Solving problems",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Solving Problems"
     }
   },
   {
@@ -194,7 +236,9 @@
     "fields": {
       "label": "Following directions",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Following Directions"
     }
   },
   {
@@ -203,7 +247,9 @@
     "fields": {
       "label": "Verbal communications",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Verbal Communications"
     }
   },
   {
@@ -212,7 +258,9 @@
     "fields": {
       "label": "Organizing",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Organizing"
     }
   },
   {
@@ -221,7 +269,9 @@
     "fields": {
       "label": "Listening",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Listening"
     }
   },
   {
@@ -230,7 +280,9 @@
     "fields": {
       "label": "Handling change",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Handling Change"
     }
   },
   {
@@ -239,7 +291,9 @@
     "fields": {
       "label": "Keeping things orderly",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Keeping Things Orderly"
     }
   },
   {
@@ -248,7 +302,9 @@
     "fields": {
       "label": "Being competitive",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Being Competitive"
     }
   },
   {
@@ -257,7 +313,9 @@
     "fields": {
       "label": "Being careful",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Being Careful"
     }
   },
   {
@@ -266,7 +324,9 @@
     "fields": {
       "label": "Being outgoing",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Being Outgoing"
     }
   },
   {
@@ -275,7 +335,9 @@
     "fields": {
       "label": "Using logic",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Using Logic"
     }
   },
   {
@@ -284,7 +346,9 @@
     "fields": {
       "label": "Being persistent",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Being Persistent"
     }
   },
   {
@@ -293,7 +357,9 @@
     "fields": {
       "label": "Being dependable",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Being Dependable"
     }
   },
   {
@@ -302,7 +368,9 @@
     "fields": {
       "label": "Being observant",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Being Observant"
     }
   },
   {
@@ -311,7 +379,9 @@
     "fields": {
       "label": "Self-motivation",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Self-Motivation"
     }
   },
   {
@@ -320,7 +390,9 @@
     "fields": {
       "label": "Being detail-oriented",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Being Detail-Oriented"
     }
   },
   {
@@ -329,7 +401,9 @@
     "fields": {
       "label": "Being part of a team",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Being Part of a Team"
     }
   },
   {
@@ -338,7 +412,9 @@
     "fields": {
       "label": "Planning things",
       "question_type": "scale",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Skill Rating: Planning Things"
     }
   },
   {
@@ -347,7 +423,9 @@
     "fields": {
       "label": "I understand the material that I read.",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Aptitude: Reading Comprehension"
     }
   },
   {
@@ -356,7 +434,9 @@
     "fields": {
       "label": "I enjoy projects where I have to build things.",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Aptitude: Building Things"
     }
   },
   {
@@ -365,7 +445,9 @@
     "fields": {
       "label": "I like to figure out how pieces and parts fit together.",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Aptitude: Spatial Reasoning"
     }
   },
   {
@@ -374,7 +456,9 @@
     "fields": {
       "label": "I can figure out how far objects are apart.",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Aptitude: Estimating Distance"
     }
   },
   {
@@ -383,7 +467,9 @@
     "fields": {
       "label": "I can remember what I learned in class.",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Aptitude: Retention/Memory"
     }
   },
   {
@@ -392,7 +478,9 @@
     "fields": {
       "label": "I can analyze word problems.",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Aptitude: Analytical (Word Problems)"
     }
   },
   {
@@ -401,7 +489,9 @@
     "fields": {
       "label": "I can solve complex math equations in the correct order.",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Aptitude: Numerical (Math)"
     }
   },
   {
@@ -410,7 +500,9 @@
     "fields": {
       "label": "I compare information when making decisions.",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Aptitude: Decision Making"
     }
   },
   {
@@ -419,7 +511,9 @@
     "fields": {
       "label": "I enjoy rearranging furniture in my room.",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Aptitude: Spatial Awareness"
     }
   },
   {
@@ -428,7 +522,9 @@
     "fields": {
       "label": "Of those, who would you say you have spent the most time talking about your future plans?",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Primary Advisor on Future Plans"
     }
   },
   {
@@ -437,7 +533,9 @@
     "fields": {
       "label": "Who would you say has had the greatest influence on your future plans?",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Greatest Influence on Future Plans"
     }
   },
   {
@@ -446,7 +544,9 @@
     "fields": {
       "label": "Imagining your life after high school, do you see yourself living in the area, or moving away?",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Plans After High School"
     }
   },
   {
@@ -455,7 +555,9 @@
     "fields": {
       "label": "Imagining your life between the ages of 22 and 26 years of age, what amount of money do you see yourself earning per year?",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Salary Goals"
     }
   },
   {
@@ -464,7 +566,9 @@
     "fields": {
       "label": "How many parents or caregivers do you live with?",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Number of Caregivers"
     }
   },
   {
@@ -473,7 +577,9 @@
     "fields": {
       "label": "What grade are you in?",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Grade Level"
     }
   },
   {
@@ -482,7 +588,9 @@
     "fields": {
       "label": "Do you live in an urban (city), suburban (the suburbs), or rural (the country) area?",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Community Type"
     }
   },
   {
@@ -491,7 +599,9 @@
     "fields": {
       "label": "Thinking about learning both at school and outside of school, which of the following best describes how you learn?",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Learning Style"
     }
   },
   {
@@ -500,70 +610,86 @@
     "fields": {
       "label": "Please use the slider to show your letter grade average.",
       "question_type": "single_choice",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": true,
+      "crosstab_label": "Letter Grade Average"
     }
   },
   {
     "model": "datasets.question",
     "pk": 57,
     "fields": {
-      "label": "Someone else (specify) - Text",
+      "label": "Someone else",
       "question_type": "free_text",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
     "model": "datasets.question",
     "pk": 58,
     "fields": {
-      "label": "Someone else (specify) - Text",
+      "label": "Someone else",
       "question_type": "free_text",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
     "model": "datasets.question",
     "pk": 59,
     "fields": {
-      "label": "Someone else (specify) - Text",
+      "label": "Someone else",
       "question_type": "free_text",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
     "model": "datasets.question",
     "pk": 60,
     "fields": {
-      "label": "Other (specify) - Text",
+      "label": "Other",
       "question_type": "free_text",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
     "model": "datasets.question",
     "pk": 61,
     "fields": {
-      "label": "Other (specify) - Text",
+      "label": "Other",
       "question_type": "free_text",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
     "model": "datasets.question",
     "pk": 62,
     "fields": {
-      "label": "Someplace else (please specify where) - Text",
+      "label": "Someplace else ",
       "question_type": "free_text",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
     "model": "datasets.question",
     "pk": 63,
     "fields": {
-      "label": "Someone else (specify) - Text",
+      "label": "Someone else",
       "question_type": "free_text",
-      "is_active": true
+      "is_active": true,
+      "can_crosstab": false,
+      "crosstab_label": ""
     }
   },
   {
@@ -661,7 +787,7 @@
     "pk": 11,
     "fields": {
       "numeric_value": null,
-      "display_text": "Play sports or other physical activities, by yourself, with friends, or on a team",
+      "display_text": "Sports or physical activities",
       "category": null
     }
   },
@@ -670,7 +796,7 @@
     "pk": 12,
     "fields": {
       "numeric_value": null,
-      "display_text": "Play video games",
+      "display_text": "Playing video games",
       "category": null
     }
   },
@@ -679,7 +805,7 @@
     "pk": 13,
     "fields": {
       "numeric_value": null,
-      "display_text": "Play non-video games such as board games, puzzles, etc.",
+      "display_text": "Non-video games (board games, puzzles, etc.)",
       "category": null
     }
   },
@@ -697,7 +823,7 @@
     "pk": 15,
     "fields": {
       "numeric_value": null,
-      "display_text": "Create art such as painting, knitting, writing, etc.",
+      "display_text": "Creating art (painting, knitting, writing, etc.)",
       "category": null
     }
   },
@@ -706,7 +832,7 @@
     "pk": 16,
     "fields": {
       "numeric_value": null,
-      "display_text": "Create music including singing, playing instruments or writing music",
+      "display_text": "Creating or Playing music",
       "category": null
     }
   },
@@ -733,7 +859,7 @@
     "pk": 19,
     "fields": {
       "numeric_value": null,
-      "display_text": "Participate in club activities",
+      "display_text": "Participating in club activities",
       "category": null
     }
   },
@@ -751,7 +877,7 @@
     "pk": 21,
     "fields": {
       "numeric_value": null,
-      "display_text": "Hang out with friends",
+      "display_text": "Hanging out with friends",
       "category": null
     }
   },
@@ -760,7 +886,7 @@
     "pk": 22,
     "fields": {
       "numeric_value": null,
-      "display_text": "Spend time with family",
+      "display_text": "Spending time with family",
       "category": null
     }
   },
@@ -769,7 +895,7 @@
     "pk": 23,
     "fields": {
       "numeric_value": null,
-      "display_text": "Participate in outdoor activities such as hiking, fishing, camping, etc.",
+      "display_text": "Outdoor activities (hiking, fishing, camping, etc.)",
       "category": null
     }
   },
@@ -787,7 +913,7 @@
     "pk": 25,
     "fields": {
       "numeric_value": null,
-      "display_text": "Build, fix or make things such as machines, models, woodwork, etc.",
+      "display_text": "Building, Fixing or Making Things",
       "category": null
     }
   },
@@ -796,7 +922,7 @@
     "pk": 26,
     "fields": {
       "numeric_value": null,
-      "display_text": "Other (specify)",
+      "display_text": "Other",
       "category": null
     }
   },
@@ -832,7 +958,7 @@
     "pk": 30,
     "fields": {
       "numeric_value": null,
-      "display_text": "Guest Speakers in your classroom",
+      "display_text": "Classroom Guest Speakers",
       "category": null
     }
   },
@@ -913,7 +1039,7 @@
     "pk": 39,
     "fields": {
       "numeric_value": null,
-      "display_text": "Informational Interview (where you interview an employer)",
+      "display_text": "Informational Interview",
       "category": null
     }
   },
@@ -931,7 +1057,7 @@
     "pk": 41,
     "fields": {
       "numeric_value": null,
-      "display_text": "In a class",
+      "display_text": "In class",
       "category": null
     }
   },
@@ -940,7 +1066,7 @@
     "pk": 42,
     "fields": {
       "numeric_value": null,
-      "display_text": "With a guidance counselor",
+      "display_text": "Guidance counselor",
       "category": null
     }
   },
@@ -949,7 +1075,7 @@
     "pk": 43,
     "fields": {
       "numeric_value": null,
-      "display_text": "With your parent(s) or guardian(s)",
+      "display_text": "Parent(s) or guardian(s)",
       "category": null
     }
   },
@@ -958,7 +1084,7 @@
     "pk": 44,
     "fields": {
       "numeric_value": null,
-      "display_text": "With other adult family member(s)",
+      "display_text": "Other adult family member(s)",
       "category": null
     }
   },
@@ -967,7 +1093,7 @@
     "pk": 45,
     "fields": {
       "numeric_value": null,
-      "display_text": "With your brother(s) or sister(s)",
+      "display_text": "Sibling(s)",
       "category": null
     }
   },
@@ -976,7 +1102,7 @@
     "pk": 46,
     "fields": {
       "numeric_value": null,
-      "display_text": "With your friends",
+      "display_text": "Friends",
       "category": null
     }
   },
@@ -985,7 +1111,7 @@
     "pk": 47,
     "fields": {
       "numeric_value": null,
-      "display_text": "On your own",
+      "display_text": "On Their Own",
       "category": null
     }
   },
@@ -994,7 +1120,7 @@
     "pk": 48,
     "fields": {
       "numeric_value": null,
-      "display_text": "Someplace else (please specify where)",
+      "display_text": "Someplace else ",
       "category": null
     }
   },
@@ -1138,7 +1264,7 @@
     "pk": 64,
     "fields": {
       "numeric_value": null,
-      "display_text": "Science, Technology, Engineering & Mathematics",
+      "display_text": "STEM",
       "category": null
     }
   },
@@ -1174,7 +1300,7 @@
     "pk": 68,
     "fields": {
       "numeric_value": null,
-      "display_text": "Your parent(s) or guardian(s)",
+      "display_text": "A school guidance counselor",
       "category": null
     }
   },
@@ -1183,7 +1309,7 @@
     "pk": 69,
     "fields": {
       "numeric_value": null,
-      "display_text": "Other adult family member(s)",
+      "display_text": "A teacher or coach",
       "category": null
     }
   },
@@ -1192,7 +1318,7 @@
     "pk": 70,
     "fields": {
       "numeric_value": null,
-      "display_text": "A school guidance counselor",
+      "display_text": "Someone else",
       "category": null
     }
   },
@@ -1201,7 +1327,7 @@
     "pk": 71,
     "fields": {
       "numeric_value": null,
-      "display_text": "A teacher or coach",
+      "display_text": "No one",
       "category": null
     }
   },
@@ -1210,7 +1336,7 @@
     "pk": 72,
     "fields": {
       "numeric_value": null,
-      "display_text": "Your friends",
+      "display_text": "Go to a four-year college",
       "category": null
     }
   },
@@ -1219,7 +1345,7 @@
     "pk": 73,
     "fields": {
       "numeric_value": null,
-      "display_text": "Your brother(s) or sister(s)",
+      "display_text": "Go to a two-year college",
       "category": null
     }
   },
@@ -1228,7 +1354,7 @@
     "pk": 74,
     "fields": {
       "numeric_value": null,
-      "display_text": "Someone else (specify)",
+      "display_text": "Go directly to the workforce",
       "category": null
     }
   },
@@ -1237,7 +1363,7 @@
     "pk": 75,
     "fields": {
       "numeric_value": null,
-      "display_text": "No one",
+      "display_text": "Serve in the military",
       "category": null
     }
   },
@@ -1246,7 +1372,7 @@
     "pk": 76,
     "fields": {
       "numeric_value": null,
-      "display_text": "Go to a four-year college",
+      "display_text": "Work in an apprenticeship",
       "category": null
     }
   },
@@ -1255,7 +1381,7 @@
     "pk": 77,
     "fields": {
       "numeric_value": null,
-      "display_text": "Go to a two-year college",
+      "display_text": "Take a certificate program",
       "category": null
     }
   },
@@ -1264,7 +1390,7 @@
     "pk": 78,
     "fields": {
       "numeric_value": null,
-      "display_text": "Go directly to the workforce",
+      "display_text": "Take a gap year",
       "category": null
     }
   },
@@ -1273,7 +1399,7 @@
     "pk": 79,
     "fields": {
       "numeric_value": null,
-      "display_text": "Serve in the military",
+      "display_text": "Parent(s) and or step-parent(s)",
       "category": null
     }
   },
@@ -1282,7 +1408,7 @@
     "pk": 80,
     "fields": {
       "numeric_value": null,
-      "display_text": "Work in an apprenticeship",
+      "display_text": "Grandparent(s)",
       "category": null
     }
   },
@@ -1291,7 +1417,7 @@
     "pk": 81,
     "fields": {
       "numeric_value": null,
-      "display_text": "Take a certificate program",
+      "display_text": "Other family members (aunts, uncles, cousins)",
       "category": null
     }
   },
@@ -1300,7 +1426,7 @@
     "pk": 82,
     "fields": {
       "numeric_value": null,
-      "display_text": "Take a gap year",
+      "display_text": "Learn how things grow and stay alive",
       "category": null
     }
   },
@@ -1309,7 +1435,7 @@
     "pk": 83,
     "fields": {
       "numeric_value": null,
-      "display_text": "Parent(s) and or step-parent(s)",
+      "display_text": "Work with my hands",
       "category": null
     }
   },
@@ -1318,7 +1444,7 @@
     "pk": 84,
     "fields": {
       "numeric_value": null,
-      "display_text": "Grandparent(s)",
+      "display_text": "Perform in front of others",
       "category": null
     }
   },
@@ -1327,7 +1453,7 @@
     "pk": 85,
     "fields": {
       "numeric_value": null,
-      "display_text": "Other family members such as aunts, uncles or cousins",
+      "display_text": "Be the leader in a group",
       "category": null
     }
   },
@@ -1336,7 +1462,7 @@
     "pk": 86,
     "fields": {
       "numeric_value": null,
-      "display_text": "Brother(s) and/or sister(s)",
+      "display_text": "Help people overcome their challenges",
       "category": null
     }
   },
@@ -1345,7 +1471,7 @@
     "pk": 87,
     "fields": {
       "numeric_value": null,
-      "display_text": "Learn how things grow and stay alive",
+      "display_text": "Learn new skills",
       "category": null
     }
   },
@@ -1354,7 +1480,7 @@
     "pk": 88,
     "fields": {
       "numeric_value": null,
-      "display_text": "Work with my hands",
+      "display_text": "Work with numbers",
       "category": null
     }
   },
@@ -1363,7 +1489,7 @@
     "pk": 89,
     "fields": {
       "numeric_value": null,
-      "display_text": "Perform in front of others",
+      "display_text": "Plan & cooperate with others",
       "category": null
     }
   },
@@ -1372,7 +1498,7 @@
     "pk": 90,
     "fields": {
       "numeric_value": null,
-      "display_text": "Be the leader in a group",
+      "display_text": "Help sick people and animals",
       "category": null
     }
   },
@@ -1381,7 +1507,7 @@
     "pk": 91,
     "fields": {
       "numeric_value": null,
-      "display_text": "Help people overcome their challenges",
+      "display_text": "Organize activities for others",
       "category": null
     }
   },
@@ -1390,7 +1516,7 @@
     "pk": 92,
     "fields": {
       "numeric_value": null,
-      "display_text": "Learn new skills",
+      "display_text": "Care about people and their problems",
       "category": null
     }
   },
@@ -1399,7 +1525,7 @@
     "pk": 93,
     "fields": {
       "numeric_value": null,
-      "display_text": "Work with numbers",
+      "display_text": "Work with computers",
       "category": null
     }
   },
@@ -1408,7 +1534,7 @@
     "pk": 94,
     "fields": {
       "numeric_value": null,
-      "display_text": "Plan activities and work cooperatively with others",
+      "display_text": "Debate and win arguments",
       "category": null
     }
   },
@@ -1417,7 +1543,7 @@
     "pk": 95,
     "fields": {
       "numeric_value": null,
-      "display_text": "Help sick people and animals",
+      "display_text": "Put things together",
       "category": null
     }
   },
@@ -1426,7 +1552,7 @@
     "pk": 96,
     "fields": {
       "numeric_value": null,
-      "display_text": "Organize activities in which other people enjoy themselves",
+      "display_text": "Persuade people",
       "category": null
     }
   },
@@ -1435,7 +1561,7 @@
     "pk": 97,
     "fields": {
       "numeric_value": null,
-      "display_text": "Care about people, their needs and their problems",
+      "display_text": "Work in a laboratory",
       "category": null
     }
   },
@@ -1444,7 +1570,7 @@
     "pk": 98,
     "fields": {
       "numeric_value": null,
-      "display_text": "Work with computers",
+      "display_text": "Learn about the environment",
       "category": null
     }
   },
@@ -1453,7 +1579,7 @@
     "pk": 99,
     "fields": {
       "numeric_value": null,
-      "display_text": "Debate and win arguments",
+      "display_text": "Drive or ride in a vehicle",
       "category": null
     }
   },
@@ -1462,7 +1588,7 @@
     "pk": 100,
     "fields": {
       "numeric_value": null,
-      "display_text": "Put things together",
+      "display_text": "Solving problems",
       "category": null
     }
   },
@@ -1471,7 +1597,7 @@
     "pk": 101,
     "fields": {
       "numeric_value": null,
-      "display_text": "Persuade people to buy products or to participate in activities",
+      "display_text": "Following directions",
       "category": null
     }
   },
@@ -1480,7 +1606,7 @@
     "pk": 102,
     "fields": {
       "numeric_value": null,
-      "display_text": "Work in a laboratory",
+      "display_text": "Verbal communications",
       "category": null
     }
   },
@@ -1489,7 +1615,7 @@
     "pk": 103,
     "fields": {
       "numeric_value": null,
-      "display_text": "Learn about the environment",
+      "display_text": "Organizing",
       "category": null
     }
   },
@@ -1498,7 +1624,7 @@
     "pk": 104,
     "fields": {
       "numeric_value": null,
-      "display_text": "Drive or ride in a vehicle",
+      "display_text": "Listening",
       "category": null
     }
   },
@@ -1507,7 +1633,7 @@
     "pk": 105,
     "fields": {
       "numeric_value": null,
-      "display_text": "Solving problems",
+      "display_text": "Handling change",
       "category": null
     }
   },
@@ -1516,7 +1642,7 @@
     "pk": 106,
     "fields": {
       "numeric_value": null,
-      "display_text": "Following directions",
+      "display_text": "Keeping things orderly",
       "category": null
     }
   },
@@ -1525,7 +1651,7 @@
     "pk": 107,
     "fields": {
       "numeric_value": null,
-      "display_text": "Verbal communications",
+      "display_text": "Being Competitive",
       "category": null
     }
   },
@@ -1534,7 +1660,7 @@
     "pk": 108,
     "fields": {
       "numeric_value": null,
-      "display_text": "Organizing",
+      "display_text": "Being careful",
       "category": null
     }
   },
@@ -1543,7 +1669,7 @@
     "pk": 109,
     "fields": {
       "numeric_value": null,
-      "display_text": "Listening",
+      "display_text": "Being outgoing",
       "category": null
     }
   },
@@ -1552,7 +1678,7 @@
     "pk": 110,
     "fields": {
       "numeric_value": null,
-      "display_text": "Handling change",
+      "display_text": "Using logic",
       "category": null
     }
   },
@@ -1561,7 +1687,7 @@
     "pk": 111,
     "fields": {
       "numeric_value": null,
-      "display_text": "Keeping things orderly",
+      "display_text": "Being persistent",
       "category": null
     }
   },
@@ -1570,7 +1696,7 @@
     "pk": 112,
     "fields": {
       "numeric_value": null,
-      "display_text": "Being Competitive",
+      "display_text": "Being dependable",
       "category": null
     }
   },
@@ -1579,7 +1705,7 @@
     "pk": 113,
     "fields": {
       "numeric_value": null,
-      "display_text": "Being careful",
+      "display_text": "Being observant",
       "category": null
     }
   },
@@ -1588,7 +1714,7 @@
     "pk": 114,
     "fields": {
       "numeric_value": null,
-      "display_text": "Being outgoing",
+      "display_text": "Self-motivation",
       "category": null
     }
   },
@@ -1597,7 +1723,7 @@
     "pk": 115,
     "fields": {
       "numeric_value": null,
-      "display_text": "Using logic",
+      "display_text": "Being detail oriented",
       "category": null
     }
   },
@@ -1606,7 +1732,7 @@
     "pk": 116,
     "fields": {
       "numeric_value": null,
-      "display_text": "Being persistent",
+      "display_text": "Being part of a team",
       "category": null
     }
   },
@@ -1615,7 +1741,7 @@
     "pk": 117,
     "fields": {
       "numeric_value": null,
-      "display_text": "Being dependable",
+      "display_text": "Planning things",
       "category": null
     }
   },
@@ -1624,7 +1750,7 @@
     "pk": 118,
     "fields": {
       "numeric_value": null,
-      "display_text": "Being observant",
+      "display_text": "Nature lover",
       "category": null
     }
   },
@@ -1633,7 +1759,7 @@
     "pk": 119,
     "fields": {
       "numeric_value": null,
-      "display_text": "Self-motivation",
+      "display_text": "Curious",
       "category": null
     }
   },
@@ -1642,7 +1768,7 @@
     "pk": 120,
     "fields": {
       "numeric_value": null,
-      "display_text": "Being detail oriented",
+      "display_text": "Determined",
       "category": null
     }
   },
@@ -1651,7 +1777,7 @@
     "pk": 121,
     "fields": {
       "numeric_value": null,
-      "display_text": "Being part of a team",
+      "display_text": "Patient",
       "category": null
     }
   },
@@ -1660,7 +1786,7 @@
     "pk": 122,
     "fields": {
       "numeric_value": null,
-      "display_text": "Planning things",
+      "display_text": "Decision maker",
       "category": null
     }
   },
@@ -1669,7 +1795,7 @@
     "pk": 123,
     "fields": {
       "numeric_value": null,
-      "display_text": "Nature lover",
+      "display_text": "Problem solver",
       "category": null
     }
   },
@@ -1678,7 +1804,7 @@
     "pk": 124,
     "fields": {
       "numeric_value": null,
-      "display_text": "Curious",
+      "display_text": "Self-confident",
       "category": null
     }
   },
@@ -1687,7 +1813,7 @@
     "pk": 125,
     "fields": {
       "numeric_value": null,
-      "display_text": "Determined",
+      "display_text": "Service minded",
       "category": null
     }
   },
@@ -1696,7 +1822,7 @@
     "pk": 126,
     "fields": {
       "numeric_value": null,
-      "display_text": "Patient",
+      "display_text": "Compassionate",
       "category": null
     }
   },
@@ -1705,7 +1831,7 @@
     "pk": 127,
     "fields": {
       "numeric_value": null,
-      "display_text": "Decision maker",
+      "display_text": "Outgoing",
       "category": null
     }
   },
@@ -1714,7 +1840,7 @@
     "pk": 128,
     "fields": {
       "numeric_value": null,
-      "display_text": "Problem solver",
+      "display_text": "Caring",
       "category": null
     }
   },
@@ -1723,7 +1849,7 @@
     "pk": 129,
     "fields": {
       "numeric_value": null,
-      "display_text": "Self-confident",
+      "display_text": "Precise and accurate",
       "category": null
     }
   },
@@ -1732,7 +1858,7 @@
     "pk": 130,
     "fields": {
       "numeric_value": null,
-      "display_text": "Service minded",
+      "display_text": "Adventurous",
       "category": null
     }
   },
@@ -1741,7 +1867,7 @@
     "pk": 131,
     "fields": {
       "numeric_value": null,
-      "display_text": "Compassionate",
+      "display_text": "Observant",
       "category": null
     }
   },
@@ -1750,7 +1876,7 @@
     "pk": 132,
     "fields": {
       "numeric_value": null,
-      "display_text": "Outgoing",
+      "display_text": "Persuasive",
       "category": null
     }
   },
@@ -1759,7 +1885,7 @@
     "pk": 133,
     "fields": {
       "numeric_value": null,
-      "display_text": "Caring",
+      "display_text": "Detail oriented",
       "category": null
     }
   },
@@ -1768,7 +1894,7 @@
     "pk": 134,
     "fields": {
       "numeric_value": null,
-      "display_text": "Precise and accurate",
+      "display_text": "Brave",
       "category": null
     }
   },
@@ -1777,7 +1903,7 @@
     "pk": 135,
     "fields": {
       "numeric_value": null,
-      "display_text": "Adventurous",
+      "display_text": "Planner",
       "category": null
     }
   },
@@ -1785,59 +1911,14 @@
     "model": "datasets.option",
     "pk": 136,
     "fields": {
-      "numeric_value": null,
-      "display_text": "Observant",
-      "category": null
-    }
-  },
-  {
-    "model": "datasets.option",
-    "pk": 137,
-    "fields": {
-      "numeric_value": null,
-      "display_text": "Persuasive",
-      "category": null
-    }
-  },
-  {
-    "model": "datasets.option",
-    "pk": 138,
-    "fields": {
-      "numeric_value": null,
-      "display_text": "Detail oriented",
-      "category": null
-    }
-  },
-  {
-    "model": "datasets.option",
-    "pk": 139,
-    "fields": {
-      "numeric_value": null,
-      "display_text": "Brave",
-      "category": null
-    }
-  },
-  {
-    "model": "datasets.option",
-    "pk": 140,
-    "fields": {
-      "numeric_value": null,
-      "display_text": "Planner",
-      "category": null
-    }
-  },
-  {
-    "model": "datasets.option",
-    "pk": 141,
-    "fields": {
       "numeric_value": 1.0,
-      "display_text": "Your parent(s) or guardian(s)",
+      "display_text": "Parent(s) or guardian(s)",
       "category": "people"
     }
   },
   {
     "model": "datasets.option",
-    "pk": 142,
+    "pk": 137,
     "fields": {
       "numeric_value": 2.0,
       "display_text": "Other adult family member(s)",
@@ -1846,52 +1927,52 @@
   },
   {
     "model": "datasets.option",
-    "pk": 143,
+    "pk": 138,
     "fields": {
       "numeric_value": 3.0,
-      "display_text": "A schoool guidance counselor",
+      "display_text": "School guidance counselor",
       "category": "people"
     }
   },
   {
     "model": "datasets.option",
-    "pk": 144,
+    "pk": 139,
     "fields": {
       "numeric_value": 4.0,
-      "display_text": "A teachor or coach",
+      "display_text": "Teacher or coach",
       "category": "people"
     }
   },
   {
     "model": "datasets.option",
-    "pk": 145,
+    "pk": 140,
     "fields": {
       "numeric_value": 5.0,
-      "display_text": "Your friends",
+      "display_text": "Friends",
       "category": "people"
     }
   },
   {
     "model": "datasets.option",
-    "pk": 146,
+    "pk": 141,
     "fields": {
       "numeric_value": 6.0,
-      "display_text": "Your brother(s) or sister(s)",
+      "display_text": "Sibling(s)",
       "category": "people"
     }
   },
   {
     "model": "datasets.option",
-    "pk": 147,
+    "pk": 142,
     "fields": {
       "numeric_value": 7.0,
-      "display_text": "Someone else (specify)",
+      "display_text": "Someone else",
       "category": "people"
     }
   },
   {
     "model": "datasets.option",
-    "pk": 148,
+    "pk": 143,
     "fields": {
       "numeric_value": 8.0,
       "display_text": "No one",
@@ -1900,7 +1981,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 149,
+    "pk": 144,
     "fields": {
       "numeric_value": 1.0,
       "display_text": "Living in the area",
@@ -1909,7 +1990,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 150,
+    "pk": 145,
     "fields": {
       "numeric_value": 2.0,
       "display_text": "Moving away",
@@ -1918,7 +1999,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 151,
+    "pk": 146,
     "fields": {
       "numeric_value": 3.0,
       "display_text": "Not sure yet",
@@ -1927,7 +2008,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 152,
+    "pk": 147,
     "fields": {
       "numeric_value": 4.0,
       "display_text": "Moving away for school, then returning",
@@ -1936,7 +2017,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 153,
+    "pk": 148,
     "fields": {
       "numeric_value": 1.0,
       "display_text": "Less than $30,000/year",
@@ -1945,7 +2026,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 154,
+    "pk": 149,
     "fields": {
       "numeric_value": 2.0,
       "display_text": "$30,000-$50,000/year",
@@ -1954,7 +2035,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 155,
+    "pk": 150,
     "fields": {
       "numeric_value": 3.0,
       "display_text": "$50,000-$70,000/year",
@@ -1963,7 +2044,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 156,
+    "pk": 151,
     "fields": {
       "numeric_value": 4.0,
       "display_text": "Over $70,000/year",
@@ -1972,7 +2053,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 157,
+    "pk": 152,
     "fields": {
       "numeric_value": 1.0,
       "display_text": "One",
@@ -1981,7 +2062,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 158,
+    "pk": 153,
     "fields": {
       "numeric_value": 2.0,
       "display_text": "Two",
@@ -1990,7 +2071,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 159,
+    "pk": 154,
     "fields": {
       "numeric_value": 3.0,
       "display_text": "Three",
@@ -1999,7 +2080,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 160,
+    "pk": 155,
     "fields": {
       "numeric_value": 4.0,
       "display_text": "Four",
@@ -2008,7 +2089,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 161,
+    "pk": 156,
     "fields": {
       "numeric_value": 5.0,
       "display_text": "More than four",
@@ -2017,7 +2098,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 162,
+    "pk": 157,
     "fields": {
       "numeric_value": 1.0,
       "display_text": "7th grade",
@@ -2026,7 +2107,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 163,
+    "pk": 158,
     "fields": {
       "numeric_value": 2.0,
       "display_text": "8th grade",
@@ -2035,7 +2116,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 164,
+    "pk": 159,
     "fields": {
       "numeric_value": 3.0,
       "display_text": "9th grade",
@@ -2044,7 +2125,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 165,
+    "pk": 160,
     "fields": {
       "numeric_value": 4.0,
       "display_text": "N/A",
@@ -2053,7 +2134,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 166,
+    "pk": 161,
     "fields": {
       "numeric_value": 5.0,
       "display_text": "10th grade",
@@ -2062,7 +2143,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 167,
+    "pk": 162,
     "fields": {
       "numeric_value": 6.0,
       "display_text": "11th grade",
@@ -2071,7 +2152,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 168,
+    "pk": 163,
     "fields": {
       "numeric_value": 7.0,
       "display_text": "12th grade",
@@ -2080,7 +2161,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 169,
+    "pk": 164,
     "fields": {
       "numeric_value": 1.0,
       "display_text": "Urban",
@@ -2089,7 +2170,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 170,
+    "pk": 165,
     "fields": {
       "numeric_value": 2.0,
       "display_text": "Suburban",
@@ -2098,7 +2179,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 171,
+    "pk": 166,
     "fields": {
       "numeric_value": 3.0,
       "display_text": "Rural",
@@ -2107,43 +2188,43 @@
   },
   {
     "model": "datasets.option",
-    "pk": 172,
+    "pk": 167,
     "fields": {
       "numeric_value": 1.0,
-      "display_text": "I learn best by seeing pictures or images, including graphs and charts.\n        I like to seewhat I am learning. I understand and remember things best when I have seen them.",
+      "display_text": "Visual: learns best by seeing and looking at information.",
       "category": "learning_style"
     }
   },
   {
     "model": "datasets.option",
-    "pk": 173,
+    "pk": 168,
     "fields": {
       "numeric_value": 2.0,
-      "display_text": "I learn best by hearing and listening.\n        I understand and remember things best when I have heard them.\n        I have an easier time understanding spoken instructions than written ones.\n        I often read out loud because I have to hear it or speak it in order to know it.",
+      "display_text": "Auditory: learns best by listening and hearing information.",
       "category": "learning_style"
     }
   },
   {
     "model": "datasets.option",
-    "pk": 174,
+    "pk": 169,
     "fields": {
       "numeric_value": 3.0,
-      "display_text": "I learn best by reading and writing. I take notes and re-read them later.\n        I have an easier time understanding written instructions than spoken ones.",
+      "display_text": "Reading/writing: learns best by reading and writing information",
       "category": "learning_style"
     }
   },
   {
     "model": "datasets.option",
-    "pk": 175,
+    "pk": 170,
     "fields": {
       "numeric_value": 4.0,
-      "display_text": "I learn best by doing.\n        I understand and remember things best when I am active and participate \"hands-on\".\n        I prefer to touch, move, build, or draw what I learn, and sometimes have difficulty sitting still.",
+      "display_text": "Kinaesthetic: learns best by doing and experiencing things.",
       "category": "learning_style"
     }
   },
   {
     "model": "datasets.option",
-    "pk": 176,
+    "pk": 171,
     "fields": {
       "numeric_value": 1.0,
       "display_text": "F",
@@ -2152,7 +2233,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 177,
+    "pk": 172,
     "fields": {
       "numeric_value": 2.0,
       "display_text": "D",
@@ -2161,7 +2242,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 178,
+    "pk": 173,
     "fields": {
       "numeric_value": 3.0,
       "display_text": "C",
@@ -2170,7 +2251,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 179,
+    "pk": 174,
     "fields": {
       "numeric_value": 4.0,
       "display_text": "B",
@@ -2179,7 +2260,7 @@
   },
   {
     "model": "datasets.option",
-    "pk": 180,
+    "pk": 175,
     "fields": {
       "numeric_value": 5.0,
       "display_text": "A",
@@ -2942,7 +3023,7 @@
     "fields": {
       "column_header": "Q9_1",
       "question": 7,
-      "option": 68,
+      "option": 43,
       "option_category": null
     }
   },
@@ -2952,7 +3033,7 @@
     "fields": {
       "column_header": "Q9_2",
       "question": 7,
-      "option": 69,
+      "option": 44,
       "option_category": null
     }
   },
@@ -2962,7 +3043,7 @@
     "fields": {
       "column_header": "Q9_3",
       "question": 7,
-      "option": 70,
+      "option": 68,
       "option_category": null
     }
   },
@@ -2972,7 +3053,7 @@
     "fields": {
       "column_header": "Q9_4",
       "question": 7,
-      "option": 71,
+      "option": 69,
       "option_category": null
     }
   },
@@ -2982,7 +3063,7 @@
     "fields": {
       "column_header": "Q9_5",
       "question": 7,
-      "option": 72,
+      "option": 46,
       "option_category": null
     }
   },
@@ -2992,7 +3073,7 @@
     "fields": {
       "column_header": "Q9_6",
       "question": 7,
-      "option": 73,
+      "option": 45,
       "option_category": null
     }
   },
@@ -3002,7 +3083,7 @@
     "fields": {
       "column_header": "Q9_7",
       "question": 7,
-      "option": 74,
+      "option": 70,
       "option_category": null
     }
   },
@@ -3012,7 +3093,7 @@
     "fields": {
       "column_header": "Q9_8",
       "question": 7,
-      "option": 75,
+      "option": 71,
       "option_category": null
     }
   },
@@ -3022,7 +3103,7 @@
     "fields": {
       "column_header": "Q12_1",
       "question": 8,
-      "option": 76,
+      "option": 72,
       "option_category": null
     }
   },
@@ -3032,7 +3113,7 @@
     "fields": {
       "column_header": "Q12_2",
       "question": 8,
-      "option": 77,
+      "option": 73,
       "option_category": null
     }
   },
@@ -3042,7 +3123,7 @@
     "fields": {
       "column_header": "Q12_3",
       "question": 8,
-      "option": 78,
+      "option": 74,
       "option_category": null
     }
   },
@@ -3052,7 +3133,7 @@
     "fields": {
       "column_header": "Q12_4",
       "question": 8,
-      "option": 79,
+      "option": 75,
       "option_category": null
     }
   },
@@ -3062,7 +3143,7 @@
     "fields": {
       "column_header": "Q12_5",
       "question": 8,
-      "option": 80,
+      "option": 76,
       "option_category": null
     }
   },
@@ -3072,7 +3153,7 @@
     "fields": {
       "column_header": "Q12_6",
       "question": 8,
-      "option": 81,
+      "option": 77,
       "option_category": null
     }
   },
@@ -3082,7 +3163,7 @@
     "fields": {
       "column_header": "Q12_7",
       "question": 8,
-      "option": 82,
+      "option": 78,
       "option_category": null
     }
   },
@@ -3092,7 +3173,7 @@
     "fields": {
       "column_header": "Q12_1_2",
       "question": 9,
-      "option": 76,
+      "option": 72,
       "option_category": null
     }
   },
@@ -3102,7 +3183,7 @@
     "fields": {
       "column_header": "Q12_2_2",
       "question": 9,
-      "option": 77,
+      "option": 73,
       "option_category": null
     }
   },
@@ -3112,7 +3193,7 @@
     "fields": {
       "column_header": "Q12_3_2",
       "question": 9,
-      "option": 78,
+      "option": 74,
       "option_category": null
     }
   },
@@ -3122,7 +3203,7 @@
     "fields": {
       "column_header": "Q12_4_2",
       "question": 9,
-      "option": 79,
+      "option": 75,
       "option_category": null
     }
   },
@@ -3132,7 +3213,7 @@
     "fields": {
       "column_header": "Q12_5_2",
       "question": 9,
-      "option": 80,
+      "option": 76,
       "option_category": null
     }
   },
@@ -3142,7 +3223,7 @@
     "fields": {
       "column_header": "Q12_6_2",
       "question": 9,
-      "option": 81,
+      "option": 77,
       "option_category": null
     }
   },
@@ -3152,7 +3233,7 @@
     "fields": {
       "column_header": "Q12_7_2",
       "question": 9,
-      "option": 82,
+      "option": 78,
       "option_category": null
     }
   },
@@ -3162,7 +3243,7 @@
     "fields": {
       "column_header": "Q13_1",
       "question": 10,
-      "option": 76,
+      "option": 72,
       "option_category": null
     }
   },
@@ -3172,7 +3253,7 @@
     "fields": {
       "column_header": "Q13_2",
       "question": 10,
-      "option": 77,
+      "option": 73,
       "option_category": null
     }
   },
@@ -3182,7 +3263,7 @@
     "fields": {
       "column_header": "Q13_3",
       "question": 10,
-      "option": 78,
+      "option": 74,
       "option_category": null
     }
   },
@@ -3192,7 +3273,7 @@
     "fields": {
       "column_header": "Q13_4",
       "question": 10,
-      "option": 79,
+      "option": 75,
       "option_category": null
     }
   },
@@ -3202,7 +3283,7 @@
     "fields": {
       "column_header": "Q13_5",
       "question": 10,
-      "option": 80,
+      "option": 76,
       "option_category": null
     }
   },
@@ -3212,7 +3293,7 @@
     "fields": {
       "column_header": "Q13_6",
       "question": 10,
-      "option": 81,
+      "option": 77,
       "option_category": null
     }
   },
@@ -3222,7 +3303,7 @@
     "fields": {
       "column_header": "Q13_7",
       "question": 10,
-      "option": 82,
+      "option": 78,
       "option_category": null
     }
   },
@@ -3232,7 +3313,7 @@
     "fields": {
       "column_header": "Q16_1",
       "question": 11,
-      "option": 83,
+      "option": 79,
       "option_category": null
     }
   },
@@ -3242,7 +3323,7 @@
     "fields": {
       "column_header": "Q16_2",
       "question": 11,
-      "option": 84,
+      "option": 80,
       "option_category": null
     }
   },
@@ -3252,7 +3333,7 @@
     "fields": {
       "column_header": "Q16_3",
       "question": 11,
-      "option": 85,
+      "option": 81,
       "option_category": null
     }
   },
@@ -3262,7 +3343,7 @@
     "fields": {
       "column_header": "Q16_4",
       "question": 11,
-      "option": 86,
+      "option": 45,
       "option_category": null
     }
   },
@@ -3272,7 +3353,7 @@
     "fields": {
       "column_header": "Q16_5",
       "question": 11,
-      "option": 74,
+      "option": 70,
       "option_category": null
     }
   },
@@ -3282,7 +3363,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_153",
       "question": 12,
-      "option": 87,
+      "option": 82,
       "option_category": null
     }
   },
@@ -3292,7 +3373,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_156",
       "question": 12,
-      "option": 88,
+      "option": 83,
       "option_category": null
     }
   },
@@ -3302,7 +3383,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_157",
       "question": 12,
-      "option": 89,
+      "option": 84,
       "option_category": null
     }
   },
@@ -3312,7 +3393,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_158",
       "question": 12,
-      "option": 90,
+      "option": 85,
       "option_category": null
     }
   },
@@ -3322,7 +3403,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_159",
       "question": 12,
-      "option": 91,
+      "option": 86,
       "option_category": null
     }
   },
@@ -3332,7 +3413,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_171",
       "question": 12,
-      "option": 92,
+      "option": 87,
       "option_category": null
     }
   },
@@ -3342,7 +3423,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_160",
       "question": 12,
-      "option": 93,
+      "option": 88,
       "option_category": null
     }
   },
@@ -3352,7 +3433,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_161",
       "question": 12,
-      "option": 94,
+      "option": 89,
       "option_category": null
     }
   },
@@ -3362,7 +3443,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_162",
       "question": 12,
-      "option": 95,
+      "option": 90,
       "option_category": null
     }
   },
@@ -3372,7 +3453,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_163",
       "question": 12,
-      "option": 96,
+      "option": 91,
       "option_category": null
     }
   },
@@ -3382,7 +3463,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_164",
       "question": 12,
-      "option": 97,
+      "option": 92,
       "option_category": null
     }
   },
@@ -3392,7 +3473,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_165",
       "question": 12,
-      "option": 98,
+      "option": 93,
       "option_category": null
     }
   },
@@ -3402,7 +3483,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_166",
       "question": 12,
-      "option": 99,
+      "option": 94,
       "option_category": null
     }
   },
@@ -3412,7 +3493,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_167",
       "question": 12,
-      "option": 100,
+      "option": 95,
       "option_category": null
     }
   },
@@ -3422,7 +3503,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_168",
       "question": 12,
-      "option": 101,
+      "option": 96,
       "option_category": null
     }
   },
@@ -3432,7 +3513,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_169",
       "question": 12,
-      "option": 102,
+      "option": 97,
       "option_category": null
     }
   },
@@ -3442,7 +3523,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_172",
       "question": 12,
-      "option": 103,
+      "option": 98,
       "option_category": null
     }
   },
@@ -3452,7 +3533,7 @@
     "fields": {
       "column_header": "Q24_0_GROUP_170",
       "question": 12,
-      "option": 104,
+      "option": 99,
       "option_category": null
     }
   },
@@ -3462,7 +3543,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_153",
       "question": 13,
-      "option": 87,
+      "option": 82,
       "option_category": null
     }
   },
@@ -3472,7 +3553,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_156",
       "question": 13,
-      "option": 88,
+      "option": 83,
       "option_category": null
     }
   },
@@ -3482,7 +3563,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_157",
       "question": 13,
-      "option": 89,
+      "option": 84,
       "option_category": null
     }
   },
@@ -3492,7 +3573,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_158",
       "question": 13,
-      "option": 90,
+      "option": 85,
       "option_category": null
     }
   },
@@ -3502,7 +3583,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_159",
       "question": 13,
-      "option": 91,
+      "option": 86,
       "option_category": null
     }
   },
@@ -3512,7 +3593,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_171",
       "question": 13,
-      "option": 92,
+      "option": 87,
       "option_category": null
     }
   },
@@ -3522,7 +3603,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_160",
       "question": 13,
-      "option": 93,
+      "option": 88,
       "option_category": null
     }
   },
@@ -3532,7 +3613,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_161",
       "question": 13,
-      "option": 94,
+      "option": 89,
       "option_category": null
     }
   },
@@ -3542,7 +3623,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_162",
       "question": 13,
-      "option": 95,
+      "option": 90,
       "option_category": null
     }
   },
@@ -3552,7 +3633,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_163",
       "question": 13,
-      "option": 96,
+      "option": 91,
       "option_category": null
     }
   },
@@ -3562,7 +3643,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_164",
       "question": 13,
-      "option": 97,
+      "option": 92,
       "option_category": null
     }
   },
@@ -3572,7 +3653,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_165",
       "question": 13,
-      "option": 98,
+      "option": 93,
       "option_category": null
     }
   },
@@ -3582,7 +3663,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_166",
       "question": 13,
-      "option": 99,
+      "option": 94,
       "option_category": null
     }
   },
@@ -3592,7 +3673,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_167",
       "question": 13,
-      "option": 100,
+      "option": 95,
       "option_category": null
     }
   },
@@ -3602,7 +3683,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_168",
       "question": 13,
-      "option": 101,
+      "option": 96,
       "option_category": null
     }
   },
@@ -3612,7 +3693,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_169",
       "question": 13,
-      "option": 102,
+      "option": 97,
       "option_category": null
     }
   },
@@ -3622,7 +3703,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_172",
       "question": 13,
-      "option": 103,
+      "option": 98,
       "option_category": null
     }
   },
@@ -3632,7 +3713,7 @@
     "fields": {
       "column_header": "Q24_1_GROUP_170",
       "question": 13,
-      "option": 104,
+      "option": 99,
       "option_category": null
     }
   },
@@ -3642,7 +3723,7 @@
     "fields": {
       "column_header": "Q24A_1",
       "question": 14,
-      "option": 87,
+      "option": 82,
       "option_category": null
     }
   },
@@ -3652,7 +3733,7 @@
     "fields": {
       "column_header": "Q24A_2",
       "question": 14,
-      "option": 88,
+      "option": 83,
       "option_category": null
     }
   },
@@ -3662,7 +3743,7 @@
     "fields": {
       "column_header": "Q24A_3",
       "question": 14,
-      "option": 89,
+      "option": 84,
       "option_category": null
     }
   },
@@ -3672,7 +3753,7 @@
     "fields": {
       "column_header": "Q24A_4",
       "question": 14,
-      "option": 90,
+      "option": 85,
       "option_category": null
     }
   },
@@ -3682,7 +3763,7 @@
     "fields": {
       "column_header": "Q24A_5",
       "question": 14,
-      "option": 91,
+      "option": 86,
       "option_category": null
     }
   },
@@ -3692,7 +3773,7 @@
     "fields": {
       "column_header": "Q24A_6",
       "question": 14,
-      "option": 92,
+      "option": 87,
       "option_category": null
     }
   },
@@ -3702,7 +3783,7 @@
     "fields": {
       "column_header": "Q24A_7",
       "question": 14,
-      "option": 93,
+      "option": 88,
       "option_category": null
     }
   },
@@ -3712,7 +3793,7 @@
     "fields": {
       "column_header": "Q24A_8",
       "question": 14,
-      "option": 94,
+      "option": 89,
       "option_category": null
     }
   },
@@ -3722,7 +3803,7 @@
     "fields": {
       "column_header": "Q24A_9",
       "question": 14,
-      "option": 95,
+      "option": 90,
       "option_category": null
     }
   },
@@ -3732,7 +3813,7 @@
     "fields": {
       "column_header": "Q24A_10",
       "question": 14,
-      "option": 96,
+      "option": 91,
       "option_category": null
     }
   },
@@ -3742,7 +3823,7 @@
     "fields": {
       "column_header": "Q24A_11",
       "question": 14,
-      "option": 97,
+      "option": 92,
       "option_category": null
     }
   },
@@ -3752,7 +3833,7 @@
     "fields": {
       "column_header": "Q24A_12",
       "question": 14,
-      "option": 98,
+      "option": 93,
       "option_category": null
     }
   },
@@ -3762,7 +3843,7 @@
     "fields": {
       "column_header": "Q24A_13",
       "question": 14,
-      "option": 99,
+      "option": 94,
       "option_category": null
     }
   },
@@ -3772,7 +3853,7 @@
     "fields": {
       "column_header": "Q24A_14",
       "question": 14,
-      "option": 100,
+      "option": 95,
       "option_category": null
     }
   },
@@ -3782,7 +3863,7 @@
     "fields": {
       "column_header": "Q24A_15",
       "question": 14,
-      "option": 101,
+      "option": 96,
       "option_category": null
     }
   },
@@ -3792,7 +3873,7 @@
     "fields": {
       "column_header": "Q24A_16",
       "question": 14,
-      "option": 102,
+      "option": 97,
       "option_category": null
     }
   },
@@ -3802,7 +3883,7 @@
     "fields": {
       "column_header": "Q24A_17",
       "question": 14,
-      "option": 103,
+      "option": 98,
       "option_category": null
     }
   },
@@ -3812,7 +3893,7 @@
     "fields": {
       "column_header": "Q24A_18",
       "question": 14,
-      "option": 104,
+      "option": 99,
       "option_category": null
     }
   },
@@ -3822,7 +3903,7 @@
     "fields": {
       "column_header": "Q25R_1",
       "question": 15,
-      "option": 105,
+      "option": 100,
       "option_category": null
     }
   },
@@ -3832,7 +3913,7 @@
     "fields": {
       "column_header": "Q25R_2",
       "question": 15,
-      "option": 106,
+      "option": 101,
       "option_category": null
     }
   },
@@ -3842,7 +3923,7 @@
     "fields": {
       "column_header": "Q25R_3",
       "question": 15,
-      "option": 107,
+      "option": 102,
       "option_category": null
     }
   },
@@ -3852,7 +3933,7 @@
     "fields": {
       "column_header": "Q25R_4",
       "question": 15,
-      "option": 108,
+      "option": 103,
       "option_category": null
     }
   },
@@ -3862,7 +3943,7 @@
     "fields": {
       "column_header": "Q25R_5",
       "question": 15,
-      "option": 109,
+      "option": 104,
       "option_category": null
     }
   },
@@ -3872,7 +3953,7 @@
     "fields": {
       "column_header": "Q25R_6",
       "question": 15,
-      "option": 110,
+      "option": 105,
       "option_category": null
     }
   },
@@ -3882,7 +3963,7 @@
     "fields": {
       "column_header": "Q25R_7",
       "question": 15,
-      "option": 111,
+      "option": 106,
       "option_category": null
     }
   },
@@ -3892,7 +3973,7 @@
     "fields": {
       "column_header": "Q25R_8",
       "question": 15,
-      "option": 112,
+      "option": 107,
       "option_category": null
     }
   },
@@ -3902,7 +3983,7 @@
     "fields": {
       "column_header": "Q25R_9",
       "question": 15,
-      "option": 113,
+      "option": 108,
       "option_category": null
     }
   },
@@ -3912,7 +3993,7 @@
     "fields": {
       "column_header": "Q25R_10",
       "question": 15,
-      "option": 114,
+      "option": 109,
       "option_category": null
     }
   },
@@ -3922,7 +4003,7 @@
     "fields": {
       "column_header": "Q25R_11",
       "question": 15,
-      "option": 115,
+      "option": 110,
       "option_category": null
     }
   },
@@ -3932,7 +4013,7 @@
     "fields": {
       "column_header": "Q25R_12",
       "question": 15,
-      "option": 116,
+      "option": 111,
       "option_category": null
     }
   },
@@ -3942,7 +4023,7 @@
     "fields": {
       "column_header": "Q25R_13",
       "question": 15,
-      "option": 117,
+      "option": 112,
       "option_category": null
     }
   },
@@ -3952,7 +4033,7 @@
     "fields": {
       "column_header": "Q25R_14",
       "question": 15,
-      "option": 118,
+      "option": 113,
       "option_category": null
     }
   },
@@ -3962,7 +4043,7 @@
     "fields": {
       "column_header": "Q25R_15",
       "question": 15,
-      "option": 119,
+      "option": 114,
       "option_category": null
     }
   },
@@ -3972,7 +4053,7 @@
     "fields": {
       "column_header": "Q25R_16",
       "question": 15,
-      "option": 120,
+      "option": 115,
       "option_category": null
     }
   },
@@ -3982,7 +4063,7 @@
     "fields": {
       "column_header": "Q25R_17",
       "question": 15,
-      "option": 121,
+      "option": 116,
       "option_category": null
     }
   },
@@ -3992,7 +4073,7 @@
     "fields": {
       "column_header": "Q25R_18",
       "question": 15,
-      "option": 122,
+      "option": 117,
       "option_category": null
     }
   },
@@ -4002,7 +4083,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_1",
       "question": 16,
-      "option": 123,
+      "option": 118,
       "option_category": null
     }
   },
@@ -4012,7 +4093,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_2",
       "question": 16,
-      "option": 124,
+      "option": 119,
       "option_category": null
     }
   },
@@ -4022,7 +4103,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_3",
       "question": 16,
-      "option": 125,
+      "option": 120,
       "option_category": null
     }
   },
@@ -4032,7 +4113,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_4",
       "question": 16,
-      "option": 126,
+      "option": 121,
       "option_category": null
     }
   },
@@ -4042,7 +4123,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_5",
       "question": 16,
-      "option": 127,
+      "option": 122,
       "option_category": null
     }
   },
@@ -4052,7 +4133,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_18",
       "question": 16,
-      "option": 128,
+      "option": 123,
       "option_category": null
     }
   },
@@ -4062,7 +4143,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_6",
       "question": 16,
-      "option": 129,
+      "option": 124,
       "option_category": null
     }
   },
@@ -4072,7 +4153,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_7",
       "question": 16,
-      "option": 130,
+      "option": 125,
       "option_category": null
     }
   },
@@ -4082,7 +4163,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_8",
       "question": 16,
-      "option": 131,
+      "option": 126,
       "option_category": null
     }
   },
@@ -4092,7 +4173,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_9",
       "question": 16,
-      "option": 132,
+      "option": 127,
       "option_category": null
     }
   },
@@ -4102,7 +4183,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_10",
       "question": 16,
-      "option": 133,
+      "option": 128,
       "option_category": null
     }
   },
@@ -4112,7 +4193,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_11",
       "question": 16,
-      "option": 134,
+      "option": 129,
       "option_category": null
     }
   },
@@ -4122,7 +4203,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_12",
       "question": 16,
-      "option": 135,
+      "option": 130,
       "option_category": null
     }
   },
@@ -4132,7 +4213,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_13",
       "question": 16,
-      "option": 136,
+      "option": 131,
       "option_category": null
     }
   },
@@ -4142,7 +4223,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_14",
       "question": 16,
-      "option": 137,
+      "option": 132,
       "option_category": null
     }
   },
@@ -4152,7 +4233,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_15",
       "question": 16,
-      "option": 138,
+      "option": 133,
       "option_category": null
     }
   },
@@ -4162,7 +4243,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_17",
       "question": 16,
-      "option": 139,
+      "option": 134,
       "option_category": null
     }
   },
@@ -4172,7 +4253,7 @@
     "fields": {
       "column_header": "Q26_0_GROUP_16",
       "question": 16,
-      "option": 140,
+      "option": 135,
       "option_category": null
     }
   },
@@ -4182,7 +4263,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_1",
       "question": 17,
-      "option": 123,
+      "option": 118,
       "option_category": null
     }
   },
@@ -4192,7 +4273,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_2",
       "question": 17,
-      "option": 124,
+      "option": 119,
       "option_category": null
     }
   },
@@ -4202,7 +4283,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_3",
       "question": 17,
-      "option": 125,
+      "option": 120,
       "option_category": null
     }
   },
@@ -4212,7 +4293,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_4",
       "question": 17,
-      "option": 126,
+      "option": 121,
       "option_category": null
     }
   },
@@ -4222,7 +4303,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_5",
       "question": 17,
-      "option": 127,
+      "option": 122,
       "option_category": null
     }
   },
@@ -4232,7 +4313,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_18",
       "question": 17,
-      "option": 128,
+      "option": 123,
       "option_category": null
     }
   },
@@ -4242,7 +4323,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_6",
       "question": 17,
-      "option": 129,
+      "option": 124,
       "option_category": null
     }
   },
@@ -4252,7 +4333,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_7",
       "question": 17,
-      "option": 130,
+      "option": 125,
       "option_category": null
     }
   },
@@ -4262,7 +4343,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_8",
       "question": 17,
-      "option": 131,
+      "option": 126,
       "option_category": null
     }
   },
@@ -4272,7 +4353,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_9",
       "question": 17,
-      "option": 132,
+      "option": 127,
       "option_category": null
     }
   },
@@ -4282,7 +4363,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_10",
       "question": 17,
-      "option": 133,
+      "option": 128,
       "option_category": null
     }
   },
@@ -4292,7 +4373,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_11",
       "question": 17,
-      "option": 134,
+      "option": 129,
       "option_category": null
     }
   },
@@ -4302,7 +4383,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_12",
       "question": 17,
-      "option": 135,
+      "option": 130,
       "option_category": null
     }
   },
@@ -4312,7 +4393,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_13",
       "question": 17,
-      "option": 136,
+      "option": 131,
       "option_category": null
     }
   },
@@ -4322,7 +4403,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_14",
       "question": 17,
-      "option": 137,
+      "option": 132,
       "option_category": null
     }
   },
@@ -4332,7 +4413,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_15",
       "question": 17,
-      "option": 138,
+      "option": 133,
       "option_category": null
     }
   },
@@ -4342,7 +4423,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_17",
       "question": 17,
-      "option": 139,
+      "option": 134,
       "option_category": null
     }
   },
@@ -4352,7 +4433,7 @@
     "fields": {
       "column_header": "Q26_1_GROUP_16",
       "question": 17,
-      "option": 140,
+      "option": 135,
       "option_category": null
     }
   },
@@ -4362,7 +4443,7 @@
     "fields": {
       "column_header": "Q26A_1",
       "question": 18,
-      "option": 123,
+      "option": 118,
       "option_category": null
     }
   },
@@ -4372,7 +4453,7 @@
     "fields": {
       "column_header": "Q26A_2",
       "question": 18,
-      "option": 124,
+      "option": 119,
       "option_category": null
     }
   },
@@ -4382,7 +4463,7 @@
     "fields": {
       "column_header": "Q26A_3",
       "question": 18,
-      "option": 125,
+      "option": 120,
       "option_category": null
     }
   },
@@ -4392,7 +4473,7 @@
     "fields": {
       "column_header": "Q26A_4",
       "question": 18,
-      "option": 126,
+      "option": 121,
       "option_category": null
     }
   },
@@ -4402,7 +4483,7 @@
     "fields": {
       "column_header": "Q26A_5",
       "question": 18,
-      "option": 127,
+      "option": 122,
       "option_category": null
     }
   },
@@ -4412,7 +4493,7 @@
     "fields": {
       "column_header": "Q26A_6",
       "question": 18,
-      "option": 128,
+      "option": 123,
       "option_category": null
     }
   },
@@ -4422,7 +4503,7 @@
     "fields": {
       "column_header": "Q26A_7",
       "question": 18,
-      "option": 129,
+      "option": 124,
       "option_category": null
     }
   },
@@ -4432,7 +4513,7 @@
     "fields": {
       "column_header": "Q26A_8",
       "question": 18,
-      "option": 130,
+      "option": 125,
       "option_category": null
     }
   },
@@ -4442,7 +4523,7 @@
     "fields": {
       "column_header": "Q26A_9",
       "question": 18,
-      "option": 131,
+      "option": 126,
       "option_category": null
     }
   },
@@ -4452,7 +4533,7 @@
     "fields": {
       "column_header": "Q26A_10",
       "question": 18,
-      "option": 132,
+      "option": 127,
       "option_category": null
     }
   },
@@ -4462,7 +4543,7 @@
     "fields": {
       "column_header": "Q26A_11",
       "question": 18,
-      "option": 133,
+      "option": 128,
       "option_category": null
     }
   },
@@ -4472,7 +4553,7 @@
     "fields": {
       "column_header": "Q26A_12",
       "question": 18,
-      "option": 134,
+      "option": 129,
       "option_category": null
     }
   },
@@ -4482,7 +4563,7 @@
     "fields": {
       "column_header": "Q26A_13",
       "question": 18,
-      "option": 135,
+      "option": 130,
       "option_category": null
     }
   },
@@ -4492,7 +4573,7 @@
     "fields": {
       "column_header": "Q26A_14",
       "question": 18,
-      "option": 136,
+      "option": 131,
       "option_category": null
     }
   },
@@ -4502,7 +4583,7 @@
     "fields": {
       "column_header": "Q26A_15",
       "question": 18,
-      "option": 137,
+      "option": 132,
       "option_category": null
     }
   },
@@ -4512,7 +4593,7 @@
     "fields": {
       "column_header": "Q26A_16",
       "question": 18,
-      "option": 138,
+      "option": 133,
       "option_category": null
     }
   },
@@ -4522,7 +4603,7 @@
     "fields": {
       "column_header": "Q26A_17",
       "question": 18,
-      "option": 139,
+      "option": 134,
       "option_category": null
     }
   },
@@ -4532,7 +4613,7 @@
     "fields": {
       "column_header": "Q26A_18",
       "question": 18,
-      "option": 140,
+      "option": 135,
       "option_category": null
     }
   },

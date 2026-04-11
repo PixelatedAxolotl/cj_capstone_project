@@ -287,7 +287,7 @@ def build_participation_chart(qs, grade_q, mode):
         RespondentAnswer.objects
         .filter(
             response__in=qs,
-            response__particip_career_prep_either='Yes',
+            response__particip_career_prep_either=True,
             question_column__in=col_map.values(),
         )
         .values_list('question_column__column_header', flat=True)
