@@ -44,7 +44,9 @@
         </thead>
         <tbody>
             {% for user in users %}
-            <tr aria-label="{{user.username}}" onclick="window.location='{% url 'admin:accounts_user_change' user.pk %}'" tabindex="0">
+            {% url 'admin:accounts_user_change' user.pk as edit_url %}
+            {% url 'admin:accounts_user_delete' user.pk as delete_url %}
+            <tr aria-label="{{user.username}}" onclick="openPopup('{{ edit_url }}')" tabindex="0">
                 <td>{{ user.username }}</td>
                 <td>{{ user.first_name }}</td>
                 <td>{{ user.last_name }}</td>
@@ -80,13 +82,16 @@
         </thead>
         <tbody>
             {% for school in schools %}
-            <tr onclick="window.location='{% url 'admin:accounts_school_change' school.pk %}'">
+            {% url 'admin:accounts_school_change' school.pk as edit_url %}
+            {% url 'admin:accounts_school_delete' school.pk as delete_url %}
+            <tr onclick="openPopup('{{ edit_url }}')">
                 <td>{{ school.name }}</td>
                 <td>{{ school.date_added }}</td>
                 <td>
                     <!-- link each group to its change form -->
                     {% for group in school.groups.all %}
-                        <a href="{% url 'admin:accounts_user_group_change' group.pk %}">{{ group.name }}</a>
+                        {% url 'admin:accounts_user_group_change' group.pk as group_url %}
+                        <a href="#" onclick="openPopup('{{ group_url }}'); event.stopPropagation(); return false;">{{ group.name }}</a>
                         {% if not forloop.last %}, {% endif %}
                     {% endfor %}
                </td>
@@ -119,7 +124,9 @@
         </thead>
         <tbody>
             {% for group in user_groups %}
-            <tr onclick="window.location='{% url 'admin:accounts_user_group_change' group.pk %}'">
+            {% url 'admin:accounts_user_group_change' group.pk as edit_url %}
+            {% url 'admin:accounts_user_group_delete' group.pk as delete_url %}
+            <tr onclick="openPopup('{{ edit_url }}')">
                 <td>{{ group.name }}</td>
                 <td>{{ group.get_group_type_display }}</td>
                 <td>{{ group.date_added }}</td>
@@ -155,7 +162,9 @@
         </thead>
         <tbody>
             {% for dataset in datasets %}
-            <tr onclick="window.location='{% url 'admin:datasets_dataset_change' dataset.pk %}'">
+            {% url 'dataset_detail' dataset.pk as edit_url %}
+            {% url 'admin:datasets_dataset_delete' dataset.pk as delete_url %}
+            <tr onclick="openPopup('{{ edit_url }}')">
                 <td>{{ dataset.name }}</td>
                 <td>{{ dataset.description }}</td>
                 <td>{{ dataset.date_added }}</td>
@@ -177,10 +186,10 @@
 
     <script>
         const tabActions = {
-        users: { label: 'Create New User', url: '{% url "admin:accounts_user_add" %}' },
-        schools: { label: 'Create New School', url: '{% url "admin:accounts_school_add" %}' },
-        groups: { label: 'Create New Group', url: '{% url "admin:accounts_user_group_add" %}' },
-        datasets: { label: 'Upload New Dataset', url: '{% url "upload_dataset" %}' },
+            users:    { label: 'Create New User',    url: '{% url "admin:accounts_user_add" %}',       popup: true },
+            schools:  { label: 'Create New School',  url: '{% url "admin:accounts_school_add" %}',     popup: true },
+            groups:   { label: 'Create New Group',   url: '{% url "admin:accounts_user_group_add" %}', popup: true },
+            datasets: { label: 'Upload New Dataset', url: '{% url "upload_dataset" %}',                popup: false },
         };
 
         function switchTab(tabName, btn) {
@@ -189,15 +198,42 @@
             document.getElementById('tab-' + tabName).classList.add('active');
             btn.classList.add('active');
 
-            // update "Add New" button text and link based on active tab
-            const actionBtn = document.getElementById('action-btn');
-                console.log('Switching to tab:', tabName);
-                console.log(actionBtn);
-            actionBtn.innerHTML = tabActions[tabName].label;
-            actionBtn.onclick = function() {
-                window.location = tabActions[tabName].url;
-            }
+            const actionBtn = document.getElementById('create-new');
+            const action = tabActions[tabName];
+            actionBtn.textContent = action.label;
+            actionBtn.innerHTML += '<img src="{% static "admin/images/ui/arrow.svg" %}" alt="">'
+            actionBtn.onclick = action.popup
+                ? () => openPopup(action.url)
+                : () => window.location = action.url;
         }
+
+        function openPopup(url) {
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab) sessionStorage.setItem('activeAdminTab', activeTab.id.replace('tab-', ''));
+            const sep = url.includes('?') ? '&' : '?';
+            const popup = window.open(url + sep + '_popup=1', 'admin_popup_' + Date.now(), 'width=600,height=500,resizable=yes,scrollbars=yes');
+            if (!popup) return;
+            popup.focus();
+            const timer = setInterval(() => {
+                if (popup.closed) {
+                    clearInterval(timer);
+                    location.reload();
+                }
+            }, 500);
+        }
+
+        // Restore active tab on page load
+        const savedTab = sessionStorage.getItem('activeAdminTab');
+        if (savedTab) {
+            const btn = document.querySelector(`.tab-button[onclick*="'${savedTab}'"]`);
+            if (btn) switchTab(savedTab, btn);
+            sessionStorage.removeItem('activeAdminTab');
+        }
+
+        // Django admin popup dismiss callbacks — fired by the popup window after save/delete
+        window.dismissChangeRelatedObjectPopup = function(win, objId, newRepr, newId) { win.close(); location.reload(); };
+        window.dismissAddRelatedObjectPopup    = function(win, newId, newRepr)        { win.close(); location.reload(); };
+        window.dismissDeleteRelatedObjectPopup = function(win, objId)                 { win.close(); location.reload(); };
     </script>
 
 </div>  <!-- end content-main -->
