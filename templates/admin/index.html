@@ -24,7 +24,7 @@
         <button class="tab-button" onclick="switchTab('schools', this)">Schools</button>
         <button class="tab-button" onclick="switchTab('groups', this)">Groups</button>
         <button class="tab-button" onclick="switchTab('datasets', this)">Datasets</button>
-        <button class="tab-button action-btn" id="action-btn" onclick="window.location='{% url 'admin:accounts_user_add' %}'">Create New User</button>
+        <button class="tab-button" id="create-new" onclick="openPopup('{% url 'admin:accounts_user_add' %}')">Create New User<img src="{% static 'admin/images/ui/arrow.svg' %}" alt=""></button>
     </nav>
 
     <table id="tab-users" class="tab-table tab-content active">

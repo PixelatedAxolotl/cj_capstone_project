@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="mdi-border-color"
+   viewBox="0 0 24 24"
+   version="1.1"
+   sodipodi:docname="edit.svg"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="20.25"
+     inkscape:cx="12"
+     inkscape:cy="12"
+     inkscape:window-width="1280"
+     inkscape:window-height="730"
+     inkscape:window-x="1913"
+     inkscape:window-y="582"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="mdi-border-color" />
+  <path
+     d="m 20.20875,7.54125 c 0.39,-0.39 0.39,-1.04 0,-1.41 l -2.34,-2.34 c -0.37,-0.39 -1.02,-0.39 -1.41,0 l -1.96,1.96 3.75,3.75 m -1,1 -3.75,-3.75 -10,10 v 3.75 h 3.75 z"
+     id="path1" />
+</svg>
