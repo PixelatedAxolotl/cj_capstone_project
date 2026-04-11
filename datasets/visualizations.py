@@ -1,6 +1,7 @@
+import re
 import plotly.graph_objects as go
-from collections import defaultdict
-from django.db.models import Count
+from collections import defaultdict, Counter
+from django.db.models import Count, Avg
 from .models import RespondentAnswer, QuestionColumn
 from .constants import Q6_PARTICIPATION_COLS, Q7_PARTICIPATION_COLS
 
@@ -80,19 +81,20 @@ def build_crosstab_table(result, mode='counts'):
     flat_vals = [data[yopt][xopt] for yopt in y_options for xopt in x_options]
     max_val   = max(flat_vals) if flat_vals else 1
 
+    r, g, b = HEATMAP_RGB
     cell_values = [
         [f"{data[yopt][xopt]}{suffix}" for yopt in y_options]
         for xopt in x_options
     ]
     colors = [
-        [f"rgba(38, 87, 144, {data[yopt][xopt] / max_val * 0.55})" if max_val else 'white'
+        [f"rgba({r}, {g}, {b}, {data[yopt][xopt] / max_val * HEATMAP_ALPHA})" if max_val else 'white'
          for yopt in y_options]
         for xopt in x_options
     ]
 
     fig = go.Figure(data=[go.Table(
-        columnwidth=[220] + [140] * len(x_options),
-        header=dict(values=[result['y_label']] + x_options, fill_color='#e8edf2', align='left'),
+        columnwidth=[COL_WIDTH_LABEL] + [COL_WIDTH_DATA] * len(x_options),
+        header=dict(values=[result['y_label']] + x_options, align='left'),
         cells=dict(
             values=[y_options] + cell_values,
             fill_color=[['white'] * len(y_options)] + colors,
@@ -100,12 +102,11 @@ def build_crosstab_table(result, mode='counts'):
         ),
     )])
 
-    row_px = 30  # approximate px per table row (header + each data row)
-    height = row_px * (1 + len(y_options)) + 60  # rows + top margin (40) + bottom padding (20)
+    height = ROW_HEIGHT_PX * (1 + len(y_options)) + TABLE_MARGIN_PX
 
     fig.update_layout(
         title=dict(text=f"{result['y_label']} × {result['x_label']}", font=dict(size=13)),
-        width=220 + 140 * len(x_options),
+        width=COL_WIDTH_LABEL + COL_WIDTH_DATA * len(x_options),
         height=height,
         autosize=False,
         margin=dict(l=10, r=10, t=40, b=10),
@@ -132,14 +133,8 @@ def build_combined_crosstab_table(results, mode='counts'):
     suffix   = '%' if mode == 'percentages' else ''
     data_key = mode if mode in results[0] else 'counts'
 
-    # Union of x_options across all results
-    seen_x = set()
-    x_options = []
-    for r in results:
-        for xopt in r['x_options']:
-            if xopt not in seen_x:
-                x_options.append(xopt)
-                seen_x.add(xopt)
+    # Union of x_options across all results, preserving order
+    x_options = list(dict.fromkeys(xopt for r in results for xopt in r['x_options']))
 
     all_vals = [
         r[data_key][yopt].get(xopt, 0)
@@ -151,23 +146,21 @@ def build_combined_crosstab_table(results, mode='counts'):
 
     # One row per (y_question, y_option) pair; one column per x_option
     # Section header rows are inserted before each y question group.
-    SECTION_COLOR = "#539de6"
-    BORDER_COLOR  = "#dde3ea"  # consistent neutral border for all cells
-
     row_labels      = []
     label_colors    = []
     col_data_by_x   = [[] for _ in x_options]
     col_colors_by_x = [[] for _ in x_options]
 
+    rh, rg, rb = HEATMAP_RGB
     for result in results:
         data = result[data_key]
 
         # Section header row — spans full width visually via background color
         row_labels.append(result['y_label'])
-        label_colors.append(SECTION_COLOR)
+        label_colors.append('black')
         for i in range(len(x_options)):
             col_data_by_x[i].append('')
-            col_colors_by_x[i].append(SECTION_COLOR)
+            col_colors_by_x[i].append('black')
 
         # Data rows for this y question
         for yopt in result['y_options']:
@@ -177,24 +170,26 @@ def build_combined_crosstab_table(results, mode='counts'):
                 val = data[yopt].get(xopt, 0)
                 col_data_by_x[i].append(f"{val}{suffix}")
                 col_colors_by_x[i].append(
-                    f"rgba(38, 87, 144, {val / global_max * 0.55})" if global_max else 'white'
+                    f"rgba({rh}, {rg}, {rb}, {val / global_max * HEATMAP_ALPHA})" if global_max else 'white'
                 )
 
     fig = go.Figure(data=[go.Table(
-        columnwidth=[220] + [140] * len(x_options),
-        header=dict(values=[''] + x_options, fill_color='#e8edf2', align='left',
-                    line_color=BORDER_COLOR),
+        columnwidth=[COL_WIDTH_LABEL] + [COL_WIDTH_DATA] * len(x_options),
+        header=dict(values=[''] + x_options, align='left'),
         cells=dict(
             values=[row_labels] + col_data_by_x,
             fill_color=[label_colors] + col_colors_by_x,
             align='left',
-            line_color=BORDER_COLOR,
         ),
     )])
 
+    total_rows = sum(1 + len(r['y_options']) for r in results)  # section header + data rows per Y
+    height = ROW_HEIGHT_PX * (1 + total_rows) + TABLE_MARGIN_PX
+
     fig.update_layout(
         title=dict(text=f"Crosstab: {results[0]['x_label']}", font=dict(size=13)),
-        width=220 + 140 * len(x_options),
+        width=COL_WIDTH_LABEL + COL_WIDTH_DATA * len(x_options),
+        height=height,
         autosize=False,
         margin=dict(l=10, r=10, t=40, b=10),
     )

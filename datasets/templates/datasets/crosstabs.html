@@ -10,7 +10,7 @@
 
 {% block content %}
 
-<h2>Crosstab Tool</h2>
+<h1>Crosstab Tool</h1>
 
 <div id="crosstab-layout">
 
@@ -87,6 +87,7 @@
 </div>
 
 <script src="https://cdn.plot.ly/plotly-3.5.0.min.js" charset="utf-8"></script>
+<script src="{% static 'admin/js/plotly_config.js' %}"></script>
 <script>
 
 // ---------------------------------------------------------------------------
@@ -112,8 +113,8 @@ function addY() {
     select.addEventListener("change", updateSelectables);
 
     const removeBtn = document.createElement("button");
-    removeBtn.textContent = "✕";
-    removeBtn.className = "remove-y-btn";
+    removeBtn.innerHTML = '<img src="{% static "admin/images/ui/delete.svg" %}" alt="Remove Y variable" class="btn-icon">';
+    removeBtn.className = "remove-y-btn action-btn";
     removeBtn.onclick = () => { wrapper.remove(); updateSelectables(); };
 
     wrapper.appendChild(select);
@@ -208,7 +209,8 @@ async function runCrosstab() {
         // Too many columns to fit without compressing — keep defaults and scroll
         combined.layout.width = firstColWidth + 140 * numDataCols;
     }
-    Plotly.react("combined-table", combined.data, combined.layout, { responsive: false });
+    await Plotly.react("combined-table", combined.data, combined.layout, { responsive: false });
+    applyPlotlyTheme("combined-table");
 
     // Individual charts (one bar + one table per Y variable)
     const container = document.getElementById("individual-charts");
@@ -216,7 +218,7 @@ async function runCrosstab() {
             <h2>Individual Crosstabs</h2>
         <p>Here you can find each crosstab displayed separately in its own table.</p>`;
 
-    data.individual.forEach((item, i) => {
+    for (const [i, item] of data.individual.entries()) {
         const section = document.createElement("div");
         section.style.marginBottom = "40px";
 
@@ -231,9 +233,9 @@ async function runCrosstab() {
         `;
         container.appendChild(section);
 
-        // Plotly.newPlot(barId,   item.bar.data,   item.bar.layout,   { responsive: true });
-        Plotly.newPlot(tableId, item.table.data, item.table.layout, { responsive: false });
-    });
+        await Plotly.newPlot(tableId, item.table.data, item.table.layout, { responsive: false });
+        applyPlotlyTheme(tableId);
+    }
 }
 
 </script>

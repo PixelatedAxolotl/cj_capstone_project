@@ -6,20 +6,21 @@
 }
 
 #filter-sidebar {
-    background: #133973;
+    background: var(--accent-navy);
     padding: 16px;
     display: flex;
     flex-direction: column;
     gap: 16px;
     flex-shrink: 0;
-    width: 270px;
+    width: 280px;
     position: sticky;
     top: 0;
     align-self: flex-start;
+    border-radius: 4px;
 }
 
 #filter-sidebar label {
-    color: white;
+    color: var(--text-dark-bg);
     font-weight: bold;
     font-size: 14px;
     display: block;
@@ -27,8 +28,8 @@
 }
 
 #filter-sidebar select {
-    background: #133973;
-    color: white;
+    background: var(--accent-navy);
+    color: var(--text-dark-bg);
     border-radius: 4px;
     padding: 5px 10px;
     font-size: 14px;
@@ -41,47 +42,35 @@
 
 /* Y variable selects are added dynamically — give them flex: 1 so the ✕ button fits */
 #filter-sidebar .y-variable {
-    flex: 1;
-    min-width: 0;
+    min-width: 100px;
+    max-width: 250px;
 }
 
 /* Shared button base */
 #filter-sidebar button {
     background: transparent;
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: var(--text-dark-bg);
+    border: 1px solid var(--accent-orange);
     border-radius: 4px;
     padding: 6px 10px;
     font-size: 13px;
     cursor: pointer;
-    width: 100%;
     box-sizing: border-box;
     transition: background 0.2s, border-color 0.2s;
 }
 
 #filter-sidebar button:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: white;
+    background: rgba(255, 255, 255, 0.05);
+    filter: brightness(150%);
 }
 
 /* Run Crosstab — primary action */
-#run-crosstab-btn {
-    background: #f07128;
-    border-color: #f07128;
+#filter-sidebar #run-crosstab-btn {
+    background: unset;
+    background: var(--accent-orange);
+    border-color: var(--accent-orange);
     font-weight: bold;
     font-size: 14px;
-}
-
-#run-crosstab-btn:hover {
-    background: #d45f1a;
-    border-color: #d45f1a;
-}
-
-/* ✕ remove buttons — compact, don't stretch full width */
-.remove-y-btn {
-    width: auto !important;
-    flex-shrink: 0;
-    padding: 4px 8px;
 }
 
 #crosstab-content {
