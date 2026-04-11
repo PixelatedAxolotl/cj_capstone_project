@@ -1,0 +1,9 @@
+{% load static %}
+<td>
+    <button class="action-btn" id="edit-btn" onclick="openPopup('{{ edit_url }}'); event.stopPropagation();">
+        <img src="{% static 'admin/images/ui/edit.svg' %}" alt="Edit">
+    </button>
+    <button class="action-btn" id="delete-btn" onclick="openPopup('{{ delete_url }}'); event.stopPropagation();">
+        <img src="{% static 'admin/images/ui/delete.svg' %}" alt="Delete">
+    </button>
+</td>

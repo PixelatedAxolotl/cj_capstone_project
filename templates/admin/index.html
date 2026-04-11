@@ -53,14 +53,7 @@
                 <td>{{ user.email }}</td>
                 <td>{{ user.get_role_display }}</td>
                 <td>{{ user.is_active|yesno:"Yes,No" }}</td>
-                <td>
-                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_user_change' user.pk %}'">
-                        <img src="/static/admin/images/editIcon.svg" alt="Edit">
-                    </button>
-                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_user_delete' user.pk %}'">
-                        <img src="/static/admin/images/deleteIcon.svg" alt="Delete">
-                    </button>
-                </td>
+                {% include "admin/includes/_action_btns.html" with edit_url=edit_url delete_url=delete_url %}
             </tr>
             {% empty %}
             <tr><td colspan="7">No users found.</td></tr>
@@ -88,21 +81,13 @@
                 <td>{{ school.name }}</td>
                 <td>{{ school.date_added }}</td>
                 <td>
-                    <!-- link each group to its change form -->
                     {% for group in school.groups.all %}
                         {% url 'admin:accounts_user_group_change' group.pk as group_url %}
                         <a href="#" onclick="openPopup('{{ group_url }}'); event.stopPropagation(); return false;">{{ group.name }}</a>
                         {% if not forloop.last %}, {% endif %}
                     {% endfor %}
-               </td>
-                <td>
-                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_school_change' school.pk %}'">
-                        <img src="/static/admin/images/editIcon.svg" alt="Edit">
-                    </button>
-                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_school_delete' school.pk %}'">
-                        <img src="/static/admin/images/deleteIcon.svg" alt="Delete">
-                    </button>
                 </td>
+                {% include "admin/includes/_action_btns.html" with edit_url=edit_url delete_url=delete_url %}
             </tr>
             {% empty %}
             <tr><td colspan="4">No schools found.</td></tr>
@@ -130,14 +115,7 @@
                 <td>{{ group.name }}</td>
                 <td>{{ group.get_group_type_display }}</td>
                 <td>{{ group.date_added }}</td>
-                <td>
-                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_user_group_change' group.pk %}'">
-                        <img src="/static/admin/images/editIcon.svg" alt="Edit">
-                    </button>
-                    <button class="action-btn" onclick="window.location='{% url 'admin:accounts_user_group_delete' group.pk %}'">
-                        <img src="/static/admin/images/deleteIcon.svg" alt="Delete">
-                    </button>
-                </td>
+                {% include "admin/includes/_action_btns.html" with edit_url=edit_url delete_url=delete_url %}
             </tr>
             {% empty %}
             <tr><td colspan="4">No groups found.</td></tr>
@@ -169,14 +147,7 @@
                 <td>{{ dataset.description }}</td>
                 <td>{{ dataset.date_added }}</td>
                 <td>{{ dataset.row_count }}</td>
-                <td>
-                    <button class="action-btn" onclick="window.location='{% url 'admin:datasets_dataset_change' dataset.pk %}'">
-                        <img src="/static/admin/images/editIcon.svg" alt="Edit">
-                    </button>
-                    <button class="action-btn" onclick="window.location='{% url 'admin:datasets_dataset_delete' dataset.pk %}'; console.log('DELETE'); event.stopPropagation();">
-                        <img src="/static/admin/images/deleteIcon.svg" alt="Delete">
-                    </button>
-                </td>
+                {% include "admin/includes/_action_btns.html" with edit_url=edit_url delete_url=delete_url %}
             </tr>
             {% empty %}
             <tr><td colspan="5">No datasets found.</td></tr>
