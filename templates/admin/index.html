@@ -81,14 +81,14 @@
         </thead>
         <tbody>
             {% for school in schools %}
-            {% url 'admin:accounts_school_change' school.pk as edit_url %}
-            {% url 'admin:accounts_school_delete' school.pk as delete_url %}
+            {% url 'admin:core_school_change' school.pk as edit_url %}
+            {% url 'admin:core_school_delete' school.pk as delete_url %}
             <tr onclick="openPopup('{{ edit_url }}')">
                 <td>{{ school.name }}</td>
                 <td>{{ school.date_added }}</td>
                 <td>
                     {% for group in school.groups.all %}
-                        {% url 'admin:accounts_user_group_change' group.pk as group_url %}
+                        {% url 'admin:core_user_group_change' group.pk as group_url %}
                         <a href="#" onclick="openPopup('{{ group_url }}'); event.stopPropagation(); return false;">{{ group.name }}</a>
                         {% if not forloop.last %}, {% endif %}
                     {% endfor %}
@@ -115,8 +115,8 @@
         </thead>
         <tbody>
             {% for group in user_groups %}
-            {% url 'admin:accounts_user_group_change' group.pk as edit_url %}
-            {% url 'admin:accounts_user_group_delete' group.pk as delete_url %}
+            {% url 'admin:core_user_group_change' group.pk as edit_url %}
+            {% url 'admin:core_user_group_delete' group.pk as delete_url %}
             <tr onclick="openPopup('{{ edit_url }}')">
                 <td>{{ group.name }}</td>
                 <td>{{ group.get_group_type_display }}</td>
@@ -164,9 +164,9 @@
     <script>
         const tabActions = {
             users:    { label: 'Create New User',    url: '{% url "admin:accounts_user_add" %}',       popup: true },
-            schools:  { label: 'Create New School',  url: '{% url "admin:accounts_school_add" %}',     popup: true },
-            groups:   { label: 'Create New Group',   url: '{% url "admin:accounts_user_group_add" %}', popup: true },
-            datasets: { label: 'Upload New Dataset', url: '{% url "upload_dataset" %}',                popup: false },
+            schools:  { label: 'Create New School',  url: '{% url "admin:core_school_add" %}',     popup: true },
+            groups:   { label: 'Create New Group',   url: '{% url "admin:core_user_group_add" %}', popup: true },
+            datasets: { label: 'Upload New Dataset', fileUpload: true },
         };
 
         function switchTab(tabName, btn) {
@@ -182,8 +182,8 @@
             actionBtn.onclick = action.fileUpload
                 ? () => document.getElementById('dataset-file-input').click()
                 : action.popup
-                ? () => openPopup(action.url)
-                : () => window.location = action.url;
+                    ? () => openPopup(action.url)
+                    : () => window.location = action.url;
         }
 
         function openPopup(url) {
