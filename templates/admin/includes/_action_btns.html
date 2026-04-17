@@ -1,9 +1,22 @@
 {% load static %}
-<td>
-    <button class="action-btn" id="edit-btn" onclick="openPopup('{{ edit_url }}'); event.stopPropagation();">
+<td class="action-cell">
+    <button class="action-btn" onclick="openPopup('{{ edit_url }}'); event.stopPropagation();">
         <img src="{% static 'admin/images/ui/edit.svg' %}" alt="Edit">
     </button>
-    <button class="action-btn" id="delete-btn" onclick="openPopup('{{ delete_url }}'); event.stopPropagation();">
-        <img src="{% static 'admin/images/ui/delete.svg' %}" alt="Delete">
-    </button>
+    <div class="delete-confirm-wrapper">
+        <button class="action-btn" onclick="showDeleteConfirm(this, event);">
+            <img id="delete-btn" src="{% static 'admin/images/ui/delete.svg' %}" alt="Delete">
+        </button>
+        <div class="delete-tooltip" hidden onclick="event.stopPropagation();">
+            <span class="delete-tooltip-text">Delete this item?</span>
+            <div class="delete-tooltip-btns">
+                <form method="post" action="{{ delete_url }}" class="delete-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="post" value="yes">
+                    <button type="submit" class="confirm-yes">Yes</button>
+                </form>
+                <button type="button" class="confirm-no" onclick="this.closest('.delete-tooltip').hidden=true; event.stopPropagation();">No</button>
+            </div>
+        </div>
+    </div>
 </td>

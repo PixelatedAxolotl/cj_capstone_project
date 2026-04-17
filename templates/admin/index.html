@@ -19,6 +19,12 @@
         <li><b>Manage Datasets:</b> Upload and manage student response datasets. <em>(Note: Files must be Excel Spreadsheets (.xlsx))</em></li>
     </ul>
 
+    <!-- Hidden form used to POST a file to the upload view inside a popup window -->
+    <form id="dataset-upload-form" method="post" action="{% url 'upload_dataset' %}" enctype="multipart/form-data" target="upload_popup" style="display:none;">
+        {% csrf_token %}
+        <input type="file" name="dataset_file" id="dataset-file-input" accept=".xlsx">
+    </form>
+
     <nav class="tab-nav">
         <button class="tab-button active" onclick="switchTab('users', this)">Users</button>
         <button class="tab-button" onclick="switchTab('schools', this)">Schools</button>
@@ -173,7 +179,9 @@
             const action = tabActions[tabName];
             actionBtn.textContent = action.label;
             actionBtn.innerHTML += '<img src="{% static "admin/images/ui/arrow.svg" %}" alt="">'
-            actionBtn.onclick = action.popup
+            actionBtn.onclick = action.fileUpload
+                ? () => document.getElementById('dataset-file-input').click()
+                : action.popup
                 ? () => openPopup(action.url)
                 : () => window.location = action.url;
         }
@@ -182,7 +190,7 @@
             const activeTab = document.querySelector('.tab-content.active');
             if (activeTab) sessionStorage.setItem('activeAdminTab', activeTab.id.replace('tab-', ''));
             const sep = url.includes('?') ? '&' : '?';
-            const popup = window.open(url + sep + '_popup=1', 'admin_popup_' + Date.now(), 'width=600,height=500,resizable=yes,scrollbars=yes');
+            const popup = window.open(url + sep + '_popup=1', 'admin_popup_' + Date.now(), 'width=770,height=500,resizable=yes,scrollbars=yes');
             if (!popup) return;
             popup.focus();
             const timer = setInterval(() => {
@@ -205,6 +213,51 @@
         window.dismissChangeRelatedObjectPopup = function(win, objId, newRepr, newId) { win.close(); location.reload(); };
         window.dismissAddRelatedObjectPopup    = function(win, newId, newRepr)        { win.close(); location.reload(); };
         window.dismissDeleteRelatedObjectPopup = function(win, objId)                 { win.close(); location.reload(); };
+
+        // Inline delete confirmation tooltip
+        function showDeleteConfirm(btn, event) {
+            event.stopPropagation();
+            const tooltip = btn.nextElementSibling;
+            const isOpen = !tooltip.hidden;
+            document.querySelectorAll('.delete-tooltip').forEach(t => t.hidden = true);
+            if (!isOpen) tooltip.hidden = false;
+        }
+
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.delete-tooltip').forEach(t => t.hidden = true);
+        });
+
+        // Open upload flow in a popup when user picks a file
+        document.getElementById('dataset-file-input').addEventListener('change', function() {
+            if (!this.files[0]) return;
+            const activeTab = document.querySelector('.tab-content.active');
+            if (activeTab) sessionStorage.setItem('activeAdminTab', activeTab.id.replace('tab-', ''));
+            const popup = window.open('', 'upload_popup', 'width=750,height=650,resizable=yes,scrollbars=yes');
+            if (!popup) return;
+            popup.focus();
+            document.getElementById('dataset-upload-form').submit();
+            // Reset input so the same file can be re-selected if needed
+            this.value = '';
+            const timer = setInterval(() => {
+                if (popup.closed) { clearInterval(timer); location.reload(); }
+            }, 500);
+        });
+
+        // Submit delete via fetch so the main page never navigates away
+        document.addEventListener('submit', function(e) {
+            if (!e.target.classList.contains('delete-form')) return;
+            e.preventDefault();
+            const form = e.target;
+            fetch(form.action, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(new FormData(form)),
+            }).then(() => {
+                const activeTab = document.querySelector('.tab-content.active');
+                if (activeTab) sessionStorage.setItem('activeAdminTab', activeTab.id.replace('tab-', ''));
+                location.reload();
+            });
+        });
     </script>
 
 </div>  <!-- end content-main -->

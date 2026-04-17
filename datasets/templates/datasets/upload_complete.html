@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <p class="{{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+<script>
+    if (window.opener && !window.opener.closed) {
+        window.opener.location.reload();
+        window.close();
+    } else {
+        window.location = "{% url 'admin_index' %}";
+    }
+</script>
+{% endblock %}
