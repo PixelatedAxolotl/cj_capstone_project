@@ -1,14 +1,61 @@
 <!DOCTYPE html>
+{% load static %}
 <html>
 <head>
-    <title>Login</title>
+    <title>Login — CJ Dashboard</title>
+    <!-- Apply theme before stylesheets render to prevent flash -->
+    <script>
+    (function () {
+        var saved = localStorage.getItem('cj-theme');
+        if (!saved) {
+            saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            localStorage.setItem('cj-theme', saved);
+        }
+        document.documentElement.setAttribute('data-theme', saved);
+    })();
+    </script>
+    <link rel="stylesheet" href="{% static 'admin/css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/css/login.css' %}">
 </head>
 <body>
-    <h1>Login</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Login</button>
-    </form>
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <img src="{% static 'admin/images/ui/logo.png' %}" alt="Career Jam Logo" class="login-logo">
+                <h1>Career Jam Student Data Dashboard</h1>
+            </div>
+            <div class="login-body">
+                <h2>Sign In</h2>
+                {% if form.errors %}
+                    {% for error in form.non_field_errors %}
+                        print(error)
+                        {% if "inactive" in error %}
+                            <p class="login-error login-deactivated">
+                                Your account has been deactivated.
+                                Please contact an administrator.
+                            </p>
+                        {% else %}
+                            <p class="login-error">Invalid username or password. Please try again.</p>
+                        {% endif %}
+                    {% empty %}
+                        <p class="login-error">Invalid username or password. Please try again.</p>
+                    {% endfor %}
+                {% endif %}
+                <form method="post" class="login-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="login-field">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.errors %}
+                                <span class="login-field-error">{{ field.errors|join:", " }}</span>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="login-btn">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
