@@ -1,5 +1,5 @@
 from django.db import models
-from accounts.models import School
+from core.models import School
 
 # Create your models here.
 class Dataset(models.Model):

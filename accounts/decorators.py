@@ -1,7 +1,6 @@
 from functools import wraps
 from django.shortcuts import redirect
 
-# custom decorator to check logged in user's role and allow/deny access based on that
 
 def role_required(*roles):
     def decorator(view_func):

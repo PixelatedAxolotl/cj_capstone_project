@@ -1,21 +1,15 @@
-from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
-from .decorators import role_required
+from accounts.decorators import role_required
 
 from django.http import JsonResponse
-from accounts.models import School
 
 # Imports to display models on admin dashboard
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import admin
-from accounts.models import User, School, User_Group
+from accounts.models import User
+from core.models import School, User_Group
 from datasets.models import Dataset
-
-
-
-class CustomLoginView(LoginView):
-    template_name = 'core/login.html'
 
 
 def school_groups(request, school_id):

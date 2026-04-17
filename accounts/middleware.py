@@ -1,7 +1,8 @@
 from django.shortcuts import redirect
 
-# Restrict admin pages to internal admin users and superusers and redirect unathorized users to 403 page
+
 class RoleBasedAccessMiddleware:
+    """Restrict admin pages to internal admin users and superusers; redirect others to the 403 page."""
     def __init__(self, get_response):
         self.get_response = get_response
 
