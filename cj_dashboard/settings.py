@@ -97,7 +97,7 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # login redirect
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = '/summary_dashboard'   # starting slash prevents Django interpreting as a relative URL path
+LOGIN_REDIRECT_URL = '/admin'   # starting slash prevents Django interpreting as a relative URL path
 LOGOUT_REDIRECT_URL = 'login'
 
 
