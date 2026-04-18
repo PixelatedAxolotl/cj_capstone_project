@@ -14,11 +14,11 @@ from django.http import JsonResponse
 from .data_validators import validate_columns
 from .constants import Q7_PARTICIPATION_COLS, SURVEY_COLUMNS, Q6_PARTICIPATION_COLS
 from .models import Dataset, Question, Response, RespondentAnswer, QuestionColumn, Option
-from accounts.models import School
+from core.models import School
 from .data_access_control import get_dashboard_queryset, get_response_queryset, can_view_raw, get_aggregate_scopes
 from .crosstab_builder import build_crosstab
 from .visualizations import build_crosstab_table, build_combined_crosstab_table, build_grouped_bar, build_participation_chart, build_top_selections, build_aptitude_summary, build_career_cluster_top3, build_post_hs_conversations
-from core.decorators import role_required
+from accounts.decorators import role_required
 
 # TODO: stop dataset upload and check with user if too many duplicate response IDs are found
 @role_required('internal')  # only allow admin users access
@@ -64,8 +64,7 @@ def upload_dataset(request):
 
 
 
-# TODO:
-#   speed better but add fun little loading animation?
+# TODO: speed better but add fun little loading animation?
 #   make deleted datasets recoverable?
 @role_required('internal')
 def confirm_import(request):
@@ -279,7 +278,7 @@ def confirm_import(request):
             else:
                 messages.success(request, f'Import complete. {imported_count} rows imported successfully.')
 
-            return redirect('admin:datasets_dataset_changelist')
+            return redirect('upload_complete')
 
         except Exception as e:
             messages.error(request, f'Import failed: {str(e)}. No data was saved.')
@@ -294,6 +293,11 @@ def confirm_import(request):
         'dataset_name': file_name.replace('.xlsx', ''),
     })
 
+
+
+@role_required('internal')
+def upload_complete(request):
+    return render(request, 'datasets/upload_complete.html')
 
 
 @role_required('internal')

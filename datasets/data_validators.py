@@ -1,5 +1,4 @@
 from .constants import EXPECTED_COLUMNS
-from accounts.models import School
 
 # TODO: add validation rules for:
 # - school id that does not exist in the DB
