@@ -26,7 +26,7 @@
     --object-tools-bg:         var(--accent-blue);
     --object-tools-hover-bg:   #1a6aad;
 
-    --accent-navy:    #133973;
+    --accent-navy:    #0d3555;
     --accent-blue:    #2B7EC2;
     --accent-orange:  #f07128;
 
@@ -41,7 +41,13 @@
     --default-font-size: 16px;
     font-size: var(--default-font-size);
     /* use for both light and dark moode when background will be dark regardless */
-    --text-dark-bg: #e8ecf0
+    --text-dark-bg: #e8ecf0;
+
+    /* Plotly axis font sizes — unitless numbers (Plotly doesn't accept px) */
+    --plotly-title-size:      20;
+    --plotly-axis-title-size: 18;
+    --plotly-axis-tick-size:  18;
+    --plotly-legend-size:     18;
 }
 
 :root,
@@ -59,10 +65,18 @@
     /* plotly chart colors */
     --plotly-bg:          #f4f6f9;
     --plotly-grid:        #e0e8f0;
-    --plotly-bar-1:       #8B2635;
-    --plotly-bar-2:       #f07128;
-    --plotly-bar-3:       #4a9a6b;
-    --plotly-bar-4:       #133973;
+
+
+    /* muted light color */
+        /* --plotly-bar-1:       #80289a;
+        --plotly-bar-2:       #9a4728;
+        --plotly-bar-3:       #439a28;
+        --plotly-bar-4:       #287c9a; */
+
+        --plotly-bar-3:       #f54a58;
+        --plotly-bar-4:       #f5924a;
+        --plotly-bar-1:       #50af80;
+        --plotly-bar-2:       #1d4e9c;
 
     /* plotly table colors */
     --plotly-table-header:  #31f76c;
@@ -73,7 +87,7 @@
 
 /* --- Dark mode — Django toggle --- */
 html[data-theme="dark"] {
-    --bg-page:        #061223;
+    --bg-page:        #082136;
     --body-bg:        var(--bg-page);
     --darkened-bg:    var(--bg-page);
     --border-color:   var(--accent-navy);
@@ -82,7 +96,7 @@ html[data-theme="dark"] {
     --text-secondary: #a8b8cc;
 
     /* plotly chart colors */
-    --plotly-bg:          #061223;
+    --plotly-bg:          #082136;
     --plotly-grid:        #2a3d55;
     --plotly-bar-1:       #8B2635;
     --plotly-bar-2:       #f5924a;
@@ -99,17 +113,22 @@ html[data-theme="dark"] {
 /* --- Dark mode — system preference fallback (when no data-theme is set) --- */
 @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-        --bg-page:        #061223;
+        --bg-page:        #082136;
         --text-primary:   #e8ecf0;
         --text-secondary: #a8b8cc;
 
         /* plotly chart colors */
-        --plotly-bg:          #061223;
+        --plotly-bg:          #082136;
         --plotly-grid:        #2a3d55;
-        --plotly-bar-1:       #8B2635;
-        --plotly-bar-2:       #f5924a;
-        --plotly-bar-3:       #5ab87d;
-        --plotly-bar-4:       #3a6bbf;
+        /* --plotly-bar-1:       #7215ea;
+        --plotly-bar-2:       #ea1522;
+        --plotly-bar-3:       #8dea15;
+        --plotly-bar-4:       #15eadd; */
+
+        --plotly-bar-3:       #f54a58;
+        --plotly-bar-4:       #f5924a;
+        --plotly-bar-1:       #50af80;
+        --plotly-bar-2:       #1d4e9c;
 
         /* plotly table colors */
         --plotly-table-header:  #1a2d42;
@@ -125,6 +144,7 @@ html[data-theme="dark"] {
 body {
     background-color: var(--bg-page);
     color: var(--text-primary);
+    font-size: var(--default-font-size);
 }
 
 html, table, th, tr, td {
@@ -145,6 +165,8 @@ h2 {
 
 li {
     margin-bottom: 8px;
+    /* override Django font sizing and fall back to font size set in body */
+    font-size: initial;
 }
 
 select, input:not([type="submit"]) {

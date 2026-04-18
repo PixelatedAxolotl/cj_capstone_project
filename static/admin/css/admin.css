@@ -25,7 +25,7 @@
     transition: color 0.2s, border-color 0.2s, background 0.2s;
 
     /* help make tab borders seemless */
-    border: 1px solid var(--accent-navy);
+    border: 2px solid var(--accent-navy);
     border-bottom: none;
 }
 
@@ -74,7 +74,7 @@
 
 .tab-content {
     display: none;
-    border: 1px solid var(--plotly-grid);
+    border: 2px solid var(--plotly-grid);
     overflow-x: auto;
 }
 
@@ -101,13 +101,13 @@
 
 /* help make tab borders seemless */
 .tab-table caption{
-    border-left: 1px solid var(--accent-navy);
+    border-left: 2px solid var(--accent-navy);
 }
 
 .tab-table td, .tab-table th {
     padding: 8px 12px;
     border-bottom: 1px solid var(--plotly-grid);
-    border-left: 1px solid var(--accent-navy);
+    border-left: 2px solid var(--accent-navy);
     white-space: nowrap;
 }
 
@@ -147,8 +147,7 @@
 }
 
 #delete-btn img {
-    filter: brightness(0) saturate(100%) invert(54%) sepia(68%) saturate(3157%) hue-rotate(348deg) brightness(101%) contrast(88%);
-
+    filter: brightness(0) saturate(100%) invert(14%) sepia(48%) saturate(4843%) hue-rotate(334deg) brightness(96%) contrast(98%);
 }
 
 .action-btn:hover {
