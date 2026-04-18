@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 
 from accounts.admin import InternalRolePermissionMixin
@@ -25,11 +26,18 @@ class UserGroupForm(forms.ModelForm):
 class SchoolAdmin(InternalRolePermissionMixin, admin.ModelAdmin):
     pass
 
+
 class UserGroupAdmin(InternalRolePermissionMixin, admin.ModelAdmin):
-    pass
+    form = UserGroupForm
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        form.instance.schools.set(form.cleaned_data.get('schools', []))
+
+    class Media:
+        css = {'all': ('admin/css/widgets.css',)}
+        js = ('admin/js/core.js',)
 
 
-# register models
-admin.site.register(User, CustomUserAdmin)
 admin.site.register(School, SchoolAdmin)
 admin.site.register(User_Group, UserGroupAdmin)

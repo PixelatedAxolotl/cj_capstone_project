@@ -152,8 +152,25 @@ select, input:not([type="submit"]) {
     flex-grow: 0.2 !important;
 }
 
-form {
-    width: fit-content;
+/* ---- FilteredSelectMultiple (dual-list selector) widget ----
+   Undo the broad select rule above so the two panes sit side-by-side
+   with the arrow buttons between them, and the lists are tall enough to use. */
+.selector {
+    flex-direction: row !important;
+    gap: 0 12px !important;
+}
+
+.selector select {
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
+    min-width: 300px !important;
+    height: 20em !important;
+}
+
+/* Form containing a FilteredSelectMultiple needs to be fluid so the
+   dual-list selector can expand to fill the popup width */
+form:has(.selector) {
+    width: auto;
 }
 
 form .submit-row {
