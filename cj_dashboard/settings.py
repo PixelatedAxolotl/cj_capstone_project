@@ -109,7 +109,10 @@ LOGOUT_REDIRECT_URL = 'login'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-        'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+        # use DATABASE_URL to connect with all admin privileges - ONLY FOR LOCAL TESTING
+        # deployed versions should use APP_DATABASE_URL which connects as a user with restricted permissions
+        #'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+        'default': dj_database_url.config(default=os.getenv('APP_DATABASE_URL'))
     }
 
 
