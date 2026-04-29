@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 
 
-from .data_validators import validate_columns
+from .data_validators import validate_columns, validate_schools
 from .constants import Q7_PARTICIPATION_COLS, SURVEY_COLUMNS, Q6_PARTICIPATION_COLS
 from .models import Dataset, Question, Response, RespondentAnswer, QuestionColumn, Option
 from core.models import School
@@ -48,12 +48,18 @@ def upload_dataset(request):
             data_rows = rows[1:]
             wb.close()
 
+            known_survey_indices = set(
+                School.objects.filter(survey_index__isnull=False).values_list('survey_index', flat=True)
+            )
+            q1_col_index = headers.index('Q1') if 'Q1' in headers else None
+
             context = {
                 'preview': True,
                 'headers': headers,
                 'row_count': row_count,
                 'data_rows': data_rows[:50], # pass only first 50 rows to preview table FOR NOW - TODO: REMOVE THIS LIMIT LATER
                 'validation': validate_columns(headers),
+                'school_validation': validate_schools(data_rows, q1_col_index, known_survey_indices) if q1_col_index is not None else None,
                 'file_name': file.name,
             }
 
