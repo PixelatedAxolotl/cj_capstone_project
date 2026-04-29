@@ -29,20 +29,30 @@ function hexToRgb(hex) {
 // Build the Plotly layout override object from live CSS variables.
 // Called at relayout time so it always reflects the current theme.
 window.getCurrentPlotlyTheme = function() {
-    const bg   = cssVar('--plotly-bg');
-    const grid = cssVar('--plotly-grid');
-    const text = cssVar('--text-primary');
+    const bg        = cssVar('--plotly-bg');
+    const grid      = cssVar('--plotly-grid');
+    const text      = cssVar('--text-primary');
+    const titleSize = Number(cssVar('--plotly-axis-title-size')) || 13;
+    const tickSize  = Number(cssVar('--plotly-axis-tick-size'))  || 11;
+    const legendSize = Number(cssVar('--plotly-legend-size'))    || 12;
+    const bigTitleSize = Number(cssVar('--plotly-title-size')) || 25;
     return {
-        paper_bgcolor:     bg,
-        plot_bgcolor:      bg,
-        'font.color':      text,
-        'xaxis.color':     text,
-        'xaxis.gridcolor': grid,
-        'xaxis.linecolor': grid,
-        'yaxis.color':     text,
-        'yaxis.gridcolor': grid,
-        'yaxis.linecolor': grid,
-        'legend.bgcolor':  bg,
+        paper_bgcolor:              bg,
+        plot_bgcolor:               bg,
+        'font.color':               text,
+        'title.font.size':          bigTitleSize,
+        'xaxis.color':              text,
+        'xaxis.gridcolor':          grid,
+        'xaxis.linecolor':          grid,
+        'xaxis.title.font.size':    titleSize,
+        'xaxis.tickfont.size':      tickSize,
+        'yaxis.color':              text,
+        'yaxis.gridcolor':          grid,
+        'yaxis.linecolor':          grid,
+        'yaxis.title.font.size':    titleSize,
+        'yaxis.tickfont.size':      tickSize,
+        'legend.bgcolor':           bg,
+        'legend.font.size':         legendSize,
     };
 };
 
