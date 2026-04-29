@@ -345,6 +345,39 @@ label {
 
 
 
+/* --- Site footer --- */
+#site-footer {
+    background-color: var(--accent-navy);
+    color: var(--text-dark-bg);
+    padding: 14px 20px;
+    font-size: 13px;
+    margin-top: 40px;
+}
+
+.footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 16px;
+}
+
+.footer-sep {
+    opacity: 0.5;
+}
+
+#site-footer a {
+    color: #8bbfe8;
+    text-decoration: none;
+}
+
+#site-footer a:hover {
+    text-decoration: underline;
+    color: #fff;
+}
+
+
+
 /* Django generated popup specific styles -
     must have Django's "popup" class on an outer element */
 .popup .selector .selector-filter  {

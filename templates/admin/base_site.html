@@ -38,11 +38,11 @@
     {% if request.user.is_staff %}
         <a href="{% url 'admin_index' %}">Admin Pages</a>
 
-    <!-- show docutils documentation -->
-    {% url 'django-admindocs-docroot' as docsroot %}
-    {% if docsroot %}
-        <a href="{{ docsroot }}">Documentation</a>
-    {% endif %}
+        <!-- show docutils documentation -->
+        {% url 'django-admindocs-docroot' as docsroot %}
+        {% if docsroot %}
+            <a href="{{ docsroot }}">Documentation</a>
+        {% endif %}
     {% endif %}
 
     {% if user.has_usable_password %}
@@ -86,4 +86,24 @@
     });
 })();
 </script>
+{% endblock %}
+
+{% block footer %}
+<footer id="site-footer">
+    <div class="footer-inner">
+        <span class="footer-section">
+            Icons by <a href="https://www.magnific.com/app" target="_blank">Magnific</a>
+        </span>
+        <span class="footer-sep" aria-hidden="true">|</span>
+        <span class="footer-section">
+            <a href="https://www.career-jam.com/" target="_blank">Career Jam Website</a>
+        </span>
+        <span class="footer-sep" aria-hidden="true">|</span>
+        <span class="footer-section">
+            Created by <a href="#" target="_blank" rel="noopener">Lauren-Kate S</a>
+            &mdash;
+            <a href="https://github.com/" target="_blank">GitHub</a>
+        </span>
+    </div>
+</footer>
 {% endblock %}
