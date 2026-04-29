@@ -70,7 +70,7 @@ def build_crosstab_table(result, mode='counts'):
     Single Y question as a Plotly Table with heatmap cell shading.
 
     Args:
-        result (dict): One element from build_crosstab()'s return value.
+        result (dict): One element from )'s return value.
         mode (str):    'counts' | 'percentages'
     """
     x_options = result['x_options']
@@ -226,7 +226,7 @@ def build_grouped_bar(result, mode, title=None, legend_title=None, x_axis_title=
 
     fig.update_layout(
         barmode='group',
-        title=title or dict(text=f"{result['y_label']}", font=dict(size=15), x=0.5, xanchor='center'),
+        title=title or dict(text=f"{result['y_label']}", x=0.5, xanchor='center'),
         xaxis_title=x_axis_title or result['x_label'],
         yaxis_title='Percentage of Students' if mode == 'percentages' else 'Number of Students',
         xaxis=dict(type='category'),
@@ -399,83 +399,86 @@ def build_aptitude_summary(qs):
         'numerical': round(result['numerical'] or 0, 2),
     }
 
-# TODO: fix ordering to be based on average grade
 def build_career_cluster_top3(qs):
     """
-    Return the top 3 career clusters by average composite score, with grade-group callouts.
+    Return the top 3 career clusters by overall frequency (most respondents had it as
+    their #1 highest-scoring cluster), annotated with a grade callout showing which
+    grade level selected it most frequently as a proportion of that grade's total students.
 
-    For each grade group (from Q5), determines which cluster is most commonly #1
-    per respondent. Then annotates each of the overall top 3 with the grade groups
-    that have it as their most popular cluster.
+    Using proportion rather than raw count ensures small grade groups (e.g. D students)
+    can surface in callouts even when outnumbered by larger groups.
 
     Returns a list of 3 dicts:
         [
             {
                 'label':          str,    # display name of the cluster
                 'avg_score':      float,  # average career composite score
-                'grade_callouts': list,   # grade labels for which this is the #1 cluster
+                'grade_callouts': list,   # single-element list with the grade label, or []
                 'slug':           str,    # field suffix, e.g. 'telecommunications'
             },
             ...
         ]
     """
     career_field_names = [f for f, _ in CAREER_CLUSTER_FIELDS]
+    field_to_label = dict(CAREER_CLUSTER_FIELDS)
 
-    # Average composite score per cluster across all responses
-    agg = qs.aggregate(**{field: Avg(field) for field in career_field_names})
-
-    ranked = sorted(
-        [(field, label, agg.get(field) or 0) for field, label in CAREER_CLUSTER_FIELDS],
-        key=lambda x: x[2],
-        reverse=True,
-    )
-    top3 = ranked[:3]
-    top3_fields = {field for field, _, _ in top3}
-    grade_callouts = {field: [] for field in top3_fields}
-
-    # Grade-segmented callouts: for each grade group, find the most commonly #1 cluster
     try:
         grade_q = QuestionColumn.objects.get(column_header='Q5')
     except QuestionColumn.DoesNotExist:
-        grade_q = None
+        return []
 
-    if grade_q:
-        # Map response pk -> grade label
-        grade_answers = (
-            RespondentAnswer.objects
-            .filter(response__in=qs, question_column=grade_q)
-            .select_related('option')
-        )
-        response_grade = {
-            ans.response_id: ans.option.display_text
-            for ans in grade_answers if ans.option
-        }
+    # Map response pk -> grade label
+    grade_answers = (
+        RespondentAnswer.objects
+        .filter(response__in=qs, question_column=grade_q)
+        .select_related('option')
+    )
+    response_grade = {
+        ans.response_id: ans.option.display_text
+        for ans in grade_answers if ans.option
+    }
 
-        # For each response, count how many respondents per grade have each cluster as their #1
-        responses_scores = qs.values('id', *career_field_names)
-        cluster_grade_counts = defaultdict(Counter)
-        for row in responses_scores:
-            grade = response_grade.get(row['id'])
-            if not grade:
-                continue
-            best_field = max(career_field_names, key=lambda f: row.get(f) or 0)
+    # For each response, find their #1 cluster and tally:
+    #   overall_counter:      total times each cluster was #1 (for ranking the top 3)
+    #   cluster_grade_counts: per-cluster, how many students of each grade had it as #1
+    #   grade_totals:         total students per grade (denominator for proportions)
+    responses_scores = qs.values('id', *career_field_names)
+    overall_counter = Counter()
+    cluster_grade_counts = defaultdict(Counter)
+    grade_totals = Counter()
+
+    for row in responses_scores:
+        grade = response_grade.get(row['id'])
+        best_field = max(career_field_names, key=lambda f: row.get(f) or 0)
+        overall_counter[best_field] += 1
+        if grade:
             cluster_grade_counts[best_field][grade] += 1
+            grade_totals[grade] += 1
 
-        # For each top-3 cluster, find the single grade that most frequently had it as #1
-        for field in top3_fields:
-            if cluster_grade_counts[field]:
-                best_grade = cluster_grade_counts[field].most_common(1)[0][0]
-                grade_callouts[field] = [best_grade]
+    # Top 3 clusters by total frequency
+    top3_fields = [field for field, _ in overall_counter.most_common(3)]
 
-    return [
-        {
-            'label':          label,
+    result = []
+    for field in top3_fields:
+        # Grade callout: grade with the highest proportion of its students having this as #1
+        best_grade = None
+        best_proportion = -1
+        for grade, count in cluster_grade_counts[field].items():
+            if grade_totals[grade]:
+                proportion = count / grade_totals[grade]
+                if proportion > best_proportion:
+                    best_proportion = proportion
+                    best_grade = grade
+
+        avg = qs.aggregate(avg=Avg(field))['avg'] or 0
+        result.append({
+            'label':          field_to_label[field],
             'avg_score':      round(avg, 1),
-            'grade_callouts': sorted(grade_callouts.get(field, [])),
+            'grade_callouts': [best_grade] if best_grade else [],
             'slug':           field.replace('career_score_', ''),
-        }
-        for field, label, avg in top3
-    ]
+        })
+
+    return result
 
 
 def build_post_hs_conversations(qs):

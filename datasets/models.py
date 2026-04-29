@@ -19,6 +19,7 @@ class Question(models.Model):
         ('free_text', 'Free Text'),
         ('scale', 'Scale'),
         ('rank', 'Rank'),
+        ('calculated', 'Calculated'),
     ]
 
     label = models.TextField(blank=True)
@@ -44,7 +45,7 @@ class Option(models.Model):
         return self.display_text
 
 
-
+# TODO: enforce that option_category must match a category of at least 1 option record?
 # maps dataset column headers to questions and options in the db
 # option is nullable for single choice questions since numeric value decides how it maps to the options
 class QuestionColumn(models.Model):

@@ -1,18 +1,18 @@
 # datasets/crosstabs.py
 
 from collections import defaultdict
-from .models import QuestionColumn, RespondentAnswer
+from .models import QuestionColumn, RespondentAnswer, Question
 
 def build_crosstab(
     x_question_id,
     base_queryset,
     y_question_ids=None,
-    derived_field_map=None,
     pct_type='total',
 ):
     """
-    Build crosstab data for one X question crossed against N Y questions,
-    including derived fields stored on related models.
+    Build crosstab data for one X question crossed against N Y questions.
+    Y axes may include questions of type 'calculated', which are read directly
+    from Response model fields rather than RespondentAnswer records.
 
     Args:
         x_question_id (int):
@@ -23,30 +23,13 @@ def build_crosstab(
             applied by the caller before passing in.
 
         y_question_ids (list[int] | None):
-            Question pks for Y axes sourced from RespondentAnswer.
-
-        derived_field_map (dict | None):
-            Y axes sourced from model fields rather than RespondentAnswer.
-            Keys are sentinel IDs (use negative integers to avoid clashing
-            with real Question pks). Values are dicts:
-            {
-                'source': 'response' | 'school',  # which model to read from
-                'field':  'field_name',            # model field name
-                'label':  'Display Label',         # shown in chart/table
-            }
-            For 'school' source, the Response must have a school FK.
-
-            Example:
-                derived_field_map={
-                    -1: {'source': 'response', 'field': 'participated_awareness',   'label': 'Career Awareness'},
-                    -2: {'source': 'response', 'field': 'participated_exploration', 'label': 'Career Exploration'},
-                    -3: {'source': 'response', 'field': 'participated_either',      'label': 'Career Preparedness'},
-                }
+            Question pks for Y axes. Questions with question_type='calculated'
+            are handled automatically via their label field (Response field name).
 
         pct_type (str): 'total' | 'row' | 'column'
 
     Returns:
-        list[dict] — one dict per Y question/derived field:
+        list[dict] — one dict per Y question:
         {
             'x_question_id', 'x_label',
             'y_question_id', 'y_label',
@@ -58,15 +41,18 @@ def build_crosstab(
             'pct_type': str,
         }
     """
-    y_question_ids   = list(y_question_ids or [])
-    derived_field_map = derived_field_map or {}
+    y_question_ids = list(y_question_ids or [])
 
-    # use QuestionColumns to load any related questions and options for X and any real Y questions
-    all_real_question_ids = [x_question_id] + y_question_ids
+    # Separate calculated questions (read from Response fields) from survey
+    # questions (read from RespondentAnswer records via QuestionColumn).
+    y_question_objects = Question.objects.filter(id__in=y_question_ids).in_bulk()
+    calculated_qs  = {q.id: q for q in y_question_objects.values() if q.question_type == 'calculated'}
+    real_y_ids     = [i for i in y_question_ids if i not in calculated_qs]
 
+    # Load QuestionColumns for X and all real Y questions
     columns = (
         QuestionColumn.objects
-        .filter(question_id__in=all_real_question_ids)
+        .filter(question_id__in=[x_question_id] + real_y_ids)
         .select_related('question', 'option')
     )
 
@@ -93,48 +79,26 @@ def build_crosstab(
         if label:
             response_answers[ans.response_id][col_to_question_id[ans.question_column_id]].append(label)
 
-    # ------------------------------------------------------------------
-    # Populate derived field values into the same pivot structure
-    #
-    #    Uses values() to flatten both 'response' and 'school' sources
-    #    into a single query regardless of how many derived fields exist.
-    #    To add a new source (e.g. 'district'), add an elif branch below
-    #    that maps sentinel_id -> dotted field path for values().
-    # ------------------------------------------------------------------
-    if derived_field_map:
-        fetch_fields = {'id': 'id'}  # maps sentinel_id -> values() field path
+    # Populate calculated field values into the same pivot structure using
+    # a single values() query across all calculated fields at once.
+    if calculated_qs:
+        fetch_fields = {q.id: q.label for q in calculated_qs.values()}
 
-        for sentinel_id, config in derived_field_map.items():
-            source = config['source']
-            field  = config['field']
-            if source == 'response':
-                fetch_fields[sentinel_id] = field
-            elif source == 'school':
-                fetch_fields[sentinel_id] = f'school__{field}'
-            # add future sources here
-
-        field_path_map = {sid: path for sid, path in fetch_fields.items() if sid != 'id'}
-
-        for row in base_queryset.values('id', *field_path_map.values()):
-            for sentinel_id, field_path in field_path_map.items():
-                val = row.get(field_path)
+        for row in base_queryset.values('id', *fetch_fields.values()):
+            for question_id, field_name in fetch_fields.items():
+                val = row.get(field_name)
                 if val is not None:
-                    response_answers[row['id']][sentinel_id].append(str(val))
+                    response_answers[row['id']][question_id].append(str(val))
 
-    # ------------------------------------------------------------------
-    # 4. Build one result dict per Y axis (real + derived)
-    # ------------------------------------------------------------------
+    # Build one result dict per Y axis
     x_cols           = cols_by_question.get(x_question_id, [])
     x_question_label = (x_cols[0].question.crosstab_label or x_cols[0].question.label) if x_cols else ''
 
-    all_y_ids = y_question_ids + list(derived_field_map.keys())
-    results   = []
+    results = []
 
-    for y_qid in all_y_ids:
-        is_derived = y_qid in derived_field_map
-
-        if is_derived:
-            y_label = derived_field_map[y_qid]['label']
+    for y_qid in y_question_ids:
+        if y_qid in calculated_qs:
+            y_label = calculated_qs[y_qid].crosstab_label
             y_cols  = []
         else:
             y_cols = cols_by_question.get(y_qid)
@@ -177,7 +141,6 @@ def build_crosstab(
             yopt: {xopt: pair_counts[yopt].get(xopt, 0) for xopt in x_options}
             for yopt in y_options
         }
-
 
         # Calculate percentages based on the specified pct_type
         #   row: each cell is percentage of its row total

@@ -498,9 +498,6 @@ def dashboard_data(request):
     top_traits    = build_top_selections(qs, col_prefix='Q26A_')
 
     aptitude        = build_aptitude_summary(qs)
-    # TODO: make order by #1 with grade
-    # TODO: enforce #1 with grade can only be displayed once for each average grade
-    # TODO: agg C and below into single group
     cluster_top3    = build_career_cluster_top3(qs)
     conversations   = build_post_hs_conversations(qs)
 
@@ -510,7 +507,7 @@ def dashboard_data(request):
     return JsonResponse({
         'empty':           False,
         'plans_vs_grade':  build_grouped_bar(plans_results[0], mode, title="Post High School Plans By Average Letter Grade",
-                                             legend_title="Post High School Plans",
+                                             legend_title="Overall Student's Post High School Plans",
                                              x_axis_title="Average Letter Grade").to_dict(),
         'participation':   participation,
         'top_interests':   top_interests,

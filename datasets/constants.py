@@ -1627,6 +1627,5 @@ Q6_PARTICIPATION_COLS = ['Q6_1', 'Q6_2', 'Q6_3', 'Q6_4', 'Q6_5', 'Q6_6', 'Q6_7']
 # Columns that indicate career exploration participation (Q7_8 is "None of the above" — excluded)
 # All Q7A columns are valid participation indicators (no "None of the above" in Q7A)
 Q7_PARTICIPATION_COLS = [
-    'Q7_1', 'Q7_2', 'Q7_3', 'Q7_4', 'Q7_5', 'Q7_6', 'Q7_7',
-    'Q7A_1', 'Q7A_2', 'Q7A_3', 'Q7A_4', 'Q7A_5', 'Q7A_6', 'Q7A_7', 'Q7A_8',
+    'Q7_1', 'Q7_2', 'Q7_3', 'Q7_4', 'Q7_5', 'Q7_6', 'Q7_7'
 ]

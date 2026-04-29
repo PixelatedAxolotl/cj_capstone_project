@@ -78,3 +78,14 @@
     flex: 1;
     min-width: 0; /* prevents flex child from overflowing */
 }
+
+#crosstab-instructions {
+    background: rgba(43, 126, 194, 0.07);
+    border-left: 5px solid var(--accent-blue);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
