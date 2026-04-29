@@ -9,6 +9,8 @@
 {% endblock %}
 
 {% block content %}
+<!-- TODO: add display + opt for type of crosstab (col, row, total) -->
+ <!-- TODO: add short description for each X Y option once selected (or on hover? make checkbox list instead and add info icon and tooltips?) -->
 
 <h1>Crosstab Tool</h1>
 
@@ -74,9 +76,9 @@
         <hr>
 
         <!-- Combined table (all Y variables in one scrolling table) -->
-        <div style="overflow-x: auto; width: 100%; margin-bottom: 24px;">
+        <!-- <div style="overflow-x: auto; width: 100%; margin-bottom: 24px;">
             <div id="combined-table"></div>
-        </div>
+        </div> -->
 
         <!-- Individual charts / tables broken out per Y variable -->
         <!-- TODO: only show individual when multiple Y variables are selected? -->
@@ -191,26 +193,27 @@ async function runCrosstab() {
 
     const data = await response.json();
 
+    // REMOVED FOR NOW BASED ON CLIENT FEEDBACK
     // Combined table — fit figure width to container; fall back to scroll if too many columns
-    const combined = data.combined;
-    const trace    = combined.data[0];
-    const numDataCols   = trace.columnwidth.length - 1;  // exclude first (label) column - should be blank above Y row labels
-    const firstColWidth = trace.columnwidth[0] || 220;
-    const minDataCol    = 90;
-    const availWidth    = (document.getElementById('crosstab-content').offsetWidth || 900) - 20;
+    // const combined = data.combined;
+    // const trace    = combined.data[0];
+    // const numDataCols   = trace.columnwidth.length - 1;  // exclude first (label) column - should be blank above Y row labels
+    // const firstColWidth = trace.columnwidth[0] || 220;
+    // const minDataCol    = 90;
+    // const availWidth    = (document.getElementById('crosstab-content').offsetWidth || 900) - 20;
 
-    // handle width and scroll here - otherwise plotly formatting messes with header position
-    const fittedDataWidth = Math.floor((availWidth - firstColWidth) / numDataCols);
-    if (fittedDataWidth >= minDataCol) {
-        // All columns fit — stretch to fill available space
-        trace.columnwidth = [firstColWidth, ...Array(numDataCols).fill(fittedDataWidth)];
-        combined.layout.width = availWidth;
-    } else {
-        // Too many columns to fit without compressing — keep defaults and scroll
-        combined.layout.width = firstColWidth + 140 * numDataCols;
-    }
-    await Plotly.react("combined-table", combined.data, combined.layout, { responsive: false });
-    applyPlotlyTheme("combined-table");
+    // // handle width and scroll here - otherwise plotly formatting messes with header position
+    // const fittedDataWidth = Math.floor((availWidth - firstColWidth) / numDataCols);
+    // if (fittedDataWidth >= minDataCol) {
+    //     // All columns fit — stretch to fill available space
+    //     trace.columnwidth = [firstColWidth, ...Array(numDataCols).fill(fittedDataWidth)];
+    //     combined.layout.width = availWidth;
+    // } else {
+    //     // Too many columns to fit without compressing — keep defaults and scroll
+    //     combined.layout.width = firstColWidth + 140 * numDataCols;
+    // }
+    // await Plotly.react("combined-table", combined.data, combined.layout, { responsive: false });
+    // applyPlotlyTheme("combined-table");
 
     // Individual charts (one bar + one table per Y variable)
     const container = document.getElementById("individual-charts");

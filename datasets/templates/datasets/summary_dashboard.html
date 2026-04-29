@@ -14,11 +14,16 @@
 
 {% block content %}
 
+<div id="dashboard-loading" aria-label="Loading dashboard" role="status">
+    <div class="loading-spinner"></div>
+    <p class="loading-label">Loading dashboard&hellip;</p>
+</div>
+
 <h2>Summary Dashboard</h2>
 
 <div id="dashboard-message" style="display:none;"></div>
 <p>Explore a summary of insights for {% if is_global %}all schools{% else %}{{ request.user.school.name }}{% endif %}.
-   Use the filters below to customize the summary based on specific regional or domographic groups
+   Use the filters below to customize the summary based on specific regional or demographic groups
    {% if not is_global %}your school is a part of{% endif %}, as well as by time period in which the survey was taken.
    You can also toggle between viewing data as numbers of students or as percentages.
 </p>
@@ -78,9 +83,17 @@
 
 
 <script>
+function hideDashboardLoader() {
+    const overlay = document.getElementById("dashboard-loading");
+    if (!overlay) return;
+    overlay.classList.add("dashboard-loading-fade");
+    overlay.addEventListener("transitionend", () => overlay.remove(), { once: true });
+}
+
 async function loadDashboard() {
     const group = document.getElementById("group-filter").value;
     const year = document.getElementById("year-filter").value;
+    const grade = document.getElementById("grade-filter").value;
     const mode = document.getElementById("mode").value;
     const url = `/summary_dashboard/data/?group=${group}&year=${year}&mode=${mode}`;
     const response = await fetch(url);
@@ -139,6 +152,9 @@ async function loadDashboard() {
     renderTopSelections(data.top_interests, data.top_skills, data.top_traits, mode);
     renderAptitudeAndClusters(data.aptitude, data.cluster_top3);
     renderConversations(data.conversations, mode);
+    } finally {
+        hideDashboardLoader();
+    }
 }
 
 
@@ -286,6 +302,21 @@ document.getElementById("group-filter").addEventListener("change", loadDashboard
 document.getElementById("year-filter").addEventListener("change", loadDashboard);
 document.getElementById("mode").addEventListener("change", loadDashboard);
 
+function updateFilterHighlight(select) {
+    select.classList.toggle('active-filter', select.value !== 'all');
+}
+
+const filterSelects = [
+    document.getElementById("group-filter"),
+    document.getElementById("year-filter"),
+    document.getElementById("grade-filter"),
+    document.getElementById("mode"),
+];
+
+filterSelects.forEach(sel => {
+    sel.addEventListener("change", () => updateFilterHighlight(sel));
+    updateFilterHighlight(sel);
+});
 
 loadDashboard();
 </script>

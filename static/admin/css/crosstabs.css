@@ -50,13 +50,14 @@
 #filter-sidebar button {
     background: transparent;
     color: var(--text-dark-bg);
-    border: 1px solid var(--accent-orange);
+    border: 1px solid var(--accent-blue);
     border-radius: 4px;
     padding: 6px 10px;
     font-size: 13px;
     cursor: pointer;
     box-sizing: border-box;
     transition: background 0.2s, border-color 0.2s;
+    background: var(--accent-blue);
 }
 
 #filter-sidebar button:hover {

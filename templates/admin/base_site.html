@@ -37,12 +37,12 @@
 
     {% if request.user.is_staff %}
         <a href="{% url 'admin_index' %}">Admin Pages</a>
-    {% endif %}
 
     <!-- show docutils documentation -->
     {% url 'django-admindocs-docroot' as docsroot %}
     {% if docsroot %}
         <a href="{{ docsroot }}">Documentation</a>
+    {% endif %}
     {% endif %}
 
     {% if user.has_usable_password %}

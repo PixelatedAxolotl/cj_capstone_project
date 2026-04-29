@@ -10,9 +10,6 @@
             <div class="{% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
         {% endfor %}
     {% endif %}
-
-    <p>You are about to import <strong>{{ file_name }}</strong>. Please give this dataset a name before confirming.</p>
-
     <form method="post">
         {% csrf_token %}
         <div class="form-row">
@@ -24,5 +21,9 @@
             <a href="{% url 'upload_dataset' %}" style="margin-left: 10px;">Cancel</a>
         </div>
     </form>
+
+    <p>You are about to import <strong>{{ file_name }}</strong>. Please give this dataset a name before confirming.</p>
+
+
 </div>
 {% endblock %}

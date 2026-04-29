@@ -39,6 +39,7 @@
         </caption>
         <thead>
             <tr>
+                <th>School</th>
                 <th>Username</th>
                 <th>First Name</th>
                 <th>Last Name</th>
@@ -53,6 +54,7 @@
             {% url 'admin:accounts_user_change' user.pk as edit_url %}
             {% url 'admin:accounts_user_delete' user.pk as delete_url %}
             <tr aria-label="{{user.username}}" onclick="openPopup('{{ edit_url }}')" tabindex="0">
+                <td>{{ user.school|default:"—" }}</td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.first_name }}</td>
                 <td>{{ user.last_name }}</td>
@@ -62,7 +64,7 @@
                 {% include "admin/includes/_action_btns.html" with edit_url=edit_url delete_url=delete_url %}
             </tr>
             {% empty %}
-            <tr><td colspan="7">No users found.</td></tr>
+            <tr><td colspan="8">No users found.</td></tr>
             {% endfor %}
         </tbody>
     </table>

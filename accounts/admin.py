@@ -37,6 +37,7 @@ class CustomReadOnlyPasswordHashWidget(ReadOnlyPasswordHashWidget):
 
 
 class CustomUserAdmin(InternalRolePermissionMixin, UserAdmin):
+    list_display = ('username', 'email', 'first_name', 'last_name', 'role', 'school')
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name', 'email')}),
