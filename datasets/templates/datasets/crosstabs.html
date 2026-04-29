@@ -50,10 +50,22 @@
         </div>
 
         <div>
+            <label for="grade-filter">Grade</label>
+            <select id="grade-filter">
+                <option value="all">All Grades</option>
+                {% for g in grades %}
+                    <option value="{{ g.numeric_value }}">{{ g.display_text }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
             <label for="x-variable">X Variable (columns)</label>
             <select id="x-variable">
                 {% for q in questions %}
-                    <option value="{{ q.id }}">{{ q.crosstab_label }}</option>
+                    {% if q.question_type != 'calculated' %}
+                        <option value="{{ q.id }}"{% if q.id == default_x_id %} selected{% endif %}>{{ q.crosstab_label }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
         </div>
@@ -73,8 +85,19 @@
     <!-- Main content area -->
     <div id="crosstab-content">
 
-        <hr>
+        <div id="crosstab-instructions">
+            <p>
+                A crosstab table (also called a pivot or contingency table) s a simple way to compare how two survey questions relate to each other.
+                It organizes responses into rows and columns so you can quickly see patterns, counts, and percentages.
 
+                For example, you might select Grade Level For the X variable (columns) and Career Interest Areas for the Y variable (rows).
+                Once you click <strong>Run Crosstab</strong> the table will show how many students in each <strong>grade</strong> chose each <strong>career interest</strong>.
+                Since a student can select more than one Career Interest Area, there may be over 100% in each column when in percentage mode.
+                In this tool you may select multiple Y variables and a crosstab will be created for each X and Y variable pair so you can compare several questions at once.
+            </p>
+        </div>
+
+        <!-- REMOVED FOR NOW BASED ON CLIENT FEEDBACK -->
         <!-- Combined table (all Y variables in one scrolling table) -->
         <!-- <div style="overflow-x: auto; width: 100%; margin-bottom: 24px;">
             <div id="combined-table"></div>
@@ -88,6 +111,7 @@
 
 </div>
 
+<span id="crosstab-defaults" data-x="{{ default_x_id }}" data-y="{{ default_y_id }}" hidden></span>
 <script src="https://cdn.plot.ly/plotly-3.5.0.min.js" charset="utf-8"></script>
 <script src="{% static 'admin/js/plotly_config.js' %}"></script>
 <script>
@@ -96,7 +120,7 @@
 // Y variable management
 // ---------------------------------------------------------------------------
 
-function addY() {
+function addY(defaultValue = null) {
     const container = document.getElementById("y-container");
 
     const wrapper = document.createElement("div");
@@ -112,6 +136,7 @@ function addY() {
             <option value="{{ q.id }}">{{ q.crosstab_label }}</option>
         {% endfor %}
     `;
+    if (defaultValue) select.value = String(defaultValue);
     select.addEventListener("change", updateSelectables);
 
     const removeBtn = document.createElement("button");
@@ -126,8 +151,10 @@ function addY() {
     updateSelectables();
 }
 
-// Start with one Y selector by default
-addY();
+// Start with default Y selection and run initial crosstab
+const _defaults = document.getElementById('crosstab-defaults').dataset;
+addY(Number(_defaults.y) || null);
+runCrosstab();
 
 // ---------------------------------------------------------------------------
 // Prevent selecting the same question for both X and Y, or two Ys
@@ -163,6 +190,7 @@ document.getElementById("x-variable").addEventListener("change", updateSelectabl
 document.getElementById("mode").addEventListener("change", runCrosstab);
 document.getElementById("group-filter").addEventListener("change", runCrosstab);
 document.getElementById("year-filter").addEventListener("change", runCrosstab);
+document.getElementById("grade-filter").addEventListener("change", runCrosstab);
 
 // ---------------------------------------------------------------------------
 // Fetch and render
@@ -173,6 +201,7 @@ async function runCrosstab() {
     const mode  = document.getElementById("mode").value;
     const group = document.getElementById("group-filter").value;
     const year  = document.getElementById("year-filter").value;
+    const grade = document.getElementById("grade-filter").value;
 
     const yValues = Array.from(document.getElementsByClassName("y-variable"))
         .map(el => el.value)
@@ -182,7 +211,7 @@ async function runCrosstab() {
 
     // Build query string — GET keeps the URL shareable and browser history intact.
     // Security is enforced server-side (@login_required + school-scoped queryset).
-    const params = new URLSearchParams({ x, mode, group, year });
+    const params = new URLSearchParams({ x, mode, group, year, grade });
     yValues.forEach(v => params.append("y", v));
 
     const response = await fetch(`/crosstab/data/?${params}`);

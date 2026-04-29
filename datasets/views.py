@@ -423,11 +423,19 @@ def dashboard_view(request):
         .order_by('school__name')
     ) if is_global else []
 
+    grades = (
+        Option.objects
+        .filter(category='grade')
+        .exclude(display_text='N/A')
+        .order_by('numeric_value')
+    )
+
     return render(request, 'datasets/summary_dashboard.html', {
         'groups':    groups,
         'years':     sorted(years, reverse=True),
         'schools':   schools,
         'is_global': is_global,
+        'grades':    grades,
     })
 
 
@@ -448,11 +456,21 @@ def crosstab_tables_view(request):
         .order_by('crosstab_label')
     )
 
+    grades = (
+        Option.objects
+        .filter(category='grade')
+        .exclude(display_text='N/A')
+        .order_by('numeric_value')
+    )
+
     return render(request, "datasets/crosstabs.html", {
         "groups": groups,
         "years": sorted(years, reverse=True),
         "questions": questions,
+        "grades": grades,
         "view_mode": "tables",
+        "default_x_id": 53,   # Grade Level
+        "default_y_id": 6,    # Career Interest Areas
     })
 
 @login_required
@@ -462,6 +480,7 @@ def dashboard_data(request):
     mode = request.GET.get('mode', 'percentages')
     group = request.GET.get('group', 'all')
     year  = request.GET.get('year', 'all')
+    grade = request.GET.get('grade', 'all')
 
     if group != 'all':
         if group == 'my':
@@ -474,6 +493,13 @@ def dashboard_data(request):
     if year != 'all':
         qs = qs.filter(start_date__year=year)
 
+    if grade != 'all':
+        qs = qs.filter(
+            answers__question_column__column_header='Q2',
+            answers__option__category='grade',
+            answers__option__numeric_value=float(grade),
+        ).distinct()
+
     if not qs.exists():
         return JsonResponse({'empty': True, 'message': 'No student responses found.'})
 
@@ -485,7 +511,7 @@ def dashboard_data(request):
         x_question_id=grade_q.question_id,
         base_queryset=qs,
         y_question_ids=[plan_q.question_id],
-        pct_type='row',
+        pct_type='column',
     )
 
     # build data for career prep participation broken down by letter grade chart
@@ -549,6 +575,14 @@ def crosstab_data(request):
 
     if year != 'all':
         qs = qs.filter(start_date__year=year)
+
+    grade = request.GET.get('grade', 'all')
+    if grade != 'all':
+        qs = qs.filter(
+            answers__question_column__column_header='Q2',
+            answers__option__category='grade',
+            answers__option__numeric_value=float(grade),
+        ).distinct()
 
     if not qs.exists():
         return JsonResponse({'empty': True, 'message': 'No student responses found.'})

@@ -60,6 +60,15 @@
         </select>
     </div>
     <div>
+        <label for="grade-filter">Grade:</label>
+        <select id="grade-filter">
+            <option value="all">All</option>
+            {% for g in grades %}
+                <option value="{{ g.numeric_value }}">{{ g.display_text }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div>
         <label for="mode">Display:</label>
         <select id="mode">
             <option value="counts">Count</option>
@@ -95,22 +104,24 @@ async function loadDashboard() {
     const year = document.getElementById("year-filter").value;
     const grade = document.getElementById("grade-filter").value;
     const mode = document.getElementById("mode").value;
-    const url = `/summary_dashboard/data/?group=${group}&year=${year}&mode=${mode}`;
-    const response = await fetch(url);
-    const data = await response.json();
+    const url = `/summary_dashboard/data/?group=${group}&year=${year}&grade=${grade}&mode=${mode}`;
 
-    const messageEl = document.getElementById("dashboard-message");
-    const chartEl = document.getElementById("plans-chart");
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
 
-    if (data.empty) {
-        messageEl.textContent = data.message;
-        messageEl.style.display = "block";
-        chartEl.style.display = "none";
-        return;
-    }
+        const messageEl = document.getElementById("dashboard-message");
+        const chartEl = document.getElementById("plans-chart");
 
-    messageEl.style.display = "none";
-    chartEl.style.display = "block";
+        if (data.empty) {
+            messageEl.textContent = data.message;
+            messageEl.style.display = "block";
+            chartEl.style.display = "none";
+            return;
+        }
+
+        messageEl.style.display = "none";
+        chartEl.style.display = "block";
 
     await Plotly.newPlot(
         "plans-chart",
@@ -300,6 +311,7 @@ function renderAptitudeAndClusters(aptitude, clusters) {
 
 document.getElementById("group-filter").addEventListener("change", loadDashboard);
 document.getElementById("year-filter").addEventListener("change", loadDashboard);
+document.getElementById("grade-filter").addEventListener("change", loadDashboard);
 document.getElementById("mode").addEventListener("change", loadDashboard);
 
 function updateFilterHighlight(select) {
