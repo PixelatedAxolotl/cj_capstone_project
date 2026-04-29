@@ -4,7 +4,7 @@ from django.urls import include, path
 # Customize admin header bar
 admin.site.site_header = "Career Jam Admin Dashboard"
 admin.site.index_title = "Manage Users, Groups, and Datasets"
-
+admin.site.login_template = 'core/login.html'
 urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('', include('core.urls')),

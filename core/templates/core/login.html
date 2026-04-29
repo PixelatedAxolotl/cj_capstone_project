@@ -43,6 +43,7 @@
                 {% endif %}
                 <form method="post" class="login-form">
                     {% csrf_token %}
+                    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
                     {% for field in form %}
                         <div class="login-field">
                             {{ field.label_tag }}
