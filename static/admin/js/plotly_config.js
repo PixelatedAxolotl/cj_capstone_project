@@ -1,5 +1,6 @@
 const plotConfig = {
     responsive: true,
+    scrollZoom: false,
     modeBarButtonsToRemove: [
         'lasso2d',
         'select2d',
@@ -46,11 +47,13 @@ window.getCurrentPlotlyTheme = function() {
         'xaxis.linecolor':          grid,
         'xaxis.title.font.size':    titleSize,
         'xaxis.tickfont.size':      tickSize,
+        'xaxis.fixedrange':         true,
         'yaxis.color':              text,
         'yaxis.gridcolor':          grid,
         'yaxis.linecolor':          grid,
         'yaxis.title.font.size':    titleSize,
         'yaxis.tickfont.size':      tickSize,
+        'yaxis.fixedrange':         true,
         'legend.bgcolor':           bg,
         'legend.font.size':         legendSize,
     };
